@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ángel Barrientos — Retro Desktop</title>
+  <meta name="description" content="CV interactivo de Ángel Barrientos en formato de escritorio retro (Win95/GNOME 1)." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ctext x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-size='36' fill='%23fff'%3EA%3C/text%3E%3C/svg%3E" />
+
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --desk: #0f131a; /* retro dark */
+      --panel: #0b0f15;
+      --panel-border: #1c2430;
+      --win: rgba(24, 32, 44, 0.82);
+      --win-solid: #18202c;
+      --win-border: #5f748f;
+      --accent: #7cc5ff;
+      --text: #e7edf5;
+      --muted: #9fb3c9;
+      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      --radius: 12px;
+      --z-panel: 1000;
+      --z-menu: 1100;
+      --z-window: 1200;
+      --z-tooltip: 1400;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 800px at 20% 10%, #111927 0%, #0a0c10 60%, #06080d 100%);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      user-select: none;
+      overflow: hidden;
+    }
+    /* Desktop */
+    .desktop {
+      position: fixed; inset: 0; display: grid; grid-template-rows: 1fr 42px;
+      background-image:
+        radial-gradient(1px 1px at 25% 30%, rgba(124,197,255,.15) 0, transparent 60%),
+        radial-gradient(1px 1px at 70% 60%, rgba(124,197,255,.08) 0, transparent 60%);
+    }
+    .desktop-grid { padding: 20px; display: grid; grid-auto-rows: 92px; grid-template-columns: repeat(auto-fill, 92px); gap: 18px; align-content: start; }
+    .icon { width: 92px; height: 92px; display: grid; grid-template-rows: 56px 1fr; place-items: center; border-radius: 10px; cursor: default; }
+    .icon:hover { background: rgba(255,255,255,0.04); }
+    .icon img { width: 42px; height: 42px; filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
+    .icon span { text-align: center; font-size: 12px; color: var(--muted); padding: 0 6px; }
+    /* Panel */
+    .panel { position: relative; grid-row: 2; display: grid; grid-template-columns: 220px 1fr 280px; align-items: center; gap: 12px; padding: 6px 10px; background: var(--panel); border-top: 1px solid var(--panel-border); box-shadow: 0 -12px 24px rgba(0,0,0,.35) inset; z-index: var(--z-panel); }
+    .start { display: flex; align-items: center; gap: 8px; background: #0c121a; padding: 6px 10px; border: 1px solid #1b2633; border-radius: 8px; cursor: default; }
+    .start:hover { outline: 1px solid #2b3a4e; }
+    .start svg { width: 16px; height: 16px; }
+    .taskbar { display: flex; gap: 8px; overflow-x: auto; padding: 2px; scrollbar-width: thin; }
+    .task { background: #0d141d; border: 1px solid #1c2736; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); white-space: nowrap; cursor: default; }
+    .task.active { outline: 1px solid var(--accent); color: var(--text); }
+    .status { display: flex; gap: 10px; justify-content: end; align-items: center; font-size: 12px; color: var(--muted); }
+    .badge { padding: 4px 8px; border: 1px solid #1c2736; border-radius: 8px; }
+    /* Start Menu */
+    .menu { position: absolute; bottom: 50px; left: 10px; width: 320px; background: #0d131b; border: 1px solid #1b2736; border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; gap: 8px; z-index: var(--z-menu); }
+    .menu .item { padding: 10px; border-radius: 10px; display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; cursor: default; }
+    .menu .item:hover { background: rgba(255,255,255,0.05); }
+    .menu .hint { font-size: 11px; color: var(--muted); }
+    /* Windows */
+    .window { position: absolute; top: 140px; left: 140px; width: 720px; min-width: 340px; height: 460px; min-height: 220px; background: var(--win); border: 1px solid var(--win-border); border-radius: var(--radius); box-shadow: var(--shadow); display: grid; grid-template-rows: 38px 1fr; overflow: hidden; backdrop-filter: blur(12px) saturate(1.05); -webkit-backdrop-filter: blur(12px) saturate(1.05); }
+    .window.solid { background: var(--win-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .titlebar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 0 8px; background: linear-gradient(180deg, rgba(124,197,255,.12), rgba(124,197,255,0)); border-bottom: 1px solid rgba(124,197,255,.18); cursor: move; }
+    .titlebar .title { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+    .titlebar .controls { display: flex; gap: 6px; }
+    .btn { width: 28px; height: 24px; display: grid; place-items: center; border: 1px solid #2a3a50; border-radius: 8px; background: #0d141d; cursor: default; }
+    .btn:hover { outline: 1px solid var(--accent); }
+    .content { padding: 16px; overflow: auto; }
+    .resizer { position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+    .ghost { position:absolute; border:2px dashed rgba(124,197,255,.6); border-radius: var(--radius); pointer-events:none; }
+    a, .link { color: var(--accent); text-decoration: none; }
+    .kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0b1118; border: 1px solid #1c2736; border-radius: 6px; padding: 2px 6px; }
+    .grid { display: grid; gap: 10px; }
+    .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .muted { color: var(--muted); }
+    .hr { height: 1px; background: #1c2736; margin: 8px 0; }
+    .pill { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: rgba(124,197,255,.1); border: 1px solid rgba(124,197,255,.25); }
+    .list { display: grid; gap: 8px; }
+    .list li { margin-left: 18px; }
+    @media (max-width: 840px) {
+      .window { width: calc(100vw - 24px); left: 12px; }
+      .desktop-grid { grid-template-columns: repeat(auto-fill, 76px); grid-auto-rows: 88px; gap: 12px; }
+      .icon { width: 76px; height: 88px; }
+    }
+    .desktop {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      grid-template-rows: 1fr 42px;
+      background-color: var(--desk);
+      background-image: v-bind('url(compositor.wallpaper)');
+      background-size: v-bind('compositor.fit');
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
+  <!-- GA4: sustituye G-XXXXXX por tu Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXX', { transport_type: 'beacon', send_page_view: false });
+  </script>
+</head>
+<body>
+<div id="app" class="desktop" @contextmenu.prevent>
+  <!-- Desktop icons -->
+  <div class="desktop-grid">
+    <div class="icon" tabindex="0" @dblclick="openApp('about')" @click="telemetry.click('icon', {element:'about'})">
+      <img alt="About" src="https://api.iconify.design/mdi:account-badge.svg" />
+      <span>{{ t('icons.about') }}</span>
+    </div>
+    <div class="icon" tabindex="0" @dblclick="openApp('experience')" @click="telemetry.click('icon', {element:'experience'})">
+      <img alt="Experience" src="https://api.iconify.design/mdi:briefcase.svg" />
+      <span>{{ t('icons.experience') }}</span>
+    </div>
+    <div class="icon" tabindex="0" @dblclick="openApp('skills')" @click="telemetry.click('icon', {element:'skills'})">
+      <img alt="Skills" src="https://api.iconify.design/mdi:code-tags.svg" />
+      <span>{{ t('icons.skills') }}</span>
+    </div>
+    <div class="icon" tabindex="0" @dblclick="openApp('education')" @click="telemetry.click('icon', {element:'education'})">
+      <img alt="Education" src="https://api.iconify.design/mdi:school.svg" />
+      <span>{{ t('icons.education') }}</span>
+    </div>
+    <div class="icon" tabindex="0" @dblclick="openApp('download')" @click="telemetry.click('icon', {element:'download'})">
+      <img alt="Download CV" src="https://api.iconify.design/mdi:file-download.svg" />
+      <span>{{ t('icons.cv') }}</span>
+    </div>
+    <div class="icon" tabindex="0" @dblclick="openApp('contact')" @click="telemetry.click('icon', {element:'contact'})">
+      <img alt="Contact" src="https://api.iconify.design/mdi:email.svg" />
+      <span>{{ t('icons.contact') }}</span>
+    </div>
+  </div>
+
+  <!-- Windows -->
+  <template v-for="win in windows">
+    <div class="window" :class="{solid: !compositor.glass}" :style="win.style" :key="win.id" @mousedown="focus(win.id)">
+      <div class="titlebar" @dblclick="toggleMaximize(win.id)" @mousedown="startDrag($event, win.id)">
+        <div class="title">
+          <span class="pill">{{ win.icon }}</span>
+          <span>{{ win.title }}</span>
+        </div>
+        <div class="controls">
+          <div class="btn" title="Minimize" @click.stop="minimize(win.id); telemetry.cta('window_minimize',{name:win.id})">–</div>
+          <div class="btn" title="Maximize" @click.stop="toggleMaximize(win.id); telemetry.cta('window_maximize',{name:win.id})">▢</div>
+          <div class="btn" title="Close" @click.stop="closeWindow(win.id); telemetry.cta('window_close',{name:win.id})">×</div>
+        </div>
+      </div>
+      <div class="content">
+        <component :is="win.component" :t="t" :lang="lang" />
+      </div>
+      <div class="resizer" @mousedown="startResize($event, win.id)"></div>
+    </div>
+  </template>
+  <div v-if="drag.ghost" class="ghost" :style="drag.ghostStyle"></div>
+
+  <!-- Panel / Taskbar -->
+  <div class="panel">
+    <div class="start" @click="ui.menu = !ui.menu; telemetry.click('start_button',{element:'start'})">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7Z"/></svg>
+      <strong>Start</strong>
+    </div>
+    <div class="taskbar">
+      <div v-for="task in tasks" :key="task.id" class="task" :class="{active: task.active}" @click="restore(task.id); focus(task.id)">{{ task.title }}</div>
+    </div>
+    <div class="status">
+      <span class="badge">UTC: {{ clock }}</span>
+      <span class="badge" title="Language">
+          <span class="link" @click="setLang(lang === 'es' ? 'en' : 'es')">{{ lang.toUpperCase() }}</span>
+        </span>
+      <span class="muted">{{ env }} · {{ appName }}</span>
+    </div>
+
+    <!-- Start Menu -->
+    <div v-if="ui.menu" class="menu" @click.outside>
+      <div class="item" @click="openApp('about'); ui.menu=false">
+        <span>🛈</span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
+      </div>
+      <div class="item" @click="openApp('experience'); ui.menu=false"><span>💼</span><div>{{ t('menu.experience') }}</div><span></span></div>
+      <div class="item" @click="openApp('skills'); ui.menu=false"><span>🧰</span><div>{{ t('menu.skills') }}</div><span></span></div>
+      <div class="item" @click="openApp('education'); ui.menu=false"><span>🎓</span><div>{{ t('menu.education') }}</div><span></span></div>
+      <div class="item" @click="openApp('download'); ui.menu=false"><span>⬇</span><div>{{ t('menu.download') }}</div><span></span></div>
+      <div class="item" @click="openApp('contact'); ui.menu=false"><span>✉</span><div>{{ t('menu.contact') }}</div><span></span></div>
+      <div class="hr"></div>
+      <div class="item" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Vue 3 (CDN) -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script type="module">
+  /* ============================
+     Utilities & Kernel Services
+     ============================ */
+  const uuidv4 = () => {
+    // RFC4122 v4, no crypto for max compatibility
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16);
+    });
+  };
+
+  const nowISO = () => new Date().toISOString();
+
+  /* i18n minimal */
+  const messages = {
+    es: {
+      icons: { about: 'Acerca de mí', experience: 'Experiencia', skills: 'Skills', education: 'Educación', cv: 'Descargar CV', contact: 'Contacto' },
+      menu: { about: 'Acerca de Ángel', about_hint: 'Perfil y resumen ejecutivo', experience: 'Experiencia', skills: 'Competencias técnicas', education: 'Formación', download: 'Descargar CV (PDF)', contact: 'Contacto', compositor: 'Alternar compositor (vidrio/sólido)' },
+      about: {
+        title: 'Ángel Barrientos — Technical Lead & Software Architect',
+        summary: 'Ingeniero en sistemas con 15+ años en backend, arquitectura y liderazgo técnico. Enfocado en e‑commerce, AWS y modernización de infraestructura.'
+      },
+      experience: {
+        title: 'Experiencia profesional destacada'
+      },
+      skills: { title: 'Competencias técnicas' },
+      education: { title: 'Formación y aprendizaje continuo' },
+      download: { title: 'Descarga de CV', hint: 'Versión ejecutiva en PDF para reclutadores.' },
+      contact: { title: 'Contacto directo' }
+    },
+    en: {
+      icons: { about: 'About me', experience: 'Experience', skills: 'Skills', education: 'Education', cv: 'Download CV', contact: 'Contact' },
+      menu: { about: 'About Ángel', about_hint: 'Profile & executive summary', experience: 'Experience', skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact', compositor: 'Toggle compositor (glass/solid)' },
+      about: {
+        title: 'Ángel Barrientos — Technical Lead & Software Architect',
+        summary: 'Software engineer with 15+ years in backend, architecture, and technical leadership. Focused on e‑commerce, AWS, and modernization.'
+      },
+      experience: { title: 'Highlighted professional experience' },
+      skills: { title: 'Technical competencies' },
+      education: { title: 'Education & continuous learning' },
+      download: { title: 'CV download', hint: 'Executive PDF version for recruiters.' },
+      contact: { title: 'Direct contact' }
+    }
+  };
+
+  const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) || key;
+
+  /* Telemetry (GA4 contract) */
+  class Telemetry {
+    constructor({ env = 'dev', app = 'retro-desktop' } = {}) {
+      this.env = env; this.app = app;
+      this.session_id = sessionStorage.getItem('session_id') || uuidv4();
+      sessionStorage.setItem('session_id', this.session_id);
+      this.client_id = undefined; // optional — try GA4 fetch
+      try {
+        if (window.gtag) {
+          // Attempt to get GA4 client_id (best-effort; async via callback signature)
+          // Replace 'G-XXXXXX' below if you want this to work in production
+          window.gtag('get', 'G-XXXXXX', 'client_id', (cid) => { this.client_id = cid; });
+        }
+      } catch {}
+    }
+    base() {
+      return {
+        event_id: uuidv4(),
+        ts: nowISO(),
+        page_path: location.pathname,
+        page_location: location.href,
+        page_title: document.title,
+        env: this.env,
+        app: this.app,
+        session_id: this.session_id,
+        client_id: this.client_id,
+        transport_type: 'beacon'
+      };
+    }
+    send(name, extra = {}) {
+      const payload = { ...this.base(), ...extra };
+      if (window.gtag) {
+        window.gtag('event', name, payload);
+      } else {
+        console.debug('[telemetry:fallback]', name, payload);
+      }
+    }
+    pageView(extra={}){ this.send('page_view', extra); }
+    click(scope, extra={}){ this.send('click', { scope, ...extra }); }
+    cta(name, extra={}){ this.send('cta', { name, ...extra }); }
+    formSubmit(extra){ this.send('form_submit', {...extra}); }
+    download(extra){ this.send('download', {...extra}); }
+    videoPlay(extra){ this.send('video_play', {...extra}); }
+    error(scope, extra){ this.send('error', { scope, ...extra }); }
+  }
+
+  /* Windowing system */
+  class WindowManager {
+    constructor() { this.stack = []; this.z = 2000; }
+    create({ id, title, icon, component, x=120, y=120, w=720, h=460 }) {
+      const win = { id, title, icon, component, x, y, w, h, minimized: false, maximized: false, z: ++this.z };
+      this.stack.push(win); return win;
+    }
+    focus(id){ const w = this.find(id); if (!w) return; w.z = ++this.z; this.stack = this.stack.sort((a,b)=>a.z-b.z); }
+    find(id){ return this.stack.find(w=>w.id===id); }
+    close(id){ this.stack = this.stack.filter(w=>w.id!==id); }
+    minimize(id){ const w=this.find(id); if(w){ w.minimized=true; } }
+    restore(id){ const w=this.find(id); if(w){ w.minimized=false; this.focus(id);} }
+    toggleMax(id){ const w=this.find(id); if(!w) return; w.maximized=!w.maximized; if(w.maximized){ w.prev={x:w.x,y:w.y,w:w.w,h:w.h}; w.x=12; w.y=12; w.w=innerWidth-24; w.h=innerHeight-54; } else if(w.prev){ Object.assign(w, w.prev); w.prev=undefined; }
+    }
+    style(win){
+      const base = `z-index:${win.z};` + (win.minimized? 'display:none;' : '');
+      return base + `left:${win.x}px;top:${win.y}px;width:${win.w}px;height:${win.h}px;`;
+    }
+  }
+
+  class Compositor {
+    constructor(){
+      this.glass = true;
+      this.wallpaper = 'https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg';
+      this.fit = 'cover';
+    }
+    toggleGlass(){
+      this.glass = !this.glass;
+    }
+    setWallpaper(url){
+      this.wallpaper = url;
+    }
+    setFit(mode){
+      this.fit = mode;
+    }
+  }
+
+  /* Content components (simple, static for MVP) */
+  const About = {
+    props:['t'],
+    template:`<div class="grid">
+        <h2>{{ t('about.title') }}</h2>
+        <p class="muted">{{ t('about.summary') }}</p>
+        <div class="hr"></div>
+        <p><strong>Rol:</strong> Tech Lead / Arquitecto · <strong>Ubicación:</strong> CDMX (Remoto/Híbrido)</p>
+        <p><strong>Idiomas:</strong> Español / Inglés (B1+ lectura avanzada)</p>
+        <p>Propuesta de valor: orden en entornos caóticos, decisiones técnicas sostenibles, pedagogía aplicada.</p>
+        <p>Actual: re-entrenamiento profundo en PHP 8.3, Python 3.12, Java 21; infraestructura Linux pedagógica; migraciones Docker → Kubernetes → OpenShift.</p>
+      </div>`
+  };
+
+  const Experience = {
+    props:['t'],
+    template:`<div>
+        <h2>{{ t('experience.title') }}</h2>
+        <div class="list">
+          <p><strong>Technical Lead — Nyx (2023–Presente):</strong> Arquitectura AWS, automatización, estándares de calidad y observabilidad.</p>
+          <p><strong>Senior Software Engineer — Vass Latam / Telefónica Chile (2021–2023):</strong> Magento 2.4; refactor de pagos; -70% errores críticos; checkout más rápido.</p>
+          <p><strong>Senior Backend — PagoFácil.net (2018–2021):</strong> Gateway CNP para Magento 2.3; facturación electrónica; antifraude.</p>
+          <p><strong>Developer / Jr PM — Enova (2014–2018):</strong> Scrum + XP, documentación técnica, entregables en proyectos educativos.</p>
+          <p><strong>Freelance / Consultor (2008–2014):</strong> PHP full‑stack, Linux admin, soporte Java; e‑commerce e institucional.</p>
+        </div>
+      </div>`
+  };
+
+  const Skills = {
+    props:['t'],
+    template:`<div>
+        <h2>{{ t('skills.title') }}</h2>
+        <div class="grid cols-2">
+          <div>
+            <p><strong>Lenguajes:</strong> PHP 8 · Python 3 · Java 21 · C# · JS/TS</p>
+            <p><strong>Frameworks:</strong> Laravel · Symfony · Magento 2 · FastAPI · Spring Boot · .NET</p>
+            <p><strong>Bases:</strong> DocumentDB/Mongo · MySQL · PostgreSQL · Oracle</p>
+          </div>
+          <div>
+            <p><strong>Cloud & Infra:</strong> AWS (Lambda, CloudFront, IAM, S3, DocumentDB, CloudWatch) · Docker · K8s · OpenShift</p>
+            <p><strong>Arquitectura:</strong> Clean Architecture · DDD · SOLID · CQRS · CI/CD</p>
+            <p><strong>Sistemas:</strong> Linux · Bash · Git (plumbing/porcelain)</p>
+          </div>
+        </div>
+      </div>`
+  };
+
+  const Education = {
+    props:['t'],
+    template:`<div>
+        <h2>{{ t('education.title') }}</h2>
+        <p><strong>Ing. en Sistemas Computacionales</strong> — México</p>
+        <p>Complementos: PMBOK 7, Lean Delivery, DevOps, Conflict Management, Leadership for Tech Teams.</p>
+        <p>En curso: Kubernetes → OpenShift y actualización avanzada de PHP / Python / Java.</p>
+      </div>`
+  };
+
+  const Download = {
+    props:['t'],
+    template:`<div>
+        <h2>{{ t('download.title') }}</h2>
+        <p class="muted">{{ t('download.hint') }}</p>
+        <p><a class="link" href="/cv/angel-barrientos.pdf" download @click="$emit('download')">⬇ CV — PDF</a></p>
+        <p><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a> · <a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a> · <a class="link" href="https://uetiko.com" target="_blank" rel="noopener">Blog</a></p>
+      </div>`
+  };
+
+  const Contact = {
+    props:['t'],
+    template:`<div>
+        <h2>{{ t('contact.title') }}</h2>
+        <p>📧 <a class="link" href="mailto:angel@uetiko.com">angel@uetiko.com</a></p>
+        <form @submit.prevent="$emit('submit',{form_id:'contact', status:'ok'})">
+          <div class="grid cols-2">
+            <input required name="name" placeholder="Nombre" style="padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text)" />
+            <input required name="email" placeholder="Email" type="email" style="padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text)" />
+          </div>
+          <textarea required name="msg" placeholder="Mensaje" rows="5" style="margin-top:10px;padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text); width:100%"></textarea>
+          <div style="margin-top:10px"><button class="btn" type="submit">Enviar</button></div>
+        </form>
+      </div>`
+  };
+
+  // Vue App
+  const { createApp, onMounted, ref, reactive, computed } = Vue;
+
+  const app = createApp({
+    components: { About, Experience, Skills, Education, Download, Contact },
+    setup() {
+      const env = (new URLSearchParams(location.search).get('env')) || 'dev';
+      const appName = 'retro-desktop';
+      const lang = ref((navigator.language || 'es').startsWith('es') ? 'es' : 'en');
+      const t = (key) => i18n(lang.value)(key);
+
+      const telemetry = new Telemetry({ env, app: appName });
+      telemetry.pageView();
+
+      const wm = new WindowManager();
+      const compositor = reactive(new Compositor());
+
+      const windows = reactive([]);
+      const tasks = reactive([]);
+
+      const makeWin = (id, title, icon, component) => {
+        if (wm.find(id)) { wm.restore(id); focus(id); return; }
+        const w = wm.create({ id, title, icon, component });
+        windows.push({ id, title, icon, component, get style(){ return wm.style(w); } });
+        tasks.push({ id, title, active: true });
+        focus(id);
+      };
+
+      const focus = (id) => { wm.focus(id); tasks.forEach(t=>t.active = (t.id===id)); };
+      const minimize = (id) => { wm.minimize(id); tasks.find(t=>t.id===id).active = false; };
+      const restore = (id) => { wm.restore(id); tasks.find(t=>t.id===id).active = true; };
+      const toggleMaximize = (id) => wm.toggleMax(id);
+      const closeWindow = (id) => { wm.close(id); const idx = windows.findIndex(w=>w.id===id); if(idx>-1) windows.splice(idx,1); const tidx = tasks.findIndex(t=>t.id===id); if(tidx>-1) tasks.splice(tidx,1); };
+
+      const openApp = (name) => {
+        switch(name){
+          case 'about': makeWin('about', t('menu.about'), '🛈', 'About'); break;
+          case 'experience': makeWin('experience', t('menu.experience'), '💼', 'Experience'); break;
+          case 'skills': makeWin('skills', t('menu.skills'), '🧰', 'Skills'); break;
+          case 'education': makeWin('education', t('menu.education'), '🎓', 'Education'); break;
+          case 'download': makeWin('download', t('menu.download'), '⬇', 'Download'); break;
+          case 'contact': makeWin('contact', t('menu.contact'), '✉', 'Contact'); break;
+        }
+        telemetry.cta('open_app', { name });
+      };
+
+      // Drag/Resize
+      const drag = reactive({ active:false, id:null, startX:0, startY:0, start:{}, ghost:false, ghostStyle:'' });
+      const startDrag = (e, id) => {
+        const w = wm.find(id); if(!w) return;
+        drag.active = true; drag.id = id; drag.startX = e.clientX; drag.startY = e.clientY; drag.start = { x:w.x, y:w.y };
+        drag.ghost = true; drag.ghostStyle = `left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;`;
+        window.addEventListener('mousemove', onDrag); window.addEventListener('mouseup', endDrag);
+      };
+      const onDrag = (e) => {
+        if(!drag.active) return; const w = wm.find(drag.id); if(!w) return;
+        const nx = drag.start.x + (e.clientX - drag.startX); const ny = drag.start.y + (e.clientY - drag.startY);
+        drag.ghostStyle = `left:${nx}px;top:${ny}px;width:${w.w}px;height:${w.h}px;`;
+      };
+      const endDrag = (e) => {
+        if(!drag.active) return; const w = wm.find(drag.id); if(!w) return;
+        const nx = drag.start.x + (e.clientX - drag.startX); const ny = drag.start.y + (e.clientY - drag.startY);
+        w.x = Math.max(4, Math.min(nx, innerWidth - 60)); w.y = Math.max(4, Math.min(ny, innerHeight - 100));
+        drag.active=false; drag.id=null; drag.ghost=false; drag.ghostStyle='';
+        window.removeEventListener('mousemove', onDrag); window.removeEventListener('mouseup', endDrag);
+      };
+
+      const startResize = (e, id) => {
+        e.stopPropagation(); const w = wm.find(id); if(!w) return;
+        drag.active = true; drag.id = id; drag.startX = e.clientX; drag.startY = e.clientY; drag.start = { w:w.w, h:w.h };
+        drag.ghost = true; drag.ghostStyle = `left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;`;
+        const onMove = (ev) => {
+          const nw = Math.max(340, drag.start.w + (ev.clientX - drag.startX));
+          const nh = Math.max(220, drag.start.h + (ev.clientY - drag.startY));
+          drag.ghostStyle = `left:${w.x}px;top:${w.y}px;width:${nw}px;height:${nh}px;`;
+        };
+        const onUp = (ev) => {
+          const nw = Math.max(340, drag.start.w + (ev.clientX - drag.startX));
+          const nh = Math.max(220, drag.start.h + (ev.clientY - drag.startY));
+          w.w = Math.min(nw, innerWidth - w.x - 12); w.h = Math.min(nh, innerHeight - w.y - 54);
+          drag.active=false; drag.id=null; drag.ghost=false; drag.ghostStyle='';
+          window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp);
+        };
+        window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+      };
+
+      // Clock (UTC)
+      const clock = ref('');
+      const tick = () => {
+        const d = new Date();
+        clock.value = d.toISOString().substring(11,19) + 'Z';
+      };
+      setInterval(tick, 1000); tick();
+
+      const ui = reactive({ menu:false });
+
+      const setLang = (l) => { lang.value = l; telemetry.cta('lang_switch', { variant:l }); };
+
+      onMounted(() => {
+        // Open About by default
+        openApp('about');
+      });
+
+      return {
+        env, appName, lang, t, telemetry,
+        compositor, windows, tasks, ui,
+        openApp, focus, minimize, restore, toggleMaximize, closeWindow,
+        startDrag, startResize, drag,
+        clock, setLang
+      };
+    }
+  });
+
+  // Outside click directive for menu
+  app.directive('click', { beforeMount(el, binding){ el.__clickOutside__ = (e)=>{ if(!(el===e.target||el.contains(e.target))) binding.value(e); }; document.addEventListener('click', el.__clickOutside__); }, unmounted(el){ document.removeEventListener('click', el.__clickOutside__); } });
+
+  app.mount('#app');
+</script>
+</body>
+</html>
