@@ -219,6 +219,16 @@
   /* ============================
      Utilities & Kernel Services
      ============================ */
+  /**
+   * Generates a random UUID (Universally Unique Identifier) following the RFC4122 version 4 standard.
+   * This implementation does not use cryptographic functionality, ensuring maximum compatibility across environments.
+   *
+   * The generated UUID has the format `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx` where:
+   * - `x` is replaced with a random hexadecimal digit (0-9, a-f).
+   * - The `y` position is replaced with a random hexadecimal digit in the range 8-11.
+   *
+   * @returns {string} A randomly generated RFC4122 v4 UUID.
+   */
   const uuidv4 = () => {
     // RFC4122 v4, no crypto for max compatibility
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -229,6 +239,11 @@
   const nowISO = () => new Date().toISOString();
 
   /* i18n minimal */
+  /**
+   * Multilingual content and labels for the UI.
+   *
+   * This object contains structured translations for different segments of the application in Spanish (es) and English (en).
+   */
   const messages = {
     es: {
       icons: { about: 'Acerca de mí', experience: 'Experiencia', skills: 'Skills', education: 'Educación', cv: 'Descargar CV', contact: 'Contacto' },
@@ -263,6 +278,11 @@
   const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) || key;
 
   /* Telemetry (GA4 contract) */
+  /**
+   * A class for managing client-side telemetry, allowing for the tracking and sending of user interaction events
+   * such as page views, clicks, and custom event types. This class utilizes the `gtag` library if available,
+   * falling back to debug logs when the library is not present.
+   */
   class Telemetry {
     constructor({ env = 'dev', app = 'desktop' } = {}) {
       this.env = env; this.app = app;
@@ -310,7 +330,10 @@
     error(scope, extra){ this.send('error', { scope, ...extra }); }
   }
 
-  /* Windowing system */
+  /**
+   * Manages a stack of window instances with functionality to create, focus, minimize,
+   * maximize, restore, close, and style windows.
+   */
   class WindowManager {
     constructor() { this.stack = []; this.z = 2000; }
     create({ id, title, icon, component, x=120, y=120, w=720, h=460 }) {
@@ -330,6 +353,9 @@
     }
   }
 
+  /**
+   * Compositor class is used to manage visual composition properties such as glass effect, wallpaper, and wallpaper fit.
+   */
   class Compositor {
     constructor(){
       this.glass = true;
@@ -348,6 +374,22 @@
   }
 
   /* Content components (simple, static for MVP) */
+  /**
+   * About component configuration object.
+   *
+   * This object defines the properties and template for the About component.
+   * It includes a set of properties to be passed, such as translations, and renders
+   * an informational grid-style section with key details including role, location,
+   * languages, value proposition, and current technical focus areas.
+   *
+   * Properties:
+   * - `props`: An array of properties that the component expects. In this case, it expects `t`, a translation function.
+   *
+   * Template Output:
+   * - A grid structure displaying an about section for a Tech Lead / Architect role.
+   * - Contains details such as the role, location, languages, value proposition, and current training or projects.
+   * - Includes styling classes such as "grid", "muted", and "hr" for layout and presentation purposes.
+   */
   const About = {
     props:['t'],
     template:`<div class="grid">
@@ -361,6 +403,24 @@
       </div>`
   };
 
+  /**
+   * A Vue.js component representing professional experience details.
+   *
+   * The `Experience` component is a reusable Vue.js component designed to display professional
+   * experience details with titles, company names, roles, durations, and key achievements.
+   *
+   * Properties:
+   * - `t {Function}`: A function used for localization or translation of content within the component, such as section titles.
+   *
+   * Template:
+   * - Displays a localized title using the `t` function.
+   * - Lists professional experiences, including:
+   *   * Role titles, company names, and employment periods.
+   *   * Relevant achievements and work performed for each position.
+   *
+   * Usage Context:
+   * - Designed to be included in applications requiring a structured display of extensive experience details, e.g., resumes, CV templates, or professional portfolios.
+   */
   const Experience = {
     props:['t'],
     template:`<div>
@@ -375,6 +435,26 @@
       </div>`
   };
 
+  /**
+   * Vue.js component that represents a section showcasing various skills and expertise.
+   *
+   * This component is used to display categorized professional skills and tools,
+   * including programming languages, frameworks, databases, cloud infrastructure,
+   * software architectures, and system-related expertise.
+   *
+   * Properties:
+   * - `props`: An array containing a single prop `t`, which is a function used for translations.
+   *
+   * Structure:
+   * - The component consists of a title and a grid layout with two columns.
+   * - The left column lists programming languages, frameworks, and database technologies.
+   * - The right column lists cloud infrastructure, architectural patterns, and system tools.
+   *
+   * Features:
+   * - Dynamically renders a translated title using the `t` function provided via props.
+   * - Organized information with semantic tags for better readability.
+   * - Highlights key skills and technologies with bold text to improve visibility.
+   */
   const Skills = {
     props:['t'],
     template:`<div>
@@ -394,6 +474,14 @@
       </div>`
   };
 
+  /**
+   * Represents an education component that displays details about formal education,
+   * additional training, and ongoing courses.
+   *
+   * @property {Array} props - An array containing properties passed to the component. Here, it includes `t`, a translation function.
+   * @property {String} template - A string defining the HTML structure of the education component. It includes information about
+   * educational qualifications, complementary courses, and current learning endeavors.
+   */
   const Education = {
     props:['t'],
     template:`<div>
@@ -404,6 +492,19 @@
       </div>`
   };
 
+  /**
+   * Download is a Vue component that provides downloadable and viewable resources, such as a CV, along with links to external social media or personal pages.
+   *
+   * @property {Array<string>} props - Accepts a single prop `t` which is a function used for localization of UI text.
+   *
+   * @emits {string} open-viewer - Triggered when the "Ver CV" link is clicked. Emits an object with `src`, `type`, and `title` properties.
+   * @emits {string} download - Triggered when the "CV — PDF" link is clicked to download the file.
+   *
+   * @template A Vue template structure that includes:
+   * - A title and hint section, both localized using the `t` prop.
+   * - Links for downloading or viewing a CV.
+   * - A section with links to external platforms such as LinkedIn, GitHub, and a blog.
+   */
   const Download = {
     props:['t'],
     emits:['open-viewer','download'],
@@ -417,6 +518,31 @@
       </div>`
   };
 
+  /**
+   * A Vue.js component representing a contact form.
+   *
+   * The `Contact` component provides a simple contact form with fields for name, email, and message.
+   * It includes a title fetched dynamically using a translation function, a styled email link,
+   * and a submission handler for emitting form data upon user submission.
+   *
+   * Properties:
+   * - `props`: An array containing property names used by the component. Currently includes:
+   *   - `t`: A function used for dynamic text translation.
+   *
+   * Template:
+   * - The template includes:
+   *   - A title, which is dynamically rendered using the `t` function.
+   *   - An email contact link.
+   *   - A form with:
+   *     - Two input fields (`name` and `email`) styled for user input.
+   *     - A textarea for entering a message.
+   *     - A submit button triggering a `submit` event with form status and ID upon submission.
+   *
+   * Events:
+   * - `submit`: Emitted when the form is submitted. The payload contains:
+   *   - `form_id`: The identifier of the form.
+   *   - `status`: The submission status, defaulting to 'ok'.
+   */
   const Contact = {
     props:['t'],
     template:`<div>
@@ -433,6 +559,28 @@
       </div>`
   };
 
+  /**
+   * DocumentViewer is a component that displays a document passed via the `src` property.
+   * It supports different file types such as images or PDFs and adapts its rendering logic based on the type.
+   * Additionally, it provides telemetry functionalities for tracking user interactions like downloads and window state changes.
+   *
+   * Props:
+   * @prop {string} src - The source URL of the document to be displayed. This should be a valid URL pointing to a file.
+   * @prop {string} type - The type of the document to be displayed. It accepts 'image', 'pdf', or other supported types.
+   * @prop {string} title - The title of the document, displayed at the top of the viewer.
+   * @prop {Object} telemetry - An object for managing telemetry events. It must have methods `download`, `openWindow`, and `closeWindow`.
+   *
+   * Behavior:
+   * - Renders the document inside the component area based on its type. For example:
+   *   - Renders an `<img>` tag for image files.
+   *   - Renders an `<iframe>` tag for PDFs or other types.
+   * - Displays a download link that allows users to download the document. A `telemetry.download` event is triggered on download.
+   * - Tracks when the viewer is mounted and unmounted using `telemetry.openWindow` and `telemetry.closeWindow` respectively.
+   *
+   * Styling:
+   * - Uses a flexbox layout for managing the title bar and download link.
+   * - Ensures responsive behavior by creating a grid layout with an auto header and an expandable document viewing area.
+   */
   const DocumentViewer = {
     props: ['src', 'type', 'title', 'telemetry'],
     template: `
@@ -506,6 +654,18 @@
       const toggleMaximize = (id) => wm.toggleMax(id);
       const closeWindow = (id) => { wm.close(id); const idx = windows.findIndex(w=>w.id===id); if(idx>-1) windows.splice(idx,1); const tidx = tasks.findIndex(t=>t.id===id); if(tidx>-1) tasks.splice(tidx,1); };
 
+      /**
+       * Opens a specified application window based on the provided name.
+       *
+       * Depending on the name parameter, the function triggers the creation of a new application
+       * window with predefined attributes such as ID, title, icon, and additional content descriptor.
+       * It also logs a telemetry event for tracking purposes.
+       *
+       * @param {string} name - The name of the application to open. Accepted values are:
+       *                        'about', 'experience', 'skills', 'education', 'download', 'contact'.
+       *                        Each corresponds to a specific application window.
+       * @throws {Error} If no matching case is found for the provided name.
+       */
       const openApp = (name) => {
         switch(name){
           case 'about': makeWin('about', t('menu.about'), '🛈', 'About'); break;
@@ -520,17 +680,47 @@
 
       // Drag/Resize
       const drag = reactive({ active:false, id:null, startX:0, startY:0, start:{}, ghost:false, ghostStyle:'' });
+      /**
+       * Handles the initiation of a drag action for a draggable element.
+       *
+       * @param {MouseEvent} e - The mouse event that triggered the drag start.
+       * @param {string | number} id - The unique identifier of the element being dragged.
+       *
+       * Initializes the drag state including the starting position of the mouse, the starting position of the element,
+       * and applies a "ghost" representation of the drag. Attaches mousemove and mouseup event listeners to handle the
+       * drag action and its termination respectively.
+       */
       const startDrag = (e, id) => {
         const w = wm.find(id); if(!w) return;
         drag.active = true; drag.id = id; drag.startX = e.clientX; drag.startY = e.clientY; drag.start = { x:w.x, y:w.y };
         drag.ghost = true; drag.ghostStyle = `left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;`;
         window.addEventListener('mousemove', onDrag); window.addEventListener('mouseup', endDrag);
       };
+      /**
+       * Handles the drag event for an interactive element.
+       *
+       * This function is triggered when a drag action is in progress, updating the
+       * position of the dragged element based on the cursor's movement. If the drag
+       * is not active or the target element cannot be found, the function exits
+       * early. While the drag is in motion, the ghost representation of the element
+       * is updated to follow the cursor's position, using calculated coordinates
+       * relative to its starting position.
+       *
+       * @param {Event} e - The event object associated with the drag action, containing details
+       * about the cursor's position and other event properties.
+       */
       const onDrag = (e) => {
         if(!drag.active) return; const w = wm.find(drag.id); if(!w) return;
         const nx = drag.start.x + (e.clientX - drag.startX); const ny = drag.start.y + (e.clientY - drag.startY);
         drag.ghostStyle = `left:${nx}px;top:${ny}px;width:${w.w}px;height:${w.h}px;`;
       };
+      /**
+       * Handles the end of a drag operation, finalizing the position of the dragged element
+       * and cleaning up event listeners and drag-related state.
+       *
+       * @param {MouseEvent} e - The mouse event triggered when the drag ends.
+       * @returns {void}
+       */
       const endDrag = (e) => {
         if(!drag.active) return; const w = wm.find(drag.id); if(!w) return;
         const nx = drag.start.x + (e.clientX - drag.startX); const ny = drag.start.y + (e.clientY - drag.startY);
@@ -539,6 +729,19 @@
         window.removeEventListener('mousemove', onDrag); window.removeEventListener('mouseup', endDrag);
       };
 
+      /**
+       * Initiates a drag-and-resize interaction for a user interface element.
+       *
+       * This function sets up the necessary state and event listeners to allow resizing of a UI element. It tracks
+       * the initial dimensions and position of the element, as well as the starting mouse position. The function
+       * calculates the new dimensions dynamically as the mouse moves while enforcing minimum size constraints.
+       * Resize updates are visualized using a ghost element until the resizing operation is completed.
+       *
+       * @param {MouseEvent} e - The mouse event object that contains the starting position of the mouse and
+       * contextual information for the "mousedown" or similar triggering event.
+       * @param {string} id - The unique identifier of the element to be resized, used to look up and update
+       * its properties in the window manager (wm).
+       */
       const startResize = (e, id) => {
         e.stopPropagation(); const w = wm.find(id); if(!w) return;
         drag.active = true; drag.id = id; drag.startX = e.clientX; drag.startY = e.clientY; drag.start = { w:w.w, h:w.h };
@@ -548,6 +751,17 @@
           const nh = Math.max(220, drag.start.h + (ev.clientY - drag.startY));
           drag.ghostStyle = `left:${w.x}px;top:${w.y}px;width:${nw}px;height:${nh}px;`;
         };
+        /**
+         * Handles the "mouseup" event for a drag-and-resize operation on a user interface element.
+         *
+         * This function calculates the new width and height of the draggable or resizable UI element based on
+         * the mouse's current position relative to the starting drag position. It ensures that the dimensions
+         * do not fall below a minimum size and do not exceed the screen boundaries. After handling the resize,
+         * it cleans up the drag state and removes related event listeners.
+         *
+         * @param {MouseEvent} ev - The mouse event object that contains the current position of the mouse
+         * and contextual information for the "mouseup" event.
+         */
         const onUp = (ev) => {
           const nw = Math.max(340, drag.start.w + (ev.clientX - drag.startX));
           const nh = Math.max(220, drag.start.h + (ev.clientY - drag.startY));
@@ -558,7 +772,14 @@
         window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
       };
 
-      // Clock (UTC)
+      /**
+       * A reactive variable that holds a string value representing the clock.
+       * This can be used to store and update a time-related string dynamically.
+       *
+       * The variable is initialized with an empty string.
+       * Updates to this variable will automatically trigger reactivity in frameworks
+       * that support reactive data bindings (e.g., Vue with ref()).
+       */
       const clock = ref('');
       const tick = () => {
         const date = new Date();
