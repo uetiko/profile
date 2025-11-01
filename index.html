@@ -166,7 +166,15 @@
         </div>
       </div>
       <div class="content">
-        <component :is="win.component" :t="t" :lang="lang"/>
+        <component
+          :is="win.component"
+          :t="t"
+          :lang="lang"
+          v-bind="win.props"
+          @open-viewer="openViewer"
+          @download="telemetry.download({name: win.id, element:'link'})"
+          @submit="telemetry.formSubmit($event)"
+        />
       </div>
       <div class="resizer" @mousedown="startResize($event, win.id)"></div>
     </div>
@@ -398,11 +406,14 @@
 
   const Download = {
     props:['t'],
+    emits:['open-viewer','download'],
     template:`<div>
         <h2>{{ t('download.title') }}</h2>
         <p class="muted">{{ t('download.hint') }}</p>
         <p><a class="link" href="/cv/angel-barrientos.pdf" download @click="$emit('download')">⬇ CV — PDF</a></p>
-        <p><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a> · <a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a> · <a class="link" href="https://uetiko.com" target="_blank" rel="noopener">Blog</a></p>
+        <p><a class="link" href="#" @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:'CV de Ángel'})">🗎 Ver CV</a></p>
+        <div class="hr"></div>
+        <p><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a> · <a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a> · <a class="link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a></p>
       </div>`
   };
 
@@ -422,11 +433,43 @@
       </div>`
   };
 
+  const DocumentViewer = {
+    props: ['src', 'type', 'title', 'telemetry'],
+    template: `
+      <div style="display:grid;grid-template-rows:auto 1fr;height:100%;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+          <strong>{{ title }}</strong>
+          <div>
+            <a class="link" :href="src" download @click="telemetry.download({file_name: src.split('/').pop(), element:'download_link'})">⬇ Descargar</a>
+          </div>
+        </div>
+        <div style="width:100%;height:100%;border-radius:8px;overflow:hidden;background:#0b1118;">
+          <component :is="componentType" :src="src" style="width:100%;height:100%;border:none;object-fit:contain;" />
+        </div>
+      </div>
+    `,
+    computed: {
+      componentType() {
+        switch (this.type) {
+          case 'image': return 'img';
+          case 'pdf': return 'iframe';
+          default: return 'iframe';
+        }
+      }
+    },
+    mounted() {
+      this.telemetry.openWindow('document_viewer', {file: this.src, type: this.type});
+    },
+    unmounted() {
+      this.telemetry.closeWindow('document_viewer', {file: this.src});
+    }
+  };
+
   // Vue App
   const { createApp, onMounted, ref, reactive, computed } = Vue;
 
   const app = createApp({
-    components: { About, Experience, Skills, Education, Download, Contact },
+    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer },
     setup() {
       const env = (new URLSearchParams(location.search).get('env')) || 'dev';
       const appName = 'retro-desktop';
@@ -442,12 +485,19 @@
       const windows = reactive([]);
       const tasks = reactive([]);
 
-      const makeWin = (id, title, icon, component) => {
+      const makeWin = (id, title, icon, component, props = {}) => {
         if (wm.find(id)) { wm.restore(id); focus(id); return; }
         const w = wm.create({ id, title, icon, component });
-        windows.push({ id, title, icon, component, get style(){ return wm.style(w); } });
+        windows.push({ id, title, icon, component, props, get style(){ return wm.style(w); } });
         tasks.push({ id, title, active: true });
         focus(id);
+      };
+
+      const openViewer = (payload) => {
+        const { src, type, title } = payload;
+        const id = `viewer-${uuidv4()}`;
+        makeWin(id, title, '🗎', 'DocumentViewer', { src, type, title, telemetry });
+        telemetry.openWindow('document_viewer', {file: src, type});
       };
 
       const focus = (id) => { wm.focus(id); tasks.forEach(t=>t.active = (t.id===id)); };
@@ -534,7 +584,7 @@
       return {
         env, appName, lang, t, telemetry,
         compositor, windows, tasks, ui,
-        openApp, focus, minimize, restore, toggleMaximize, closeWindow,
+        openApp, openViewer, focus, minimize, restore, toggleMaximize, closeWindow,
         startDrag, startResize, drag,
         clock, setLang
       };
