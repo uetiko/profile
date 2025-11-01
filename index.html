@@ -111,6 +111,35 @@
 
     .window.has-shadow-weak  { box-shadow: 0 6px 18px rgba(0,0,0,.35); }
     .window.has-shadow-strong{ box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+
+    /* Efectos avanzados */
+    .window.fly {
+      transition: transform .24s ease, opacity .24s ease !important;
+    }
+
+    @keyframes shake-x {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-6px); }
+      40%, 60% { transform: translateX(6px); }
+    }
+    .window.shake { animation: shake-x .28s ease; }
+
+    @keyframes pulse-attn {
+      0%, 100% { box-shadow: 0 0 0 rgba(124,197,255,0); }
+      50% { box-shadow: 0 0 0 3px rgba(124,197,255,.35); }
+    }
+    .task.attention { animation: pulse-attn 1.2s ease-in-out 2; }
+    .window.attention { animation: pulse-attn 1.2s ease-in-out 2; }
+
+    .window {
+      transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease, backdrop-filter .24s ease, background .24s ease;
+      will-change: transform, opacity, box-shadow;
+    }
+
+    .desktop.parallax {
+      transition: background-position .06s linear;
+    }
   </style>
   <!-- GA4: sustituye G-XXXXXX por tu Measurement ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
@@ -199,7 +228,7 @@
       <strong>Start</strong>
     </div>
     <div class="taskbar">
-      <div v-for="task in tasks" :key="task.id" class="task" :class="{active: task.active}" @click="restore(task.id); focus(task.id)">{{ task.title }}</div>
+      <div v-for="task in tasks" :key="task.id" :data-id="task.id" class="task" :class="{active: task.active}" @click="restore(task.id); focus(task.id)">{{ task.title }}</div>
     </div>
     <div class="status">
       <span class="badge">{{ clock }}</span>
@@ -457,69 +486,29 @@
         animationSpeed: 1.0 // factor multiplicador (1 = normal)
       }, init);
     }
-    /**
-     * Retrieves the value associated with the given key from the state.
-     *
-     * @param {string} key - The key whose associated value is to be returned.
-     * @return {*} The value associated with the specified key in the state, or undefined if the key does not exist.
-     */
     get(key){ return this.state[key]; }
-    /**
-     * Sets a value in the state object for the specified key and returns the updated state snapshot.
-     *
-     * @param {string} key - The key to update or add in the state object.
-     * @param {*} val - The value to associate with the specified key.
-     * @return {*} - The updated state snapshot after setting the key-value pair.
-     */
     set(key, val){ this.state[key] = val; return this.snapshot(); }
-    /**
-     * Toggles the boolean value associated with the specified key in the state object.
-     *
-     * @param {string} key - The key in the state object whose boolean value will be toggled.
-     * @return {Object} Returns the updated snapshot of the current state.
-     */
     toggle(key){ this.state[key] = !this.state[key]; return this.snapshot(); }
-    /**
-     * Creates and returns a shallow copy of the current state object.
-     *
-     * @return {Object} A new object that is a shallow clone of the state.
-     */
     snapshot(){ return {...this.state}; }
   }
 
-  /**
-   * Manages the registration, execution, and tracking of effects within an application.
-   * Provides an interface for registering effect handlers, removing them,
-   * and invoking registered effects with context and state information.
-   */
+  /** Registro de efectos; cada efecto es un handler(context) */
   class EffectManager {
     constructor({ bus, state, telemetry }){
       this.bus = bus; this.state = state; this.telemetry = telemetry;
       this.registry = new Map();
     }
-    /**
-     * Registers a handler for a specific type in the registry.
-     *
-     * @param {string} type - The type for which the handler is being registered.
-     * @param {Function} handler - The function to handle the specified type.
-     * @return {void} Does not return a value.
-     */
     register(type, handler){ this.registry.set(type, handler); }
-    /**
-     * Unregisters a previously registered type from the registry.
-     *
-     * @param {string} type - The type identifier that needs to be unregistered.
-     * @return {boolean} Returns true if the type was successfully unregistered, false otherwise.
-     */
     unregister(type){ this.registry.delete(type); }
     async play(type, ctx){
       if(!this.registry.has(type)) return;
       const start = performance.now();
       this.bus?.emit('effect.start', { type, target: ctx?.id });
+      const factor = (this.state.get('reducedMotion') ? 0.01 : (this.state.get('animationSpeed')||1));
       await this.registry.get(type)({
         ...ctx,
         state: this.state.snapshot(),
-        speed: this.state.get('animationSpeed') || 1
+        speed: factor
       });
       const dur = performance.now() - start;
       this.bus?.emit('effect.end', { type, target: ctx?.id, duration: dur });
@@ -605,6 +594,23 @@
       element.classList.remove('is-closing');
     });
 
+    // Transición: restore (de estado visible pero sin 'is-open' → a abierto)
+    effectManager.register('transition:restore', async ({ element, speed=1 })=>{
+      if(!element) return;
+      element.classList.remove('is-closing');
+      // Punto de partida sin salto
+      element.style.willChange = 'opacity, transform';
+      element.style.opacity = '0';
+      element.style.transform = 'scale(.98)';
+      await _nextFrame();
+      element.classList.add('is-open');
+      element.style.opacity = '';
+      element.style.transform = '';
+      await _awaitTransition(element, 200 / speed);
+      element.style.willChange = '';
+    });
+
+    // Material: sombra según foco
     effectManager.register('material:shadow:weak', async ({ element })=>{
       if(!element) return;
       element.classList.add('has-shadow-weak');
@@ -614,6 +620,85 @@
       if(!element) return;
       element.classList.add('has-shadow-strong');
       element.classList.remove('has-shadow-weak');
+    });
+
+    // Motion: minimize hacia taskbar (FLIP)
+    effectManager.register('motion:to-taskbar', async ({ id, element, speed=1, getTaskEl })=>{
+      if(!element) return;
+      const taskEl = getTaskEl?.(id);
+      if(!taskEl) return; // fallback: no animar si no hay task
+
+      const from = element.getBoundingClientRect();
+      const to = taskEl.getBoundingClientRect();
+      const dx = (to.left + to.width/2) - (from.left + from.width/2);
+      const dy = (to.top + to.height/2) - (from.top + from.height/2);
+      const s  = Math.max(0.08, Math.min(0.12, (to.width/from.width))); // escala pequeña
+
+      element.classList.add('fly');
+      element.style.transformOrigin = 'center center';
+      element.style.transform = `translate(${dx}px, ${dy}px) scale(${s})`;
+      element.style.opacity = '0';
+      await _awaitTransition(element, 220 / speed);
+      // cleanup
+      element.classList.remove('fly');
+      element.style.transform = '';
+      element.style.opacity = '';
+    });
+
+    // Feedback: shake para acciones inválidas
+    effectManager.register('feedback:shake', async ({ element })=>{
+      if(!element) return;
+      element.classList.add('shake');
+      await _awaitTransition(element, 280);
+      element.classList.remove('shake');
+    });
+
+    // Attention: pulse en task
+    effectManager.register('attention:task', async ({ id, getTaskEl })=>{
+      const el = getTaskEl?.(id); if(!el) return;
+      el.classList.add('attention');
+      await _awaitTransition(el, 1200*2);
+      el.classList.remove('attention');
+    });
+
+    // Attention: pulse en ventana
+    effectManager.register('attention:window', async ({ element })=>{
+      if(!element) return;
+      element.classList.add('attention');
+      await _awaitTransition(element, 1200*2);
+      element.classList.remove('attention');
+    });
+
+    // Compositor: transición suave de glass toggle
+    effectManager.register('compositor:glass-toggle', async ({ elementList=[], glass })=>{
+      for (const el of elementList) {
+        if(!el) continue;
+        // Forzar una leve transición visual
+        el.style.willChange = 'backdrop-filter, background';
+      }
+      // espera un frame para que el cambio de clase surta efecto con transición
+      await _nextFrame();
+      for (const el of elementList) el.style.willChange = '';
+    });
+
+    // Ambient: parallax del wallpaper
+    effectManager.register('ambient:parallax', ({ root })=>{
+      if(!root) return;
+      root.classList.add('parallax');
+      const onMove = (e)=>{
+        const x = (e.clientX / window.innerWidth)  * 10; // 0–10%
+        const y = (e.clientY / window.innerHeight) * 10; // 0–10%
+        root.style.backgroundPosition = `calc(50% + ${x}px) calc(50% + ${y}px), center, center`;
+      };
+      root.__parallaxMove = onMove;
+      window.addEventListener('mousemove', onMove);
+    });
+
+    effectManager.register('ambient:parallax:off', ({ root })=>{
+      if(!root) return;
+      window.removeEventListener('mousemove', root.__parallaxMove);
+      root.classList.remove('parallax');
+      root.style.backgroundPosition = 'center, center, center';
     });
   }
 
@@ -972,10 +1057,11 @@
 
       const wm = new WindowManager();
       const bus = new EventBus();
+      const mq = matchMedia('(prefers-reduced-motion: reduce)');
       const stateManager = new StateManager({
         glass: true,
         animationSpeed: 1.0,
-        reducedMotion: false
+        reducedMotion: mq.matches
       });
       const effectManager = new EffectManager({ bus, state: stateManager, telemetry });
       const compositor = reactive(new Compositor({ bus, stateManager, effectManager }));
@@ -1021,7 +1107,11 @@
         bus.emit('window.restored', { id });   // 👈 nuevo
         bus.emit('window.focus', { id });
       };
-      const toggleMaximize = (id) => wm.toggleMax(id);
+      const toggleMaximize = (id) => {
+        wm.toggleMax(id);
+        wm.syncToDOM(id);
+        bus.emit('window.maximized', { id });
+      };
       const closeWindow = (id) => {
         bus.emit('window.closing', {
           id,
@@ -1071,6 +1161,10 @@
        */
       const startDrag = (e, id) => {
         const w = wm.find(id); if(!w) return;
+        if (w.maximized) {
+          bus.emit('window.feedback', { id, kind: 'shake' });
+          return;
+        }
         drag.active = true; drag.id = id; drag.startX = e.clientX; drag.startY = e.clientY; drag.start = { x:w.x, y:w.y };
         drag.ghost = true; drag.ghostStyle = `left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;`;
         window.addEventListener('mousemove', onDrag); window.addEventListener('mouseup', endDrag);
