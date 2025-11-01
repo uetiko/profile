@@ -22,7 +22,7 @@
       --shadow: 0 10px 30px rgba(0,0,0,.5);
       --radius: 12px;
       --z-panel: 1000;
-      --z-menu: 1100;
+      --z-menu: 9999;
       --z-window: 1200;
       --z-tooltip: 1400;
     }
@@ -40,8 +40,12 @@
     .desktop {
       position: fixed; inset: 0; display: grid; grid-template-rows: 1fr 42px;
       background-image:
+        url("https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg"),
         radial-gradient(1px 1px at 25% 30%, rgba(124,197,255,.15) 0, transparent 60%),
         radial-gradient(1px 1px at 70% 60%, rgba(124,197,255,.08) 0, transparent 60%);
+      background-size: cover, auto, auto;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     .desktop-grid { padding: 20px; display: grid; grid-auto-rows: 92px; grid-template-columns: repeat(auto-fill, 92px); gap: 18px; align-content: start; }
     .icon { width: 92px; height: 92px; display: grid; grid-template-rows: 56px 1fr; place-items: center; border-radius: 10px; cursor: default; }
@@ -59,7 +63,15 @@
     .status { display: flex; gap: 10px; justify-content: end; align-items: center; font-size: 12px; color: var(--muted); }
     .badge { padding: 4px 8px; border: 1px solid #1c2736; border-radius: 8px; }
     /* Start Menu */
-    .menu { position: absolute; bottom: 50px; left: 10px; width: 320px; background: #0d131b; border: 1px solid #1b2736; border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; gap: 8px; z-index: var(--z-menu); }
+    .menu {
+      position: fixed;
+      bottom: 50px;
+      left: 10px;
+      width: 320px;
+      background: #0d131b;
+      border: 1px solid #1b2736; border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; gap: 8px;
+      z-index: var(--z-menu);
+    }
     .menu .item { padding: 10px; border-radius: 10px; display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; cursor: default; }
     .menu .item:hover { background: rgba(255,255,255,0.05); }
     .menu .hint { font-size: 11px; color: var(--muted); }
@@ -87,17 +99,6 @@
       .window { width: calc(100vw - 24px); left: 12px; }
       .desktop-grid { grid-template-columns: repeat(auto-fill, 76px); grid-auto-rows: 88px; gap: 12px; }
       .icon { width: 76px; height: 88px; }
-    }
-    .desktop {
-      position: fixed;
-      inset: 0;
-      display: grid;
-      grid-template-rows: 1fr 42px;
-      background-color: var(--desk);
-      background-image: v-bind('url(compositor.wallpaper)');
-      background-size: v-bind('compositor.fit');
-      background-position: center;
-      background-repeat: no-repeat;
     }
   </style>
   <!-- GA4: sustituye G-XXXXXX por tu Measurement ID -->
@@ -177,20 +178,19 @@
         </span>
       <span class="muted">{{ env }} · {{ appName }}</span>
     </div>
-
-    <!-- Start Menu -->
-    <div v-if="ui.menu" class="menu" @click.outside>
-      <div class="item" @click="openApp('about'); ui.menu=false">
-        <span>🛈</span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
-      </div>
-      <div class="item" @click="openApp('experience'); ui.menu=false"><span>💼</span><div>{{ t('menu.experience') }}</div><span></span></div>
-      <div class="item" @click="openApp('skills'); ui.menu=false"><span>🧰</span><div>{{ t('menu.skills') }}</div><span></span></div>
-      <div class="item" @click="openApp('education'); ui.menu=false"><span>🎓</span><div>{{ t('menu.education') }}</div><span></span></div>
-      <div class="item" @click="openApp('download'); ui.menu=false"><span>⬇</span><div>{{ t('menu.download') }}</div><span></span></div>
-      <div class="item" @click="openApp('contact'); ui.menu=false"><span>✉</span><div>{{ t('menu.contact') }}</div><span></span></div>
-      <div class="hr"></div>
-      <div class="item" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
+  </div>
+  <!-- Start Menu -->
+  <div v-if="ui.menu" class="menu" @click.outside>
+    <div class="item" @click="openApp('about'); ui.menu=false">
+      <span>🛈</span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
     </div>
+    <div class="item" @click="openApp('experience'); ui.menu=false"><span>💼</span><div>{{ t('menu.experience') }}</div><span></span></div>
+    <div class="item" @click="openApp('skills'); ui.menu=false"><span>🧰</span><div>{{ t('menu.skills') }}</div><span></span></div>
+    <div class="item" @click="openApp('education'); ui.menu=false"><span>🎓</span><div>{{ t('menu.education') }}</div><span></span></div>
+    <div class="item" @click="openApp('download'); ui.menu=false"><span>⬇</span><div>{{ t('menu.download') }}</div><span></span></div>
+    <div class="item" @click="openApp('contact'); ui.menu=false"><span>✉</span><div>{{ t('menu.contact') }}</div><span></span></div>
+    <div class="hr"></div>
+    <div class="item" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
   </div>
 </div>
 
