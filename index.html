@@ -100,6 +100,17 @@
       .desktop-grid { grid-template-columns: repeat(auto-fill, 76px); grid-auto-rows: 88px; gap: 12px; }
       .icon { width: 76px; height: 88px; }
     }
+    /* --- compositor: transiciones base y material --- */
+    .window {
+      transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease;
+      will-change: transform, opacity, box-shadow;
+    }
+    .window.is-opening { opacity: 0; transform: scale(.96); }
+    .window.is-open    { opacity: 1; transform: scale(1); }
+    .window.is-closing { opacity: 0; transform: scale(.96); }
+
+    .window.has-shadow-weak  { box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+    .window.has-shadow-strong{ box-shadow: 0 16px 40px rgba(0,0,0,.55); }
   </style>
   <!-- GA4: sustituye G-XXXXXX por tu Measurement ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
@@ -142,7 +153,7 @@
 
   <!-- Windows -->
   <template v-for="win in windows">
-    <div class="window" :class="{solid: !compositor.glass}" :style="win.style" :key="win.id" @mousedown="focus(win.id)">
+    <div class="window" :class="{solid: !compositor.glass}" :style="win.style" :key="win.id" :data-win-id="win.id" @mousedown="focus(win.id)">
       <div class="titlebar" @dblclick="toggleMaximize(win.id)" @mousedown="startDrag($event, win.id)">
         <div class="title">
           <span class="pill">{{ win.icon }}</span>
@@ -297,6 +308,18 @@
         }
       } catch {}
     }
+    /**
+     * Generates a base event object containing standard tracking information.
+     *
+     * @return {Object} An object containing the following properties:
+     * - event_id: A unique identifier for the event.
+     * - ts: The current timestamp in ISO format.
+     * - page_path: The current page's pathname.
+     * - page_location: The full URL of the current page.
+     * - page_title: The title of the current page.
+     * - env: The environment the application is running in.
+     * - app: The application identifier.
+     **/
     base() {
       return {
         event_id: uuidv4(),
@@ -335,7 +358,28 @@
    * maximize, restore, close, and style windows.
    */
   class WindowManager {
+    /**
+     * Creates an instance of the class.
+     * Initializes an empty stack and sets the internal property `z` to 2000.
+     *
+     * @return {void} No return value.
+     */
     constructor() { this.stack = []; this.z = 2000; }
+    /**
+     * Creates a new window object and adds it to the window stack.
+     *
+     * @param {Object} params - An object containing the parameters for the window.
+     * @param {string} params.id - A unique identifier for the window.
+     * @param {string} params.title - The title of the window.
+     * @param {string} params.icon - The icon for the window.
+     * @param {*} params.component - The component or content to be displayed in the window.
+     * @param {number} [params.x=120] - The x-coordinate of the window's position.
+     * @param {number} [params.y=120] - The y-coordinate of the window's position.
+     * @param {number} [params.w=720] - The width of the window.
+     * @param {number} [params.h=460] - The height of the window.
+     *
+     * @return {Object} The newly created window object.
+     */
     create({ id, title, icon, component, x=120, y=120, w=720, h=460 }) {
       const win = { id, title, icon, component, x, y, w, h, minimized: false, maximized: false, z: ++this.z };
       this.stack.push(win); return win;
@@ -353,23 +397,323 @@
     }
   }
 
+  /* ============================
+     EventBus, State & Effect Managers
+     ============================ */
   /**
-   * Compositor class is used to manage visual composition properties such as glass effect, wallpaper, and wallpaper fit.
+   * EventBus is a lightweight implementation for handling event-based communication
+   * between different parts of an application. It allows for subscribing to,
+   * unsubscribing from, and emitting events.
+   */
+  class EventBus {
+    /**
+     * Creates an instance of the class and initializes a Map object.
+     *
+     * @return {void} No return value.
+     */
+    constructor(){ this.map = new Map(); }
+    /**
+     * Registers an event handler for the specified event.
+     * If the event does not exist in the internal map, it will be created, and the handler will be added to its set of handlers.
+     * Returns a function to remove the added event handler.
+     *
+     * @param {string} evt - The name of the event to listen for.
+     * @param {Function} handler - The function to be executed when the event is triggered.
+     * @return {Function} A function that can be called to unregister the added handler for the specified event.
+     */
+    on(evt, handler){ if(!this.map.has(evt)) this.map.set(evt, new Set()); this.map.get(evt).add(handler); return ()=>this.off(evt, handler); }
+    /**
+     * Removes a specific event handler for the given event type.
+     * If the handler is the last one for the specified event type, the event type is also removed from the map.
+     *
+     * @param {string} evt - The name of the event to remove the handler for.
+     * @param {Function} handler - The handler function to remove from the event listener list.
+     * @return {void} Nothing is returned by this method.
+     */
+    off(evt, handler){ const s=this.map.get(evt); if(s){ s.delete(handler); if(!s.size) this.map.delete(evt); } }
+    /**
+     * Emits an event, triggering all handlers associated with the specified event.
+     *
+     * @param {string} evt - The name of the event to emit.
+     * @param {*} payload - The payload to pass to the event handlers.
+     * @return {void} This method does not return a value.
+     */
+    emit(evt, payload){ const s=this.map.get(evt); if(s){ for(const h of [...s]){ try{ h(payload); }catch(e){ console.debug('[bus:error]', evt, e); } } } }
+  }
+
+  /**
+   * A class for managing application or UI state.
+   * Provides mechanisms to get, set, toggle state properties,
+   * and retrieve a snapshot of the current state.
+   */
+  class StateManager {
+    constructor(init = {}){
+      this.state = Object.assign({
+        glass: true,
+        wallpaper: 'https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg',
+        fit: 'cover',
+        effectsEnabled: true,
+        reducedMotion: false,
+        animationSpeed: 1.0 // factor multiplicador (1 = normal)
+      }, init);
+    }
+    /**
+     * Retrieves the value associated with the given key from the state.
+     *
+     * @param {string} key - The key whose associated value is to be returned.
+     * @return {*} The value associated with the specified key in the state, or undefined if the key does not exist.
+     */
+    get(key){ return this.state[key]; }
+    /**
+     * Sets a value in the state object for the specified key and returns the updated state snapshot.
+     *
+     * @param {string} key - The key to update or add in the state object.
+     * @param {*} val - The value to associate with the specified key.
+     * @return {*} - The updated state snapshot after setting the key-value pair.
+     */
+    set(key, val){ this.state[key] = val; return this.snapshot(); }
+    /**
+     * Toggles the boolean value associated with the specified key in the state object.
+     *
+     * @param {string} key - The key in the state object whose boolean value will be toggled.
+     * @return {Object} Returns the updated snapshot of the current state.
+     */
+    toggle(key){ this.state[key] = !this.state[key]; return this.snapshot(); }
+    /**
+     * Creates and returns a shallow copy of the current state object.
+     *
+     * @return {Object} A new object that is a shallow clone of the state.
+     */
+    snapshot(){ return {...this.state}; }
+  }
+
+  /**
+   * Manages the registration, execution, and tracking of effects within an application.
+   * Provides an interface for registering effect handlers, removing them,
+   * and invoking registered effects with context and state information.
+   */
+  class EffectManager {
+    constructor({ bus, state, telemetry }){
+      this.bus = bus; this.state = state; this.telemetry = telemetry;
+      this.registry = new Map();
+    }
+    /**
+     * Registers a handler for a specific type in the registry.
+     *
+     * @param {string} type - The type for which the handler is being registered.
+     * @param {Function} handler - The function to handle the specified type.
+     * @return {void} Does not return a value.
+     */
+    register(type, handler){ this.registry.set(type, handler); }
+    /**
+     * Unregisters a previously registered type from the registry.
+     *
+     * @param {string} type - The type identifier that needs to be unregistered.
+     * @return {boolean} Returns true if the type was successfully unregistered, false otherwise.
+     */
+    unregister(type){ this.registry.delete(type); }
+    async play(type, ctx){
+      if(!this.registry.has(type)) return;
+      const start = performance.now();
+      this.bus?.emit('effect.start', { type, target: ctx?.id });
+      await this.registry.get(type)({
+        ...ctx,
+        state: this.state.snapshot(),
+        speed: this.state.get('animationSpeed') || 1
+      });
+      const dur = performance.now() - start;
+      this.bus?.emit('effect.end', { type, target: ctx?.id, duration: dur });
+      this.telemetry?.cta?.('effect', { name:type, duration: Math.round(dur) });
+    }
+  }
+
+  /* ------- Efectos por defecto (MVP) ------- */
+  /**
+   * A private asynchronous method that returns a Promise, resolving on the next
+   * approximate frame. This utilizes nested `requestAnimationFrame` calls to ensure
+   * that the function completes after the browser has rendered the next frame.
+   *
+   * @private
+   * @returns {Promise<void>} A promise that resolves after two `requestAnimationFrame` calls.
+   */
+  const _nextFrame = () => new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  /**
+   * Asynchronously applies a CSS class to an element while optionally removing others.
+   *
+   * This function modifies the class list of a provided DOM element. It adds the specified class
+   * and removes a list of other classes if provided. The operation is asynchronous, and it ensures
+   * the full effect of the changes by waiting for the next frame render.
+   *
+   * @param {Element} el - The DOM element whose class list is being modified.
+   * @param {string} add - The CSS class to add to the element.
+   * @param {string[]} [remove=[]] - An optional array of CSS classes to remove from the element.
+   * @returns {Promise<void>} Resolves after the next animation frame has been processed.
+   */
+  const _withClass = async (el, add, remove=[]) => {
+    if(!el) return;
+    remove.forEach(c=>el.classList.remove(c));
+    el.classList.add(add);
+    await _nextFrame();
+  };
+  /**
+   * Handles the resolution of a promise upon the end of a CSS transition on a given element
+   * or after a specified timeout, whichever occurs first.
+   *
+   * @param {HTMLElement|null} el - The DOM element to listen for the transitionend event. If null, the promise resolves immediately.
+   * @param {number} [timeout=320] - The maximum time (in milliseconds) to wait before resolving the promise if the transitionend event does not occur.
+   * @returns {Promise<void>} A Promise that resolves when the transition has completed or the timeout has elapsed.
+   */
+  const _awaitTransition = (el, timeout=320) => new Promise(resolve => {
+    if(!el) return resolve();
+    let done=false;
+    const to = setTimeout(()=>{ if(!done){ done=true; resolve(); } }, timeout+40);
+    const onEnd = (e)=>{ if(e.target!==el) return; if(!done){ done=true; clearTimeout(to); el.removeEventListener('transitionend', onEnd); resolve(); } };
+    el.addEventListener('transitionend', onEnd, { once:true });
+  });
+
+  /**
+   * Registers a set of default effects with the provided effect manager. These effects include various
+   * transitions (open, close, minimize) as well as material shadow effects (weak, strong).
+   *
+   * @param {Object} effectManager - The manager responsible for registering and controlling the effects.
+   * @return {void} This function does not return a value.
+   */
+  function registerDefaultEffects(effectManager){
+    effectManager.register('transition:open', async ({ element, speed=1 })=>{
+      if(!element) return;
+      element.classList.add('is-opening');
+      await _nextFrame();
+      element.classList.add('is-open');
+      element.classList.remove('is-opening');
+      await _awaitTransition(element, 240 / speed);
+    });
+
+    effectManager.register('transition:close', async ({ element, speed=1 })=>{
+      if(!element) return;
+      element.classList.add('is-closing');
+      element.classList.remove('is-open');
+      await _awaitTransition(element, 240 / speed);
+      element.classList.remove('is-closing');
+    });
+
+    effectManager.register('transition:minimize', async ({ element, speed=1 })=>{
+      if(!element) return;
+      element.classList.add('is-closing');
+      element.classList.remove('is-open');
+      await _awaitTransition(element, 220 / speed);
+      // 🔧 CLAVE: limpiar estado para que restore no quede transparente
+      element.classList.remove('is-closing');
+    });
+
+    effectManager.register('material:shadow:weak', async ({ element })=>{
+      if(!element) return;
+      element.classList.add('has-shadow-weak');
+      element.classList.remove('has-shadow-strong');
+    });
+    effectManager.register('material:shadow:strong', async ({ element })=>{
+      if(!element) return;
+      element.classList.add('has-shadow-strong');
+      element.classList.remove('has-shadow-weak');
+    });
+  }
+
+  /**
+   * Compositor: orquesta efectos en respuesta a eventos del WindowManager a través del EventBus.
+   * Mantiene flags expuestos al template (glass/wallpaper/fit) vía proxy a StateManager.
    */
   class Compositor {
-    constructor(){
-      this.glass = true;
-      this.wallpaper = 'https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg';
-      this.fit = 'cover';
+    constructor({ bus, stateManager, effectManager }){
+      this._bus = bus;
+      this._state = stateManager;
+      this._effects = effectManager;
+      this.glass = this._state.get('glass');
+      this.wallpaper = this._state.get('wallpaper');
+      this.fit = this._state.get('fit');
+
+      registerDefaultEffects(this._effects);
+      this._bind();
     }
+
+    /**
+     * Binds event listeners to the event bus for handling various window-related actions such as opening, closing, minimizing, focusing, blurring, and restoring.
+     * Additionally, manages toggling the glass state in the compositor.
+     *
+     * @return {void} No return value. This method sets up event listeners and initializes the behavior for the associated events.
+     */
+    _bind(){
+      this._bus.on('window.opened', async ({ id })=>{
+        const el = this._getEl(id);
+        if(!el) return;
+        await this._effects.play('transition:open', { id, element: el });
+        await this._effects.play('material:shadow:strong', { id, element: el });
+      });
+
+      this._bus.on('window.closing', async ({ id, onDone })=>{
+        const el = this._getEl(id);
+        if(el) await this._effects.play('transition:close', { id, element: el });
+        onDone?.();
+      });
+
+      this._bus.on('window.minimizing', async ({ id, onDone })=>{
+        const el = this._getEl(id);
+        if(el) await this._effects.play('transition:minimize', { id, element: el });
+        onDone?.();
+      });
+
+      this._bus.on('window.focus', async ({ id })=>{
+        const el = this._getEl(id); if(!el) return;
+        await this._effects.play('material:shadow:strong', { id, element: el });
+      });
+      this._bus.on('window.blur', async ({ id })=>{
+        const el = this._getEl(id); if(!el) return;
+        await this._effects.play('material:shadow:weak', { id, element: el });
+      });
+
+      this._bus.on('window.restored', async ({ id })=>{
+        const el = this._getEl(id); if(!el) return;
+        el.classList.remove('is-closing');
+        el.classList.add('is-open');
+        await this._effects.play('material:shadow:strong', { id, element: el });
+      });
+
+      this._bus.on('compositor.toggleGlass', ()=>{
+        const snap = this._state.toggle('glass');
+        this.glass = snap.glass;
+      });
+    }
+
+    /**
+     * Retrieves an element from the DOM based on a specified window ID.
+     *
+     * @param {string} id - The unique identifier associated with the desired DOM element.
+     * @return {Element*/
+    _getEl(id){ return document.querySelector(`.window[data-win-id="${id}"]`); }
+
+    /**
+     * Toggles the glass effect by emitting an event through the internal bus.
+     *
+     * @return {void} Does not return a value.
+     */
     toggleGlass(){
-      this.glass = !this.glass;
+      this._bus.emit('compositor.toggleGlass');
     }
+    /**
+     * Sets the wallpaper by updating the internal state with the provided URL.
+     *
+     * @param {string} url - The URL of the wallpaper to be set.
+     * @return {void} This method does not return a value.
+     */
     setWallpaper(url){
-      this.wallpaper = url;
+      const s=this._state.set('wallpaper', url); this.wallpaper = s.wallpaper;
     }
+    /**
+     * Updates the fit mode in the current state and assigns it to the `fit` property.
+     *
+     * @param {string} mode - The fit mode to be set.
+     * @return {void}
+     */
     setFit(mode){
-      this.fit = mode;
+      const s=this._state.set('fit', mode); this.fit = s.fit;
     }
   }
 
@@ -613,7 +957,6 @@
     }
   };
 
-  // Vue App
   const { createApp, onMounted, ref, reactive, computed } = Vue;
 
   const app = createApp({
@@ -628,7 +971,14 @@
       telemetry.pageView();
 
       const wm = new WindowManager();
-      const compositor = reactive(new Compositor());
+      const bus = new EventBus();
+      const stateManager = new StateManager({
+        glass: true,
+        animationSpeed: 1.0,
+        reducedMotion: false
+      });
+      const effectManager = new EffectManager({ bus, state: stateManager, telemetry });
+      const compositor = reactive(new Compositor({ bus, stateManager, effectManager }));
 
       const windows = reactive([]);
       const tasks = reactive([]);
@@ -639,6 +989,7 @@
         windows.push({ id, title, icon, component, props, get style(){ return wm.style(w); } });
         tasks.push({ id, title, active: true });
         focus(id);
+        requestAnimationFrame(()=> bus.emit('window.opened', { id }));
       };
 
       const openViewer = (payload) => {
@@ -648,11 +999,39 @@
         telemetry.openWindow('document_viewer', {file: src, type});
       };
 
-      const focus = (id) => { wm.focus(id); tasks.forEach(t=>t.active = (t.id===id)); };
-      const minimize = (id) => { wm.minimize(id); tasks.find(t=>t.id===id).active = false; };
-      const restore = (id) => { wm.restore(id); tasks.find(t=>t.id===id).active = true; };
+      const focus = (id) => {
+        const prev = tasks.find(t=>t.active);
+        if(prev && prev.id !== id) bus.emit('window.blur', { id: prev.id });
+        wm.focus(id);
+        tasks.forEach(t=>t.active = (t.id===id));
+        bus.emit('window.focus', { id });
+      };
+      const minimize = (id) => {
+        bus.emit('window.minimizing', {
+          id,
+          onDone: () => {
+            wm.minimize(id);
+            const t = tasks.find(t=>t.id===id); if(t) t.active = false;
+          }
+        });
+      };
+      const restore = (id) => {
+        wm.restore(id);
+        const t = tasks.find(t=>t.id===id); if(t) t.active = true;
+        bus.emit('window.restored', { id });   // 👈 nuevo
+        bus.emit('window.focus', { id });
+      };
       const toggleMaximize = (id) => wm.toggleMax(id);
-      const closeWindow = (id) => { wm.close(id); const idx = windows.findIndex(w=>w.id===id); if(idx>-1) windows.splice(idx,1); const tidx = tasks.findIndex(t=>t.id===id); if(tidx>-1) tasks.splice(tidx,1); };
+      const closeWindow = (id) => {
+        bus.emit('window.closing', {
+          id,
+          onDone: () => {
+            wm.close(id);
+            const idx = windows.findIndex(w=>w.id===id); if(idx>-1) windows.splice(idx,1);
+            const tidx = tasks.findIndex(t=>t.id===id); if(tidx>-1) tasks.splice(tidx,1);
+          }
+        });
+      };
 
       /**
        * Opens a specified application window based on the provided name.
