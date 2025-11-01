@@ -149,13 +149,24 @@
           <span>{{ win.title }}</span>
         </div>
         <div class="controls">
-          <div class="btn" title="Minimize" @click.stop="minimize(win.id); telemetry.cta('window_minimize',{name:win.id})">–</div>
-          <div class="btn" title="Maximize" @click.stop="toggleMaximize(win.id); telemetry.cta('window_maximize',{name:win.id})">▢</div>
-          <div class="btn" title="Close" @click.stop="closeWindow(win.id); telemetry.cta('window_close',{name:win.id})">×</div>
+          <div class="btn" title="Minimize" @click.stop="minimize(win.id); telemetry.cta('window_minimize',{
+          name:win.id,
+          element:'minimize_button',
+          variant:win.minimized ? 'minimize' : 'restore'
+          })">–</div>
+          <div class="btn" title="Maximize" @click.stop="toggleMaximize(win.id); telemetry.cta('window_maximize',{
+          name:win.id,
+          element:'maximize_button',
+          variant:win.maximized ? 'maximize' : 'restore'
+          })">▢</div>
+          <div class="btn" title="Close" @click.stop="closeWindow(win.id); telemetry.cta('window_close',{
+          name:win.id,
+          element:'close_button'
+          })">×</div>
         </div>
       </div>
       <div class="content">
-        <component :is="win.component" :t="t" :lang="lang" />
+        <component :is="win.component" :t="t" :lang="lang"/>
       </div>
       <div class="resizer" @mousedown="startResize($event, win.id)"></div>
     </div>
@@ -172,7 +183,7 @@
       <div v-for="task in tasks" :key="task.id" class="task" :class="{active: task.active}" @click="restore(task.id); focus(task.id)">{{ task.title }}</div>
     </div>
     <div class="status">
-      <span class="badge">UTC: {{ clock }}</span>
+      <span class="badge">{{ clock }}</span>
       <span class="badge" title="Language">
           <span class="link" @click="setLang(lang === 'es' ? 'en' : 'es')">{{ lang.toUpperCase() }}</span>
         </span>
@@ -245,7 +256,7 @@
 
   /* Telemetry (GA4 contract) */
   class Telemetry {
-    constructor({ env = 'dev', app = 'retro-desktop' } = {}) {
+    constructor({ env = 'dev', app = 'desktop' } = {}) {
       this.env = env; this.app = app;
       this.session_id = sessionStorage.getItem('session_id') || uuidv4();
       sessionStorage.setItem('session_id', this.session_id);
@@ -283,6 +294,8 @@
     pageView(extra={}){ this.send('page_view', extra); }
     click(scope, extra={}){ this.send('click', { scope, ...extra }); }
     cta(name, extra={}){ this.send('cta', { name, ...extra }); }
+    openWindow(name, extra={}){ this.send('open_window', { name, ...extra }); }
+    closeWindow(name, extra={}){this.send('close_window', { name, ...extra }); }
     formSubmit(extra){ this.send('form_submit', {...extra}); }
     download(extra){ this.send('download', {...extra}); }
     videoPlay(extra){ this.send('video_play', {...extra}); }
@@ -498,8 +511,14 @@
       // Clock (UTC)
       const clock = ref('');
       const tick = () => {
-        const d = new Date();
-        clock.value = d.toISOString().substring(11,19) + 'Z';
+        const date = new Date();
+        //clock.value = date.toISOString().substring(11,19) + 'Z';
+        clock.value = date.toLocaleString('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+          timeZoneName: 'short'
+        });
       };
       setInterval(tick, 1000); tick();
 
