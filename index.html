@@ -317,7 +317,6 @@
 
   const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) || key;
 
-  /* Telemetry (GA4 contract) */
   /**
    * A class for managing client-side telemetry, allowing for the tracking and sending of user interaction events
    * such as page views, clicks, and custom event types. This class utilizes the `gtag` library if available,
@@ -338,17 +337,20 @@
       } catch {}
     }
     /**
-     * Generates a base event object containing standard tracking information.
+     * Constructs a base event object with various default properties.
      *
      * @return {Object} An object containing the following properties:
      * - event_id: A unique identifier for the event.
      * - ts: The current timestamp in ISO format.
-     * - page_path: The current page's pathname.
+     * - page_path: The path of the current page.
      * - page_location: The full URL of the current page.
      * - page_title: The title of the current page.
-     * - env: The environment the application is running in.
-     * - app: The application identifier.
-     **/
+     * - env: The environment from which the event is being sent.
+     * - app: The application identifier related to the event.
+     * - session_id: The current session's unique identifier.
+     * - client_id: The unique identifier for the client.
+     * - transport_type: The transport method used for sending this event (default is 'beacon').
+     */
     base() {
       return {
         event_id: uuidv4(),
@@ -363,6 +365,13 @@
         transport_type: 'beacon'
       };
     }
+    /**
+     * Sends an event with the specified name and additional data.
+     *
+     * @param {string} name - The name of the event to be sent.
+     * @param {Object} [extra={}] - Optional additional data to include with the event.
+     * @return {void}
+     */
     send(name, extra = {}) {
       const payload = { ...this.base(), ...extra };
       if (window.gtag) {
@@ -387,42 +396,85 @@
    * maximize, restore, close, and style windows.
    */
   class WindowManager {
-    /**
-     * Creates an instance of the class.
-     * Initializes an empty stack and sets the internal property `z` to 2000.
-     *
-     * @return {void} No return value.
-     */
     constructor() { this.stack = []; this.z = 2000; }
-    /**
-     * Creates a new window object and adds it to the window stack.
-     *
-     * @param {Object} params - An object containing the parameters for the window.
-     * @param {string} params.id - A unique identifier for the window.
-     * @param {string} params.title - The title of the window.
-     * @param {string} params.icon - The icon for the window.
-     * @param {*} params.component - The component or content to be displayed in the window.
-     * @param {number} [params.x=120] - The x-coordinate of the window's position.
-     * @param {number} [params.y=120] - The y-coordinate of the window's position.
-     * @param {number} [params.w=720] - The width of the window.
-     * @param {number} [params.h=460] - The height of the window.
-     *
-     * @return {Object} The newly created window object.
-     */
     create({ id, title, icon, component, x=120, y=120, w=720, h=460 }) {
       const win = { id, title, icon, component, x, y, w, h, minimized: false, maximized: false, z: ++this.z };
       this.stack.push(win); return win;
     }
+    /**
+     * Adjusts the z-index of the specified window and updates the window stack order.
+     *
+     * @param {string} id - The unique identifier of the window to focus.
+     * @return {void} - Does not return a value.
+     */
     focus(id){ const w = this.find(id); if (!w) return; w.z = ++this.z; this.stack = this.stack.sort((a,b)=>a.z-b.z); }
+    /**
+     * Searches for an item in the stack by its unique identifier and returns it if found.
+     *
+     * @param {number|string} id - The unique identifier of the item to be searched.
+     * @return {Object|undefined} The item matching the given id, or undefined if not found.
+     */
     find(id){ return this.stack.find(w=>w.id===id); }
+    /**
+     * Closes and removes an item from the stack based on the provided identifier.
+     *
+     * @param {string|number} id - The unique identifier of the item to close and remove.
+     * @return {void} Does not return any value.
+     */
     close(id){ this.stack = this.stack.filter(w=>w.id!==id); }
+    /**
+     * Minimizes the object identified by the given ID.
+     *
+     * @param {string|number} id - The unique identifier of the object to minimize.
+     * @return {void} Does not return a value.
+     */
     minimize(id){ const w=this.find(id); if(w){ w.minimized=true; } }
+    /**
+     * Restores a specific window by its identifier, setting its minimized state to false
+     * and bringing it into focus.
+     *
+     * @param {string|number} id The identifier of the window to be restored.
+     * @return {void}
+     */
     restore(id){ const w=this.find(id); if(w){ w.minimized=false; this.focus(id);} }
+    /**
+     * Toggles the maximized state of a specific window identified by its ID.
+     * If the window is maximized, it restores the previous dimensions and position.
+     * If the window is not maximized, it adjusts its size and position to fit the screen.
+     *
+     * @param {string} id - The unique identifier of the window to be toggled.
+     * @return {void} This method does not return a value.
+     */
     toggleMax(id){ const w=this.find(id); if(!w) return; w.maximized=!w.maximized; if(w.maximized){ w.prev={x:w.x,y:w.y,w:w.w,h:w.h}; w.x=12; w.y=12; w.w=innerWidth-24; w.h=innerHeight-54; } else if(w.prev){ Object.assign(w, w.prev); w.prev=undefined; }
     }
+    /**
+     * Generates a style string for a given window object based on its properties.
+     *
+     * @param {Object} win - The window object containing style attributes.
+     * @param {number} win.z - The z-index of the window.
+     * @param {boolean} win.minimized - Indicates whether the window is minimized.
+     * @param {number} win.x - The x-coordinate (left position) of the window.
+     * @param {number} win.y - The y-coordinate (top position) of the window.
+     * @param {number} win.w - The width of the window.
+     * @param {number} win.h - The height of the window.
+     * @return {string} A string representing the CSS style for the window.
+     */
     style(win){
       const base = `z-index:${win.z};` + (win.minimized? 'display:none;' : '');
       return base + `left:${win.x}px;top:${win.y}px;width:${win.w}px;height:${win.h}px;`;
+    }
+    /**
+     * Synchronizes the current state of a specific window to its corresponding DOM element.
+     *
+     * @param {string} id - The identifier of the window to synchronize.
+     * @return {void} Does not return any value.
+     */
+    syncToDOM(id) {
+      const w = this.find(id);
+      if (!w) return;
+      const el = document.querySelector(`.window[data-win-id="${id}"]`);
+      if (!el) return;
+      el.style.cssText = this.style(w);
     }
   }
 
@@ -430,52 +482,33 @@
      EventBus, State & Effect Managers
      ============================ */
   /**
-   * EventBus is a lightweight implementation for handling event-based communication
-   * between different parts of an application. It allows for subscribing to,
-   * unsubscribing from, and emitting events.
+   * EventBus is a simple implementation of the observer pattern that facilitates event subscription, unsubscription, and event emission.
    */
   class EventBus {
-    /**
-     * Creates an instance of the class and initializes a Map object.
-     *
-     * @return {void} No return value.
-     */
     constructor(){ this.map = new Map(); }
-    /**
-     * Registers an event handler for the specified event.
-     * If the event does not exist in the internal map, it will be created, and the handler will be added to its set of handlers.
-     * Returns a function to remove the added event handler.
-     *
-     * @param {string} evt - The name of the event to listen for.
-     * @param {Function} handler - The function to be executed when the event is triggered.
-     * @return {Function} A function that can be called to unregister the added handler for the specified event.
-     */
     on(evt, handler){ if(!this.map.has(evt)) this.map.set(evt, new Set()); this.map.get(evt).add(handler); return ()=>this.off(evt, handler); }
-    /**
-     * Removes a specific event handler for the given event type.
-     * If the handler is the last one for the specified event type, the event type is also removed from the map.
-     *
-     * @param {string} evt - The name of the event to remove the handler for.
-     * @param {Function} handler - The handler function to remove from the event listener list.
-     * @return {void} Nothing is returned by this method.
-     */
     off(evt, handler){ const s=this.map.get(evt); if(s){ s.delete(handler); if(!s.size) this.map.delete(evt); } }
-    /**
-     * Emits an event, triggering all handlers associated with the specified event.
-     *
-     * @param {string} evt - The name of the event to emit.
-     * @param {*} payload - The payload to pass to the event handlers.
-     * @return {void} This method does not return a value.
-     */
     emit(evt, payload){ const s=this.map.get(evt); if(s){ for(const h of [...s]){ try{ h(payload); }catch(e){ console.debug('[bus:error]', evt, e); } } } }
   }
 
   /**
-   * A class for managing application or UI state.
-   * Provides mechanisms to get, set, toggle state properties,
-   * and retrieve a snapshot of the current state.
+   * Manages application state through a centralized object with helper methods.
+   * Provides functionality to get, set, toggle, and retrieve a snapshot of the current state.
    */
   class StateManager {
+    /**
+     * Creates an instance of the class with configurable initialization.
+     *
+     * @param {Object} [init={}] An object that specifies initial states for the instance.
+     * @param {boolean} [init.glass=true] Whether the glass effect is enabled.
+     * @param {string} [init.wallpaper='https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg'] The URL of the wallpaper image.
+     * @param {string} [init.fit='cover'] Determines how the wallpaper image is resized to fit its container.
+     * @param {boolean} [init.effectsEnabled=true] Indicates whether visual effects are enabled.
+     * @param {boolean} [init.reducedMotion=false] Indicates whether motion should be reduced for accessibility purposes.
+     * @param {number} [init.animationSpeed=1.0] Multiplier factor for animation speed where 1.0 is normal speed.
+     *
+     * @return {void}
+     */
     constructor(init = {}){
       this.state = Object.assign({
         glass: true,
@@ -486,20 +519,81 @@
         animationSpeed: 1.0 // factor multiplicador (1 = normal)
       }, init);
     }
+    /**
+     * Retrieves the value associated with the specified key from the state.
+     *
+     * @param {string} key - The key whose associated value is to be returned.
+     * @return {*} The value associated with the given key, or undefined if the key does not exist.
+     */
     get(key){ return this.state[key]; }
+    /**
+     * Sets a value in the state object with the specified key and returns a snapshot of the updated state.
+     *
+     * @param {string} key - The key to associate with the value in the state object.
+     * @param {*} val - The value to be set for the specified key in the state object.
+     * @return {Object} A snapshot of the updated state after the key-value pair has been set.
+     */
     set(key, val){ this.state[key] = val; return this.snapshot(); }
+    /**
+     * Toggles the boolean value associated with the given key in the state object.
+     * If the current value is true, it will be set to false, and vice versa.
+     *
+     * @param {string} key - The key in the state object whose value is to be toggled.
+     * @return {Object} The current snapshot of the updated state object.
+     */
     toggle(key){ this.state[key] = !this.state[key]; return this.snapshot(); }
+    /**
+     * Creates a snapshot of the current state.
+     *
+     * @return {Object} A shallow clone of the current state.
+     */
     snapshot(){ return {...this.state}; }
   }
 
-  /** Registro de efectos; cada efecto es un handler(context) */
+  /**
+   * Manages the lifecycle and execution of various registered effects.
+   *
+   * The EffectManager class provides functionality to register, unregister, and play
+   * effects. It communicates with a provided event bus, manages state dependencies,
+   * and logs telemetry data related to effect execution.
+   */
   class EffectManager {
+    /**
+     * Creates an instance of the class with the specified dependencies and initializes internal properties.
+     *
+     * @param {Object} options An object containing the required dependencies.
+     * @param {Object} options.bus The bus object used for communication or event handling.
+     * @param {Object} options.state The state management object used for storing or managing state data.
+     * @param {Object} options.telemetry The telemetry object used for logging or monitoring data.
+     * @return {void} Does not return a value.
+     */
     constructor({ bus, state, telemetry }){
       this.bus = bus; this.state = state; this.telemetry = telemetry;
       this.registry = new Map();
     }
+    /**
+     * Registers a handler associated with a specific type.
+     *
+     * @param {string} type - The type for which the handler is being registered.
+     * @param {Function} handler - The function to handle the specified type.
+     * @return {void}
+     */
     register(type, handler){ this.registry.set(type, handler); }
+    /**
+     * Unregisters a specified type from the registry.
+     *
+     * @param {string} type - The key representing the type to be removed from the registry.
+     * @return {boolean} Returns true if the type was successfully deleted, false otherwise.
+     */
     unregister(type){ this.registry.delete(type); }
+    /**
+     * Executes an effect registered within the system, adjusting its behavior based on state configurations.
+     *
+     * @param {string} type - The type of effect to be played, which must be registered in the registry.
+     * @param {Object} ctx - The context object containing necessary data for the effect execution.
+     * @param {string} [ctx.id] - The identifier for the target associated with the effect.
+     * @return {Promise<void>} Resolves when the effect is successfully executed.
+     */
     async play(type, ctx){
       if(!this.registry.has(type)) return;
       const start = performance.now();
@@ -518,25 +612,24 @@
 
   /* ------- Efectos por defecto (MVP) ------- */
   /**
-   * A private asynchronous method that returns a Promise, resolving on the next
-   * approximate frame. This utilizes nested `requestAnimationFrame` calls to ensure
-   * that the function completes after the browser has rendered the next frame.
+   * A private asynchronous function that waits for two animation frames before resolving a Promise.
    *
+   * This function uses the `requestAnimationFrame` Web API to delay execution until two consecutive
+   * animation frame requests have occurred. It is typically used to ensure that DOM updates
+   * have been applied and rendered before executing subsequent logic.
+   *
+   * @returns {Promise<void>} A promise that resolves after two animation frames.
    * @private
-   * @returns {Promise<void>} A promise that resolves after two `requestAnimationFrame` calls.
    */
   const _nextFrame = () => new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   /**
-   * Asynchronously applies a CSS class to an element while optionally removing others.
+   * Handles the addition and removal of CSS classes on a specified element
+   * and waits for the next animation frame.
    *
-   * This function modifies the class list of a provided DOM element. It adds the specified class
-   * and removes a list of other classes if provided. The operation is asynchronous, and it ensures
-   * the full effect of the changes by waiting for the next frame render.
-   *
-   * @param {Element} el - The DOM element whose class list is being modified.
-   * @param {string} add - The CSS class to add to the element.
-   * @param {string[]} [remove=[]] - An optional array of CSS classes to remove from the element.
-   * @returns {Promise<void>} Resolves after the next animation frame has been processed.
+   * @param {HTMLElement} el - The target HTML element to modify classes for.
+   * @param {string} add - The name of the CSS class to add to the target element.
+   * @param {string[]} [remove=[]] - An optional array of CSS class names to remove from the target element.
+   * @returns {Promise<void>} Resolves after the next animation frame.
    */
   const _withClass = async (el, add, remove=[]) => {
     if(!el) return;
@@ -545,12 +638,15 @@
     await _nextFrame();
   };
   /**
-   * Handles the resolution of a promise upon the end of a CSS transition on a given element
-   * or after a specified timeout, whichever occurs first.
+   * Awaits the completion of a CSS transition on an element or resolves after a timeout.
    *
-   * @param {HTMLElement|null} el - The DOM element to listen for the transitionend event. If null, the promise resolves immediately.
-   * @param {number} [timeout=320] - The maximum time (in milliseconds) to wait before resolving the promise if the transitionend event does not occur.
-   * @returns {Promise<void>} A Promise that resolves when the transition has completed or the timeout has elapsed.
+   * This function listens for the `transitionend` event on the provided element to detect
+   * when its CSS transition has completed. If the event does not occur within the specified
+   * timeout period, the promise resolves automatically.
+   *
+   * @param {HTMLElement} el - The target HTML element to monitor for the `transitionend` event.
+   * @param {number} [timeout=320] - The timeout duration in milliseconds to wait for the transition to complete.
+   * @returns {Promise<void>} A promise that resolves when the transition ends or the timeout elapses.
    */
   const _awaitTransition = (el, timeout=320) => new Promise(resolve => {
     if(!el) return resolve();
@@ -561,13 +657,15 @@
   });
 
   /**
-   * Registers a set of default effects with the provided effect manager. These effects include various
-   * transitions (open, close, minimize) as well as material shadow effects (weak, strong).
+   * Registers a set of default visual and motion effects to the provided effect manager instance.
+   * Each effect is added to handle transitions, animations, material designs, feedback, and ambient interactions.
+   * These effects allow for dynamic element state transitions and user interaction responses.
    *
-   * @param {Object} effectManager - The manager responsible for registering and controlling the effects.
-   * @return {void} This function does not return a value.
+   * @param {Object} effectManager - The effect manager instance where the default effects are registered.
+   * @return {void} - This function does not return anything.
    */
   function registerDefaultEffects(effectManager){
+    // Transición: abrir
     effectManager.register('transition:open', async ({ element, speed=1 })=>{
       if(!element) return;
       element.classList.add('is-opening');
@@ -577,14 +675,17 @@
       await _awaitTransition(element, 240 / speed);
     });
 
+    // Transición: cerrar
     effectManager.register('transition:close', async ({ element, speed=1 })=>{
       if(!element) return;
       element.classList.add('is-closing');
       element.classList.remove('is-open');
       await _awaitTransition(element, 240 / speed);
+      // Cleanup aunque el DOM se vaya a retirar
       element.classList.remove('is-closing');
     });
 
+    // Transición: minimizar (cierra visualmente y deja el DOM limpio para restore)
     effectManager.register('transition:minimize', async ({ element, speed=1 })=>{
       if(!element) return;
       element.classList.add('is-closing');
@@ -669,19 +770,15 @@
       element.classList.remove('attention');
     });
 
-    // Compositor: transición suave de glass toggle
     effectManager.register('compositor:glass-toggle', async ({ elementList=[], glass })=>{
       for (const el of elementList) {
         if(!el) continue;
-        // Forzar una leve transición visual
         el.style.willChange = 'backdrop-filter, background';
       }
-      // espera un frame para que el cambio de clase surta efecto con transición
       await _nextFrame();
       for (const el of elementList) el.style.willChange = '';
     });
 
-    // Ambient: parallax del wallpaper
     effectManager.register('ambient:parallax', ({ root })=>{
       if(!root) return;
       root.classList.add('parallax');
@@ -711,6 +808,8 @@
       this._bus = bus;
       this._state = stateManager;
       this._effects = effectManager;
+
+      // Exponer como propiedades "reactivas" que ya usa el template
       this.glass = this._state.get('glass');
       this.wallpaper = this._state.get('wallpaper');
       this.fit = this._state.get('fit');
@@ -720,10 +819,12 @@
     }
 
     /**
-     * Binds event listeners to the event bus for handling various window-related actions such as opening, closing, minimizing, focusing, blurring, and restoring.
-     * Additionally, manages toggling the glass state in the compositor.
+     * Binds a series of event listeners to the `_bus` event bus for handling
+     * various window lifecycle events such as open, close, minimize, focus, blur,
+     * and others. Each event handler performs relevant actions such as applying
+     * visual effects, calling completion callbacks, or toggling compositor states.
      *
-     * @return {void} No return value. This method sets up event listeners and initializes the behavior for the associated events.
+     * @return {void} This method does not return a value.
      */
     _bind(){
       this._bus.on('window.opened', async ({ id })=>{
@@ -775,31 +876,14 @@
     _getEl(id){ return document.querySelector(`.window[data-win-id="${id}"]`); }
 
     /**
-     * Toggles the glass effect by emitting an event through the internal bus.
+     * Toggles the glass effect by emitting an event through the compositor.
+     * This method signals the compositor to enable or disable the glass effect.
      *
      * @return {void} Does not return a value.
      */
-    toggleGlass(){
-      this._bus.emit('compositor.toggleGlass');
-    }
-    /**
-     * Sets the wallpaper by updating the internal state with the provided URL.
-     *
-     * @param {string} url - The URL of the wallpaper to be set.
-     * @return {void} This method does not return a value.
-     */
-    setWallpaper(url){
-      const s=this._state.set('wallpaper', url); this.wallpaper = s.wallpaper;
-    }
-    /**
-     * Updates the fit mode in the current state and assigns it to the `fit` property.
-     *
-     * @param {string} mode - The fit mode to be set.
-     * @return {void}
-     */
-    setFit(mode){
-      const s=this._state.set('fit', mode); this.fit = s.fit;
-    }
+    toggleGlass(){ this._bus.emit('compositor.toggleGlass'); }
+    setWallpaper(url){ const s=this._state.set('wallpaper', url); this.wallpaper = s.wallpaper; }
+    setFit(mode){ const s=this._state.set('fit', mode); this.fit = s.fit; }
   }
 
   /* Content components (simple, static for MVP) */
@@ -1044,6 +1128,33 @@
 
   const { createApp, onMounted, ref, reactive, computed } = Vue;
 
+  /**
+   * Represents the main application instance created via `createApp` function with setup logic.
+   *
+   * This variable encompasses a Vue application instance configured with its components, reactive state management,
+   * event handling, window management, and telemetry integration.
+   *
+   * Components included:
+   * - About
+   * - Experience
+   * - Skills
+   * - Education
+   * - Download
+   * - Contact
+   * - DocumentViewer
+   *
+   * The setup function initializes and configures several key functionalities such as:
+   * - Language detection and i18n handling.
+   * - Telemetry for tracking user interactions and page views.
+   * - Window management system for creating, focusing, minimizing, restoring, resizing, and closing windows.
+   * - Event bus for inter-component communication.
+   * - Media query handling for preferences like reduced motion.
+   * - Reactive state objects for maintaining UI state, windows, tasks, and effects.
+   * - Drag-and-drop and resizing interactions for UI elements.
+   *
+   * The setup also includes various utility methods like `makeWin`, `focus`, `openApp`, and event-specific handlers
+   * (e.g., `startDrag`, `onDrag`, `endDrag`) to enhance and manage app interactions dynamically.
+   */
   const app = createApp({
     components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer },
     setup() {
@@ -1069,6 +1180,19 @@
       const windows = reactive([]);
       const tasks = reactive([]);
 
+      /**
+       * Creates and manages the lifecycle of a new window instance.
+       *
+       * This function is responsible for creating new windows, restoring
+       * existing ones if they are already opened, and managing associated
+       * tasks and event emissions.
+       *
+       * @param {string} id - A unique identifier for the window instance.
+       * @param {string} title - The title to display in the window.
+       * @param {string} icon - The path or key for the icon to display with the window.
+       * @param {Function} component - The component or function to render within the window.
+       * @param {Object} [props={}] - Optional props passed to the component for customization.
+       */
       const makeWin = (id, title, icon, component, props = {}) => {
         if (wm.find(id)) { wm.restore(id); focus(id); return; }
         const w = wm.create({ id, title, icon, component });
@@ -1078,6 +1202,15 @@
         requestAnimationFrame(()=> bus.emit('window.opened', { id }));
       };
 
+      /**
+       * Opens a new document viewer window for displaying a file.
+       *
+       * @function
+       * @param {Object} payload - The payload containing file details for the viewer.
+       * @param {string} payload.src - The source path or URL of the document to be viewed.
+       * @param {string} payload.type - The type or format of the document (e.g., PDF, image).
+       * @param {string} payload.title - The title to be displayed on the viewer window.
+       */
       const openViewer = (payload) => {
         const { src, type, title } = payload;
         const id = `viewer-${uuidv4()}`;
@@ -1085,6 +1218,15 @@
         telemetry.openWindow('document_viewer', {file: src, type});
       };
 
+      /**
+       * Changes the focus to a specific task by its ID.
+       *
+       * When a task gains focus, the previously focused task is blurred if present,
+       * and the focus event is emitted. It updates the task's `active` state and notifies
+       * with appropriate events.
+       *
+       * @param {string} id - The identifier of the task to focus.
+       */
       const focus = (id) => {
         const prev = tasks.find(t=>t.active);
         if(prev && prev.id !== id) bus.emit('window.blur', { id: prev.id });
@@ -1092,6 +1234,16 @@
         tasks.forEach(t=>t.active = (t.id===id));
         bus.emit('window.focus', { id });
       };
+      /**
+       * Minimizes a window identified by the given ID.
+       *
+       * The function emits a 'window.minimizing' event via the bus with the window ID
+       * and an "onDone" callback. Once the "onDone" callback is triggered, the window
+       * is minimized using the window manager and its corresponding task is marked
+       * as inactive if found in the task list.
+       *
+       * @param {string} id - The unique identifier of the window to be minimized.
+       */
       const minimize = (id) => {
         bus.emit('window.minimizing', {
           id,
@@ -1101,6 +1253,17 @@
           }
         });
       };
+      /**
+       * Restores a window or task identified by the given ID.
+       *
+       * This function performs the following actions:
+       * 1. Calls the `restore` method from the `wm` module to restore the window.
+       * 2. Finds the task associated with the provided ID and marks it as active.
+       * 3. Emits the `window.restored` event with the associated ID.
+       * 4. Emits the `window.focus` event with the associated ID.
+       *
+       * @param {string|number} id - The unique identifier of the window or task to restore.
+       */
       const restore = (id) => {
         wm.restore(id);
         const t = tasks.find(t=>t.id===id); if(t) t.active = true;
@@ -1112,6 +1275,15 @@
         wm.syncToDOM(id);
         bus.emit('window.maximized', { id });
       };
+      /**
+       * Closes a window and performs associated cleanup operations.
+       *
+       * Emits a 'window.closing' event with the specified window ID and provides a callback
+       * to clean up resources and update the state by removing the window and its
+       * corresponding task entry from their respective lists.
+       *
+       * @param {string} id - The identifier of the window to be closed.
+       */
       const closeWindow = (id) => {
         bus.emit('window.closing', {
           id,
@@ -1148,6 +1320,17 @@
       };
 
       // Drag/Resize
+      /**
+       * An object representing the state and attributes of a drag operation.
+       *
+       * @property {boolean} active - Indicates if a drag operation is currently active.
+       * @property {null|string|number} id - The identifier of the draggable element, initially set to null.
+       * @property {number} startX - The x-coordinate where the drag operation started.
+       * @property {number} startY - The y-coordinate where the drag operation started.
+       * @property {Object} start - Stores the initial state or references at the start of the drag operation.
+       * @property {boolean} ghost - Determines if a ghost element is being used during the drag operation.
+       * @property {string} ghostStyle - Specifies the CSS style applied to the ghost element.
+       */
       const drag = reactive({ active:false, id:null, startX:0, startY:0, start:{}, ghost:false, ghostStyle:'' });
       /**
        * Handles the initiation of a drag action for a draggable element.
