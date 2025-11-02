@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ángel Barrientos — Retro Desktop</title>
-  <meta name="description" content="CV interactivo de Ángel Barrientos en formato de escritorio retro (Win95/GNOME 1)." />
+  <title>Angel Barrientos — Retro Desktop</title>
+  <meta name="description" content="CV interactivo de Angel Barrientos en formato de escritorio retro (Win95/GNOME 1)." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ctext x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-size='36' fill='%23fff'%3EA%3C/text%3E%3C/svg%3E" />
 
   <style>
@@ -139,6 +139,43 @@
 
     .desktop.parallax {
       transition: background-position .06s linear;
+    }
+    /* ===== Scrollbar design for window content ===== */
+    .content {
+      scrollbar-width: thin; /* Firefox */
+      scrollbar-color: rgba(124,197,255,.3) rgba(20,28,38,.6); /* thumb / track */
+    }
+
+    /* Chrome, Edge, Safari */
+    .content::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: rgba(20,28,38,.6);
+      border-radius: 10px;
+      margin: 4px;
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(124,197,255,.5), rgba(124,197,255,.25));
+      border-radius: 10px;
+      border: 2px solid rgba(20,28,38,.6); /* halo para integrar con fondo */
+      backdrop-filter: blur(4px);
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, rgba(124,197,255,.7), rgba(124,197,255,.4));
+    }
+
+    .content::-webkit-scrollbar-corner {
+      background: rgba(20,28,38,.6);
+    }
+
+    .window.solid .content::-webkit-scrollbar-thumb {
+      background: rgba(124,197,255,.25);
+      border-color: #0d141d;
     }
   </style>
   <!-- GA4: sustituye G-XXXXXX por tu Measurement ID -->
@@ -287,33 +324,89 @@
   const messages = {
     es: {
       icons: { about: 'Acerca de mí', experience: 'Experiencia', skills: 'Skills', education: 'Educación', cv: 'Descargar CV', contact: 'Contacto' },
-      menu: { about: 'Acerca de Ángel', about_hint: 'Perfil y resumen ejecutivo', experience: 'Experiencia', skills: 'Competencias técnicas', education: 'Formación', download: 'Descargar CV (PDF)', contact: 'Contacto', compositor: 'Alternar compositor (vidrio/sólido)' },
+      menu: { about: 'Acerca de Angel', about_hint: 'Perfil y resumen ejecutivo', experience: 'Experiencia', skills: 'Competencias técnicas', education: 'Formación', download: 'Descargar CV (PDF)', contact: 'Contacto', compositor: 'Alternar compositor (vidrio/sólido)' },
+
       about: {
-        title: 'Ángel Barrientos — Technical Lead & Software Architect',
-        summary: 'Ingeniero en sistemas con 15+ años en backend, arquitectura y liderazgo técnico. Enfocado en e‑commerce, AWS y modernización de infraestructura.'
+        title: 'Angel Barrientos — Technical Lead & Software Architect',
+        summary: 'Ingeniero en sistemas con 16 años de experiencia. Especializado en backend, con criterio de arquitectura y operación.',
+        profile: 'Me formé en backend con orientación a objetos —mucho PHP desde hace ~13 años— y paso profesional por Java (1.6), Perl, Python, C#/.NET Core y JavaScript. También administro infraestructura: primero on-premise; hoy AWS.',
+        location: 'Ubicación: CDMX · modalidad actual: remoto',
+        languages: 'Idiomas: Español nativo · Inglés B1',
+        value: 'Valor: Orden en entornos caóticos, decisiones técnicas sostenibles, documentación que explica el porqué y no sólo el qué.',
+        role_now: 'Líder técnico: estándares, revisiones, soporte a equipos, coordinación con negocio y clientes. Mantengo AWS y cierro brechas de código legado.',
+        softskills: 'Soft Skills: Negociación, comunicación asertiva, escucha activa, manejo de sesgos, delegación y selección. Sirven para que la parte técnica llegue entera al usuario.',
       },
+
       experience: {
-        title: 'Experiencia profesional destacada'
+        title: 'Experiencia profesional destacada',
+        items: [
+          { role: 'Technical Lead', company: 'Nyx', period: '2023–Presente', details: 'Arquitectura AWS, automatización, observabilidad y estándares de entrega.' },
+          { role: 'Senior Software Engineer', company: 'VASS Latam / Telefónica Chile', period: '2021–2023', details: 'Magento 2.4; refactor de pagos; reducción de errores críticos; checkout más rápido.' },
+          { role: 'Senior Backend', company: 'PagoFácil.net', period: '2018–2021', details: 'Gateway CNP para Magento; facturación electrónica; antifraude.' },
+          { role: 'Developer / Jr PM', company: 'Enova', period: '2014–2018', details: 'Scrum + XP, documentación técnica, despliegues en proyectos educativos.' },
+          { role: 'Freelance / Consultor', company: 'Varios', period: '2008–2014', details: 'PHP full-stack, Linux admin, soporte Java para e-commerce e institucional.' }
+        ]
       },
-      skills: { title: 'Competencias técnicas' },
-      education: { title: 'Formación y aprendizaje continuo' },
+
+      skills: {
+        title: 'Competencias técnicas',
+        paragraphs: [
+          'Backend como especialidad. PHP es mi lenguaje principal; el resto lo uso con respeto: Python, C#/.NET, JavaScript; antes Java y Perl.',
+          'Bases de datos: SQL estándar (MySQL/MariaDB, PostgreSQL, Oracle) a nivel consulta y operación; admin más frecuente: MySQL/MariaDB, PostgreSQL y SQL Server on-premise.',
+          'NoSQL: Amazon DocumentDB (compatibilidad MongoDB 3.6/4.0/5.0). No es un fork; es un motor propio compatible con la API.',
+          'Infraestructura: AWS (Lambda, S3, CloudFront, IAM, DocumentDB, CloudWatch). Contenedores y orquestación: Docker → Kubernetes → OpenShift.',
+          'Arquitectura: Clean Architecture, DDD, SOLID, CQRS, CI/CD. Linux y Git en casa.'
+        ]
+      },
+
       download: { title: 'Descarga de CV', hint: 'Versión ejecutiva en PDF para reclutadores.' },
+      education: { title: 'Formación y aprendizaje continuo' },
       contact: { title: 'Contacto directo' }
     },
+
     en: {
       icons: { about: 'About me', experience: 'Experience', skills: 'Skills', education: 'Education', cv: 'Download CV', contact: 'Contact' },
-      menu: { about: 'About Ángel', about_hint: 'Profile & executive summary', experience: 'Experience', skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact', compositor: 'Toggle compositor (glass/solid)' },
+      menu: { about: 'About Angel', about_hint: 'Profile & executive summary', experience: 'Experience', skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact', compositor: 'Toggle compositor (glass/solid)' },
+
       about: {
-        title: 'Ángel Barrientos — Technical Lead & Software Architect',
-        summary: 'Software engineer with 15+ years in backend, architecture, and technical leadership. Focused on e‑commerce, AWS, and modernization.'
+        title: 'Angel Barrientos — Technical Lead & Software Architect',
+        summary: 'Software engineer with 16 years of experience. Backend-first, with architectural and operational criteria.',
+        profile: 'OO-oriented backend —~13 years of PHP— with professional stints in Java (1.6), Perl, Python, C#/.NET Core and JavaScript. Infra admin on-prem first; today AWS.',
+        location: 'Mexico City · current mode: remote',
+        languages: 'Native Spanish · English B1',
+        value: 'Order under pressure, sustainable technical decisions, documentation that explains the why —not only the what.',
+        role_now: 'Technical lead: standards, reviews, team support, business/client coordination. I keep AWS healthy and close gaps in legacy code.',
+        softskills: 'Negotiation, assertive communication, active listening, bias handling, delegation and hiring. They make the technical part land intact.'
       },
-      experience: { title: 'Highlighted professional experience' },
-      skills: { title: 'Technical competencies' },
-      education: { title: 'Education & continuous learning' },
+
+      experience: {
+        title: 'Highlighted professional experience',
+        items: [
+          { role: 'Technical Lead', company: 'Nyx', period: '2023–Present', details: 'AWS architecture, automation, observability and delivery standards.' },
+          { role: 'Senior Software Engineer', company: 'VASS Latam / Telefónica Chile', period: '2021–2023', details: 'Magento 2.4; payments refactor; fewer critical errors; faster checkout.' },
+          { role: 'Senior Backend', company: 'PagoFácil.net', period: '2018–2021', details: 'CNP gateway for Magento; e-invoicing; antifraud.' },
+          { role: 'Developer / Jr PM', company: 'Enova', period: '2014–2018', details: 'Scrum + XP, technical docs, deployments in education projects.' },
+          { role: 'Freelance / Consultant', company: 'Various', period: '2008–2014', details: 'PHP full-stack, Linux admin, Java support for e-commerce and institutional.' }
+        ]
+      },
+
+      skills: {
+        title: 'Technical competencies',
+        paragraphs: [
+          'Backend as a specialty. PHP is my main language; I use the rest with respect: Python, C#/.NET, JavaScript; earlier Java and Perl.',
+          'Databases: standard SQL (MySQL/MariaDB, PostgreSQL, Oracle) for querying and ops; more admin experience with MySQL/MariaDB, PostgreSQL and on-prem SQL Server.',
+          'NoSQL: Amazon DocumentDB (MongoDB API compatibility 3.6/4.0/5.0). Not a fork; its own engine with API compatibility.',
+          'Infrastructure: AWS (Lambda, S3, CloudFront, IAM, DocumentDB, CloudWatch). Containers & orchestration: Docker → Kubernetes → OpenShift.',
+          'Architecture: Clean Architecture, DDD, SOLID, CQRS, CI/CD. Linux and Git at home.'
+        ]
+      },
+
       download: { title: 'CV download', hint: 'Executive PDF version for recruiters.' },
+      education: { title: 'Education & continuous learning' },
       contact: { title: 'Direct contact' }
     }
   };
+
 
   const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) || key;
 
@@ -906,14 +999,17 @@
   const About = {
     props:['t'],
     template:`<div class="grid">
-        <h2>{{ t('about.title') }}</h2>
-        <p class="muted">{{ t('about.summary') }}</p>
-        <div class="hr"></div>
-        <p><strong>Rol:</strong> Tech Lead / Arquitecto · <strong>Ubicación:</strong> CDMX (Remoto/Híbrido)</p>
-        <p><strong>Idiomas:</strong> Español / Inglés (B1+ lectura avanzada)</p>
-        <p>Propuesta de valor: orden en entornos caóticos, decisiones técnicas sostenibles, pedagogía aplicada.</p>
-        <p>Actual: re-entrenamiento profundo en PHP 8.3, Python 3.12, Java 21; infraestructura Linux pedagógica; migraciones Docker → Kubernetes → OpenShift.</p>
-      </div>`
+      <h2>{{ t('about.title') }}</h2>
+      <p class="muted">{{ t('about.summary') }}</p>
+      <div class="hr"></div>
+      <p>{{ t('about.profile') }}</p>
+      <div class="grid cols-2">
+        <p><strong>{{ t('about.location') }}</strong> · <span>{{ t('about.languages') }}</span></p>
+        <p>{{ t('about.value') }}</p>
+        <p>{{ t('about.role_now') }}</p>
+        <p class="muted">{{ t('about.softskills') }}</p>
+      </div>
+    </div>`
   };
 
   /**
@@ -936,16 +1032,46 @@
    */
   const Experience = {
     props:['t'],
-    template:`<div>
-        <h2>{{ t('experience.title') }}</h2>
-        <div class="list">
-          <p><strong>Technical Lead — Nyx (2023–Presente):</strong> Arquitectura AWS, automatización, estándares de calidad y observabilidad.</p>
-          <p><strong>Senior Software Engineer — Vass Latam / Telefónica Chile (2021–2023):</strong> Magento 2.4; refactor de pagos; -70% errores críticos; checkout más rápido.</p>
-          <p><strong>Senior Backend — PagoFácil.net (2018–2021):</strong> Gateway CNP para Magento 2.3; facturación electrónica; antifraude.</p>
-          <p><strong>Developer / Jr PM — Enova (2014–2018):</strong> Scrum + XP, documentación técnica, entregables en proyectos educativos.</p>
-          <p><strong>Freelance / Consultor (2008–2014):</strong> PHP full‑stack, Linux admin, soporte Java; e‑commerce e institucional.</p>
-        </div>
-      </div>`
+    template: `
+    <div class="list">
+      <h2>{{ t('experience.title') }}</h2>
+
+      <p><strong>Nyx Software y Tecnología — Senior Software Engineer / Team Lead (Ago 2023–Presente):</strong></p>
+      <ul>
+        <li>Liderazgo transversal en arquitectura, infraestructura, datos y QA.</li>
+        <li>Reducción del 70% en bugs críticos y estabilización del backlog.</li>
+        <li>Diseño de reportes y relaciones en DocumentDB para analítica externa.</li>
+        <li>Creación de sistema estandarizado de landing pages con integración analítica.</li>
+        <li>Optimización de costos y escalabilidad en AWS (CloudFront/S3, IAM).</li>
+      </ul>
+
+      <p><strong>VASS Chile — Senior Software Engineer (Magento) (Nov 2020–Jul 2023):</strong></p>
+      <ul>
+        <li>Migración de Telefónica Chile de Magento 2.2 a 2.4 con integraciones críticas.</li>
+        <li>Desarrollo de módulos de pago e interfaces en Magento 2.</li>
+        <li>Reducción de hallazgos en Kiuwan mediante estándares de código y guías internas.</li>
+      </ul>
+
+      <p><strong>PagoFácil — Software Engineer Sr (Magento) (Oct 2019–Feb 2020):</strong></p>
+      <ul>
+        <li>Implementación de gateway de pagos para Magento 2.3 con Pagofácil.</li>
+      </ul>
+
+      <p><strong>ENOVA México — Software Engineer Sr / Project Manager Jr (Oct 2017–Abr 2019):</strong></p>
+      <ul>
+        <li>Implementación de facturación CFDI 3.3 en Mako.</li>
+        <li>Establecimiento de Scrum; reducción del 80% en tickets de error.</li>
+        <li>Publicación de paquetes en Packagist y herramientas internas en Python.</li>
+      </ul>
+
+      <p><strong>Nyx Software and Technology — CTO / Software Engineer Sr (Abr 2016–Ago 2017):</strong></p>
+      <ul>
+        <li>Migración Python 2.7→3.5 y Django 1.6→1.10.</li>
+        <li>Adopción de Gitflow y prácticas ágiles.</li>
+      </ul>
+
+      <p><strong>Otros roles (2011–2016):</strong> AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.</p>
+    </div>`
   };
 
   /**
@@ -970,21 +1096,22 @@
    */
   const Skills = {
     props:['t'],
-    template:`<div>
-        <h2>{{ t('skills.title') }}</h2>
-        <div class="grid cols-2">
-          <div>
-            <p><strong>Lenguajes:</strong> PHP 8 · Python 3 · Java 21 · C# · JS/TS</p>
-            <p><strong>Frameworks:</strong> Laravel · Symfony · Magento 2 · FastAPI · Spring Boot · .NET</p>
-            <p><strong>Bases:</strong> DocumentDB/Mongo · MySQL · PostgreSQL · Oracle</p>
-          </div>
-          <div>
-            <p><strong>Cloud & Infra:</strong> AWS (Lambda, CloudFront, IAM, S3, DocumentDB, CloudWatch) · Docker · K8s · OpenShift</p>
-            <p><strong>Arquitectura:</strong> Clean Architecture · DDD · SOLID · CQRS · CI/CD</p>
-            <p><strong>Sistemas:</strong> Linux · Bash · Git (plumbing/porcelain)</p>
-          </div>
+    template: `
+    <div>
+      <h2>{{ t('skills.title') }}</h2>
+      <div class="grid cols-2">
+        <div>
+          <p><strong>Backend:</strong> Python · PHP · .NET Core · Node.js</p>
+          <p><strong>Bases de datos:</strong> DocumentDB/MongoDB · MySQL</p>
+          <p><strong>Frontend:</strong> Angular (mantenimiento) · JS</p>
         </div>
-      </div>`
+        <div>
+          <p><strong>Cloud / DevOps:</strong> AWS (Lambda, S3/CloudFront, RDS, DocumentDB, EC2) · Docker · CI/CD</p>
+          <p><strong>Procesos:</strong> Liderazgo técnico · Scrum/Kanban · Code Reviews · Políticas y procedimientos</p>
+          <p><strong>Estándares:</strong> PSR · RFC 2119 · Gitflow</p>
+        </div>
+      </div>
+    </div>`
   };
 
   /**
@@ -1025,7 +1152,7 @@
         <h2>{{ t('download.title') }}</h2>
         <p class="muted">{{ t('download.hint') }}</p>
         <p><a class="link" href="/cv/angel-barrientos.pdf" download @click="$emit('download')">⬇ CV — PDF</a></p>
-        <p><a class="link" href="#" @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:'CV de Ángel'})">🗎 Ver CV</a></p>
+        <p><a class="link" href="#" @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:'CV de Angel'})">🗎 Ver CV</a></p>
         <div class="hr"></div>
         <p><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a> · <a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a> · <a class="link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a></p>
       </div>`
@@ -1060,15 +1187,15 @@
     props:['t'],
     template:`<div>
         <h2>{{ t('contact.title') }}</h2>
-        <p>📧 <a class="link" href="mailto:angel@uetiko.com">angel@uetiko.com</a></p>
-        <form @submit.prevent="$emit('submit',{form_id:'contact', status:'ok'})">
+        <p>📧 <a class="link" href="mailto:uetiko@gmail.com">e-mail</a></p>
+        <!--form @submit.prevent="$emit('submit',{form_id:'contact', status:'ok'})">
           <div class="grid cols-2">
             <input required name="name" placeholder="Nombre" style="padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text)" />
             <input required name="email" placeholder="Email" type="email" style="padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text)" />
           </div>
           <textarea required name="msg" placeholder="Mensaje" rows="5" style="margin-top:10px;padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text); width:100%"></textarea>
           <div style="margin-top:10px"><button class="btn" type="submit">Enviar</button></div>
-        </form>
+        </form-->
       </div>`
   };
 
