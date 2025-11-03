@@ -1,0 +1,202 @@
+:root {
+  --bg: #0a0c10;
+  --desk: #0f131a; /* retro dark */
+  --panel: #0b0f15;
+  --panel-border: #1c2430;
+  --win: rgba(24, 32, 44, 0.82);
+  --win-solid: #18202c;
+  --win-border: #5f748f;
+  --accent: #7cc5ff;
+  --text: #e7edf5;
+  --muted: #9fb3c9;
+  --shadow: 0 10px 30px rgba(0,0,0,.5);
+  --radius: 12px;
+  --z-panel: 1000;
+  --z-menu: 9999;
+  --z-window: 1200;
+  --z-tooltip: 1400;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: radial-gradient(1200px 800px at 20% 10%, #111927 0%, #0a0c10 60%, #06080d 100%);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  user-select: none;
+  overflow: hidden;
+}
+/* Desktop */
+.desktop {
+  position: fixed; inset: 0; display: grid; grid-template-rows: 1fr 42px;
+  background-image:
+    url("https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg"),
+    radial-gradient(1px 1px at 25% 30%, rgba(124,197,255,.15) 0, transparent 60%),
+    radial-gradient(1px 1px at 70% 60%, rgba(124,197,255,.08) 0, transparent 60%);
+  background-size: cover, auto, auto;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.desktop-grid { padding: 20px; display: grid; grid-auto-rows: 92px; grid-template-columns: repeat(auto-fill, 92px); gap: 18px; align-content: start; }
+.icon { width: 92px; height: 92px; display: grid; grid-template-rows: 56px 1fr; place-items: center; border-radius: 10px; cursor: default; }
+.icon:hover { background: rgba(255,255,255,0.04); }
+.icon img { width: 42px; height: 42px; filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
+.icon span { text-align: center; font-size: 12px; color: var(--muted); padding: 0 6px; }
+/* Panel */
+.panel {
+  position: relative;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 91px 1fr 280px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  background: var(--panel); border-top: 1px solid var(--panel-border); box-shadow: 0 -12px 24px rgba(0,0,0,.35) inset; z-index: var(--z-panel); }
+.start { display: flex; align-items: center; gap: 8px; background: #0c121a; padding: 6px 10px; border: 1px solid #1b2633; border-radius: 8px; cursor: default; }
+.start:hover { outline: 1px solid #2b3a4e; }
+.start svg { width: 16px; height: 16px; }
+.taskbar { display: flex; gap: 8px; overflow-x: visible; padding: 2px; scrollbar-width: thin; }
+.task { background: #0d141d; border: 1px solid #1c2736; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); white-space: nowrap; cursor: default; }
+.task.active { outline: 1px solid var(--accent); color: var(--text); }
+.status { display: flex; gap: 10px; justify-content: end; align-items: center; font-size: 12px; color: var(--muted); }
+.badge { padding: 4px 8px; border: 1px solid #1c2736; border-radius: 8px; }
+/* Start Menu */
+.menu {
+  position: fixed;
+  bottom: 50px;
+  left: 10px;
+  width: 320px;
+  background: #0d131b;
+  border: 1px solid #1b2736; border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; gap: 8px;
+  z-index: var(--z-menu);
+}
+.menu .item { padding: 10px; border-radius: 10px; display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; cursor: default; }
+.menu .item:hover { background: rgba(255,255,255,0.05); }
+.menu .hint { font-size: 11px; color: var(--muted); }
+/* Windows */
+.window { position: absolute; top: 140px; left: 140px; width: 720px; min-width: 340px; height: 460px; min-height: 220px; background: var(--win); border: 1px solid var(--win-border); border-radius: var(--radius); box-shadow: var(--shadow); display: grid; grid-template-rows: 38px 1fr; overflow: hidden; backdrop-filter: blur(12px) saturate(1.05); -webkit-backdrop-filter: blur(12px) saturate(1.05); }
+.window.solid { background: var(--win-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.titlebar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 0 8px; background: linear-gradient(180deg, rgba(124,197,255,.12), rgba(124,197,255,0)); border-bottom: 1px solid rgba(124,197,255,.18); cursor: move; }
+.titlebar .title { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+.titlebar .controls { display: flex; gap: 6px; }
+.btn { width: 28px; height: 24px; display: grid; place-items: center; border: 1px solid #2a3a50; border-radius: 8px; background: #0d141d; cursor: default; }
+.btn:hover { outline: 1px solid var(--accent); }
+.content { padding: 16px; overflow: auto; }
+.resizer { position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+.ghost { position:absolute; border:2px dashed rgba(124,197,255,.6); border-radius: var(--radius); pointer-events:none; }
+a, .link { color: var(--accent); text-decoration: none; }
+.kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0b1118; border: 1px solid #1c2736; border-radius: 6px; padding: 2px 6px; }
+.grid { display: grid; gap: 10px; }
+.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.muted { color: var(--muted); }
+.hr { height: 1px; background: #1c2736; margin: 8px 0; }
+.pill { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: rgba(124,197,255,.1); border: 1px solid rgba(124,197,255,.25); }
+.list { display: grid; gap: 8px; }
+.list li { margin-left: 18px; }
+@media (max-width: 840px) {
+  .window { width: calc(100vw - 24px); left: 12px; }
+  .desktop-grid { grid-template-columns: repeat(auto-fill, 76px); grid-auto-rows: 88px; gap: 12px; }
+  .icon { width: 76px; height: 88px; }
+}
+/* --- compositor: transiciones base y material --- */
+.window {
+  transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease;
+  will-change: transform, opacity, box-shadow;
+}
+.window.is-opening { opacity: 0; transform: scale(.96); }
+.window.is-open    { opacity: 1; transform: scale(1); }
+.window.is-closing { opacity: 0; transform: scale(.96); }
+
+.window.has-shadow-weak  { box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.window.has-shadow-strong{ box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+
+/* Efectos avanzados */
+.window.fly {
+  transition: transform .24s ease, opacity .24s ease !important;
+}
+
+@keyframes shake-x {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+.window.shake { animation: shake-x .28s ease; }
+
+@keyframes pulse-attn {
+  0%, 100% { box-shadow: 0 0 0 rgba(124,197,255,0); }
+  50% { box-shadow: 0 0 0 3px rgba(124,197,255,.35); }
+}
+.task.attention { animation: pulse-attn 1.2s ease-in-out 2; }
+.window.attention { animation: pulse-attn 1.2s ease-in-out 2; }
+
+.window {
+  transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease, backdrop-filter .24s ease, background .24s ease;
+  will-change: transform, opacity, box-shadow;
+}
+
+.desktop.parallax {
+  transition: background-position .06s linear;
+}
+/* ===== Scrollbar design for window content ===== */
+.content {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(124,197,255,.3) rgba(20,28,38,.6); /* thumb / track */
+}
+
+/* Chrome, Edge, Safari */
+.content::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: rgba(20,28,38,.6);
+  border-radius: 10px;
+  margin: 4px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(124,197,255,.5), rgba(124,197,255,.25));
+  border-radius: 10px;
+  border: 2px solid rgba(20,28,38,.6); /* halo para integrar con fondo */
+  backdrop-filter: blur(4px);
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(124,197,255,.7), rgba(124,197,255,.4));
+}
+
+.content::-webkit-scrollbar-corner {
+  background: rgba(20,28,38,.6);
+}
+
+.window.solid .content::-webkit-scrollbar-thumb {
+  background: rgba(124,197,255,.25);
+  border-color: #0d141d;
+}
+
+@media (max-width: 768px) {
+  .window {
+    left: 50% !important;
+    top: 60px !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 32px) !important;
+    height: calc(100vh - 120px) !important;
+    min-width: unset !important;
+    min-height: unset !important;
+    border-radius: 10px;
+  }
+  .titlebar {
+    cursor: default; /* Evitar drag accidental en móvil */
+  }
+}
+
+@media (max-width: 768px) {
+  .menu {
+    width: 90vw;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 60px;
+  }
+}
