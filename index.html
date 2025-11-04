@@ -26,190 +26,19 @@
   <link rel="icon" href="https://d3vyx978zojruw.cloudfront.net/icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/style.css">
 
-  <style>
-    :root {
-      --bg: #0a0c10;
-      --desk: #0f131a; /* retro dark */
-      --panel: #0b0f15;
-      --panel-border: #1c2430;
-      --win: rgba(24, 32, 44, 0.82);
-      --win-solid: #18202c;
-      --win-border: #5f748f;
-      --accent: #7cc5ff;
-      --text: #e7edf5;
-      --muted: #9fb3c9;
-      --shadow: 0 10px 30px rgba(0,0,0,.5);
-      --radius: 12px;
-      --z-panel: 1000;
-      --z-menu: 9999;
-      --z-window: 1200;
-      --z-tooltip: 1400;
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: radial-gradient(1200px 800px at 20% 10%, #111927 0%, #0a0c10 60%, #06080d 100%);
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      user-select: none;
-      overflow: hidden;
-    }
-    /* Desktop */
-    .desktop {
-      position: fixed; inset: 0; display: grid; grid-template-rows: 1fr 42px;
-      background-image:
-        url("https://fedoraproject.org/w/uploads/f/f9/F42-01-night.jpg"),
-        radial-gradient(1px 1px at 25% 30%, rgba(124,197,255,.15) 0, transparent 60%),
-        radial-gradient(1px 1px at 70% 60%, rgba(124,197,255,.08) 0, transparent 60%);
-      background-size: cover, auto, auto;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    .desktop-grid { padding: 20px; display: grid; grid-auto-rows: 92px; grid-template-columns: repeat(auto-fill, 92px); gap: 18px; align-content: start; }
-    .icon { width: 92px; height: 92px; display: grid; grid-template-rows: 56px 1fr; place-items: center; border-radius: 10px; cursor: default; }
-    .icon:hover { background: rgba(255,255,255,0.04); }
-    .icon img { width: 42px; height: 42px; filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
-    .icon span { text-align: center; font-size: 12px; color: var(--muted); padding: 0 6px; }
-    /* Panel */
-    .panel { position: relative; grid-row: 2; display: grid; grid-template-columns: 220px 1fr 280px; align-items: center; gap: 12px; padding: 6px 10px; background: var(--panel); border-top: 1px solid var(--panel-border); box-shadow: 0 -12px 24px rgba(0,0,0,.35) inset; z-index: var(--z-panel); }
-    .start { display: flex; align-items: center; gap: 8px; background: #0c121a; padding: 6px 10px; border: 1px solid #1b2633; border-radius: 8px; cursor: default; }
-    .start:hover { outline: 1px solid #2b3a4e; }
-    .start svg { width: 16px; height: 16px; }
-    .taskbar { display: flex; gap: 8px; overflow-x: auto; padding: 2px; scrollbar-width: thin; }
-    .task { background: #0d141d; border: 1px solid #1c2736; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); white-space: nowrap; cursor: default; }
-    .task.active { outline: 1px solid var(--accent); color: var(--text); }
-    .status { display: flex; gap: 10px; justify-content: end; align-items: center; font-size: 12px; color: var(--muted); }
-    .badge { padding: 4px 8px; border: 1px solid #1c2736; border-radius: 8px; }
-    /* Start Menu */
-    .menu {
-      position: fixed;
-      bottom: 50px;
-      left: 10px;
-      width: 320px;
-      background: #0d131b;
-      border: 1px solid #1b2736; border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; gap: 8px;
-      z-index: var(--z-menu);
-    }
-    .menu .item { padding: 10px; border-radius: 10px; display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; cursor: default; }
-    .menu .item:hover { background: rgba(255,255,255,0.05); }
-    .menu .hint { font-size: 11px; color: var(--muted); }
-    /* Windows */
-    .window { position: absolute; top: 140px; left: 140px; width: 720px; min-width: 340px; height: 460px; min-height: 220px; background: var(--win); border: 1px solid var(--win-border); border-radius: var(--radius); box-shadow: var(--shadow); display: grid; grid-template-rows: 38px 1fr; overflow: hidden; backdrop-filter: blur(12px) saturate(1.05); -webkit-backdrop-filter: blur(12px) saturate(1.05); }
-    .window.solid { background: var(--win-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
-    .titlebar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 0 8px; background: linear-gradient(180deg, rgba(124,197,255,.12), rgba(124,197,255,0)); border-bottom: 1px solid rgba(124,197,255,.18); cursor: move; }
-    .titlebar .title { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
-    .titlebar .controls { display: flex; gap: 6px; }
-    .btn { width: 28px; height: 24px; display: grid; place-items: center; border: 1px solid #2a3a50; border-radius: 8px; background: #0d141d; cursor: default; }
-    .btn:hover { outline: 1px solid var(--accent); }
-    .content { padding: 16px; overflow: auto; }
-    .resizer { position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; cursor: nwse-resize; }
-    .ghost { position:absolute; border:2px dashed rgba(124,197,255,.6); border-radius: var(--radius); pointer-events:none; }
-    a, .link { color: var(--accent); text-decoration: none; }
-    .kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0b1118; border: 1px solid #1c2736; border-radius: 6px; padding: 2px 6px; }
-    .grid { display: grid; gap: 10px; }
-    .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .muted { color: var(--muted); }
-    .hr { height: 1px; background: #1c2736; margin: 8px 0; }
-    .pill { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: rgba(124,197,255,.1); border: 1px solid rgba(124,197,255,.25); }
-    .list { display: grid; gap: 8px; }
-    .list li { margin-left: 18px; }
-    @media (max-width: 840px) {
-      .window { width: calc(100vw - 24px); left: 12px; }
-      .desktop-grid { grid-template-columns: repeat(auto-fill, 76px); grid-auto-rows: 88px; gap: 12px; }
-      .icon { width: 76px; height: 88px; }
-    }
-    /* --- compositor: transiciones base y material --- */
-    .window {
-      transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease;
-      will-change: transform, opacity, box-shadow;
-    }
-    .window.is-opening { opacity: 0; transform: scale(.96); }
-    .window.is-open    { opacity: 1; transform: scale(1); }
-    .window.is-closing { opacity: 0; transform: scale(.96); }
-
-    .window.has-shadow-weak  { box-shadow: 0 6px 18px rgba(0,0,0,.35); }
-    .window.has-shadow-strong{ box-shadow: 0 16px 40px rgba(0,0,0,.55); }
-
-    /* Efectos avanzados */
-    .window.fly {
-      transition: transform .24s ease, opacity .24s ease !important;
-    }
-
-    @keyframes shake-x {
-      10%, 90% { transform: translateX(-2px); }
-      20%, 80% { transform: translateX(4px); }
-      30%, 50%, 70% { transform: translateX(-6px); }
-      40%, 60% { transform: translateX(6px); }
-    }
-    .window.shake { animation: shake-x .28s ease; }
-
-    @keyframes pulse-attn {
-      0%, 100% { box-shadow: 0 0 0 rgba(124,197,255,0); }
-      50% { box-shadow: 0 0 0 3px rgba(124,197,255,.35); }
-    }
-    .task.attention { animation: pulse-attn 1.2s ease-in-out 2; }
-    .window.attention { animation: pulse-attn 1.2s ease-in-out 2; }
-
-    .window {
-      transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease, backdrop-filter .24s ease, background .24s ease;
-      will-change: transform, opacity, box-shadow;
-    }
-
-    .desktop.parallax {
-      transition: background-position .06s linear;
-    }
-    /* ===== Scrollbar design for window content ===== */
-    .content {
-      scrollbar-width: thin; /* Firefox */
-      scrollbar-color: rgba(124,197,255,.3) rgba(20,28,38,.6); /* thumb / track */
-    }
-
-    /* Chrome, Edge, Safari */
-    .content::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-
-    .content::-webkit-scrollbar-track {
-      background: rgba(20,28,38,.6);
-      border-radius: 10px;
-      margin: 4px;
-    }
-
-    .content::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, rgba(124,197,255,.5), rgba(124,197,255,.25));
-      border-radius: 10px;
-      border: 2px solid rgba(20,28,38,.6); /* halo para integrar con fondo */
-      backdrop-filter: blur(4px);
-    }
-
-    .content::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(180deg, rgba(124,197,255,.7), rgba(124,197,255,.4));
-    }
-
-    .content::-webkit-scrollbar-corner {
-      background: rgba(20,28,38,.6);
-    }
-
-    .window.solid .content::-webkit-scrollbar-thumb {
-      background: rgba(124,197,255,.25);
-      border-color: #0d141d;
-    }
-  </style>
   <!-- GA4: sustituye G-XXXXXX por tu Measurement ID -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6CR8Q1NYHV"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'G-XXXXXX', { transport_type: 'beacon', send_page_view: false });
+    gtag('config', 'G-6CR8Q1NYHV', { transport_type: 'beacon', send_page_view: false });
   </script>
 </head>
 <body>
-<div id="app" class="desktop" @contextmenu.prevent>
+<main id="app" class="desktop" @contextmenu.prevent>
   <!-- Desktop icons -->
-  <div class="desktop-grid">
+  <nav class="desktop-grid">
     <div class="icon" tabindex="0" @dblclick="openApp('about')" @click="telemetry.click('icon', {element:'about'})">
       <img alt="About" src="https://api.iconify.design/mdi:account-badge.svg" />
       <span>{{ t('icons.about') }}</span>
@@ -234,34 +63,34 @@
       <img alt="Contact" src="https://api.iconify.design/mdi:email.svg" />
       <span>{{ t('icons.contact') }}</span>
     </div>
-  </div>
+  </nav>
 
   <!-- Windows -->
   <template v-for="win in windows">
-    <div class="window" :class="{solid: !compositor.glass}" :style="win.style" :key="win.id" :data-win-id="win.id" @mousedown="focus(win.id)">
-      <div class="titlebar" @dblclick="toggleMaximize(win.id)" @mousedown="startDrag($event, win.id)">
+    <article class="window" :class="{solid: !compositor.glass}" :style="win.style" :key="win.id" :data-win-id="win.id" @mousedown="focus(win.id)">
+      <header class="titlebar" @dblclick="toggleMaximize(win.id)" @mousedown="startDrag($event, win.id)">
         <div class="title">
           <span class="pill">{{ win.icon }}</span>
           <span>{{ win.title }}</span>
         </div>
-        <div class="controls">
-          <div class="btn" title="Minimize" @click.stop="minimize(win.id); telemetry.cta('window_minimize',{
+        <nav class="controls">
+          <button class="btn" title="Minimize" @click.stop="minimize(win.id); telemetry.cta('window_minimize',{
           name:win.id,
           element:'minimize_button',
           variant:win.minimized ? 'minimize' : 'restore'
-          })">–</div>
-          <div class="btn" title="Maximize" @click.stop="toggleMaximize(win.id); telemetry.cta('window_maximize',{
+          })">–</button>
+          <button class="btn" title="Maximize" @click.stop="toggleMaximize(win.id); telemetry.cta('window_maximize',{
           name:win.id,
           element:'maximize_button',
           variant:win.maximized ? 'maximize' : 'restore'
-          })">▢</div>
-          <div class="btn" title="Close" @click.stop="closeWindow(win.id); telemetry.cta('window_close',{
+          })">▢</button>
+          <button class="btn" title="Close" @click.stop="closeWindow(win.id); telemetry.cta('window_close',{
           name:win.id,
           element:'close_button'
-          })">×</div>
-        </div>
-      </div>
-      <div class="content">
+          })">×</button>
+        </nav>
+      </header>
+      <section class="content">
         <component
           :is="win.component"
           :t="t"
@@ -271,31 +100,31 @@
           @download="telemetry.download({name: win.id, element:'link'})"
           @submit="telemetry.formSubmit($event)"
         />
-      </div>
+      </section>
       <div class="resizer" @mousedown="startResize($event, win.id)"></div>
-    </div>
+    </article>
   </template>
   <div v-if="drag.ghost" class="ghost" :style="drag.ghostStyle"></div>
 
   <!-- Panel / Taskbar -->
-  <div class="panel">
-    <div class="start" @click="ui.menu = !ui.menu; telemetry.click('start_button',{element:'start'})">
+  <footer class="panel">
+    <button class="start" @click="ui.menu = !ui.menu; telemetry.click('start_button',{element:'start'})">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7Z"/></svg>
       <strong>Start</strong>
-    </div>
-    <div class="taskbar">
-      <div v-for="task in tasks" :key="task.id" :data-id="task.id" class="task" :class="{active: task.active}" @click="restore(task.id); focus(task.id)">{{ task.title }}</div>
-    </div>
-    <div class="status">
+    </button>
+    <nav class="taskbar">
+      <button v-for="task in tasks" :key="task.id" :data-id="task.id" class="task" :class="{active: task.active}" @click="restore(task.id); focus(task.id)">{{ task.title }}</button>
+    </nav>
+    <aside class="status">
       <span class="badge">{{ clock }}</span>
       <span class="badge" title="Language">
           <span class="link" @click="setLang(lang === 'es' ? 'en' : 'es')">{{ lang.toUpperCase() }}</span>
         </span>
       <span class="muted">{{ env }} · {{ appName }}</span>
-    </div>
-  </div>
+    </aside>
+  </footer>
   <!-- Start Menu -->
-  <div v-if="ui.menu" class="menu" @click.outside>
+  <nav v-if="ui.menu" class="menu" @click.outside>
     <div class="item" @click="openApp('about'); ui.menu=false">
       <span>🛈</span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
     </div>
@@ -304,10 +133,11 @@
     <div class="item" @click="openApp('education'); ui.menu=false"><span>🎓</span><div>{{ t('menu.education') }}</div><span></span></div>
     <div class="item" @click="openApp('download'); ui.menu=false"><span>⬇</span><div>{{ t('menu.download') }}</div><span></span></div>
     <div class="item" @click="openApp('contact'); ui.menu=false"><span>✉</span><div>{{ t('menu.contact') }}</div><span></span></div>
+    <div class="item" @click="openApp('badges'); ui.menu=false"><span></span><div>{{ t('menu.badges')}}</div><span></span></div>
     <div class="hr"></div>
     <div class="item" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
-  </div>
-</div>
+  </nav>
+</main>
 
 <!-- Vue 3 (CDN) -->
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
@@ -385,7 +215,11 @@
 
     en: {
       icons: { about: 'About me', experience: 'Experience', skills: 'Skills', education: 'Education', cv: 'Download CV', contact: 'Contact' },
-      menu: { about: 'About Angel', about_hint: 'Profile & executive summary', experience: 'Experience', skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact', compositor: 'Toggle compositor (glass/solid)' },
+      menu: {
+        about: 'About Angel', about_hint: 'Profile & executive summary', experience: 'Experience',
+        skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact',
+        compositor: 'Toggle compositor (glass/solid)', badges: 'Badges'
+      },
 
       about: {
         title: 'Angel Barrientos — Technical Lead & Software Architect',
@@ -444,7 +278,7 @@
         if (window.gtag) {
           // Attempt to get GA4 client_id (best-effort; async via callback signature)
           // Replace 'G-XXXXXX' below if you want this to work in production
-          window.gtag('get', 'G-XXXXXX', 'client_id', (cid) => { this.client_id = cid; });
+          window.gtag('get', 'G-6CR8Q1NYHV', 'client_id', (cid) => { this.client_id = cid; });
         }
       } catch {}
     }
@@ -1017,18 +851,35 @@
    */
   const About = {
     props:['t'],
-    template:`<div class="grid">
-      <h2>{{ t('about.title') }}</h2>
-      <p class="muted">{{ t('about.summary') }}</p>
-      <div class="hr"></div>
-      <p>{{ t('about.profile') }}</p>
-      <div class="grid cols-2">
-        <p><strong>{{ t('about.location') }}</strong> · <span>{{ t('about.languages') }}</span></p>
-        <p>{{ t('about.value') }}</p>
-        <p>{{ t('about.role_now') }}</p>
-        <p class="muted">{{ t('about.softskills') }}</p>
-      </div>
-    </div>`
+    template:`
+      <section class="about">
+        <header class="about-header">
+          <div class="about-avatar"></div>
+          <div>
+            <h2 class="about-name">{{ t('about.title')}}</h2>
+            <p class="about-summary">{{ t('about.summary') }}</p>
+          </div>
+        </header>
+        <div class="hr"></div>
+        <article class="about-body">
+          <p>{{ t('about.profile') }}</p>
+        </article>
+        <section class="about-info grid cols-2">
+          <div class="about-col">
+            <p><strong>{{ t('about.location') }}</strong><br><span class="muted">{{ t('about.languages') }}</span></p>
+          </div>
+          <div class="about-col">
+            <p><strong>{{ t('about.value').split(':')[0] }}:</strong> <span class="muted">{{ t('about.value').split(':')[1] }}</span></p>
+          </div>
+          <div class="about-col">
+            <p>{{ t('about.role_now') }}</p>
+          </div>
+          <div class="about-col">
+            <p><strong>Soft Skills:</strong> <span class="muted">{{ t('about.softskills') }}</span></p>
+          </div>
+        </section>
+      </section>
+    `
   };
 
   /**
@@ -1052,45 +903,76 @@
   const Experience = {
     props:['t'],
     template: `
-    <div class="list">
-      <h2>{{ t('experience.title') }}</h2>
+      <section class="experience">
+        <h2 class="exp-title">{{ t('experience.title') }}</h2>
 
-      <p><strong>Nyx Software y Tecnología — Senior Software Engineer / Team Lead (Ago 2023–Presente):</strong></p>
-      <ul>
-        <li>Liderazgo transversal en arquitectura, infraestructura, datos y QA.</li>
-        <li>Reducción del 70% en bugs críticos y estabilización del backlog.</li>
-        <li>Diseño de reportes y relaciones en DocumentDB para analítica externa.</li>
-        <li>Creación de sistema estandarizado de landing pages con integración analítica.</li>
-        <li>Optimización de costos y escalabilidad en AWS (CloudFront/S3, IAM).</li>
-      </ul>
+        <article class="exp-card">
+          <header>
+            <h3>Nyx Software y Tecnología</h3>
+            <p class="role">Senior Software Engineer / Team Lead <span class="period">(Ago 2023–Presente)</span></p>
+          </header>
+          <ul>
+            <li>Liderazgo transversal en arquitectura, infraestructura, datos y QA.</li>
+            <li>Reducción del 70% en bugs críticos y estabilización del backlog.</li>
+            <li>Diseño de reportes y relaciones en DocumentDB para analítica externa.</li>
+            <li>Creación de sistema estandarizado de landing pages con integración analítica.</li>
+            <li>Optimización de costos y escalabilidad en AWS (CloudFront/S3, IAM).</li>
+          </ul>
+        </article>
 
-      <p><strong>VASS Chile — Senior Software Engineer (Magento) (Nov 2020–Jul 2023):</strong></p>
-      <ul>
-        <li>Migración de Telefónica Chile de Magento 2.2 a 2.4 con integraciones críticas.</li>
-        <li>Desarrollo de módulos de pago e interfaces en Magento 2.</li>
-        <li>Reducción de hallazgos en Kiuwan mediante estándares de código y guías internas.</li>
-      </ul>
+        <article class="exp-card">
+          <header>
+            <h3>VASS Chile</h3>
+            <p class="role">Senior Software Engineer (Magento) <span class="period">(Nov 2020–Jul 2023)</span></p>
+          </header>
+          <ul>
+            <li>Migración de Telefónica Chile de Magento 2.2 a 2.4 con integraciones críticas.</li>
+            <li>Desarrollo de módulos de pago e interfaces en Magento 2.</li>
+            <li>Reducción de hallazgos en Kiuwan mediante estándares de código y guías internas.</li>
+          </ul>
+        </article>
 
-      <p><strong>PagoFácil — Software Engineer Sr (Magento) (Oct 2019–Feb 2020):</strong></p>
-      <ul>
-        <li>Implementación de gateway de pagos para Magento 2.3 con Pagofácil.</li>
-      </ul>
+        <article class="exp-card">
+          <header>
+            <h3>PagoFácil</h3>
+            <p class="role">Software Engineer Sr (Magento) <span class="period">(Oct 2019–Feb 2020)</span></p>
+          </header>
+          <ul>
+            <li>Implementación de gateway de pagos para Magento 2.3 con Pagofácil.</li>
+          </ul>
+        </article>
 
-      <p><strong>ENOVA México — Software Engineer Sr / Project Manager Jr (Oct 2017–Abr 2019):</strong></p>
-      <ul>
-        <li>Implementación de facturación CFDI 3.3 en Mako.</li>
-        <li>Establecimiento de Scrum; reducción del 80% en tickets de error.</li>
-        <li>Publicación de paquetes en Packagist y herramientas internas en Python.</li>
-      </ul>
+        <article class="exp-card">
+          <header>
+            <h3>ENOVA México</h3>
+            <p class="role">Software Engineer Sr / Project Manager Jr <span class="period">(Oct 2017–Abr 2019)</span></p>
+          </header>
+          <ul>
+            <li>Implementación de facturación CFDI 3.3 en Mako.</li>
+            <li>Establecimiento de Scrum; reducción del 80% en tickets de error.</li>
+            <li>Publicación de paquetes en Packagist y herramientas internas en Python.</li>
+          </ul>
+        </article>
 
-      <p><strong>Nyx Software and Technology — CTO / Software Engineer Sr (Abr 2016–Ago 2017):</strong></p>
-      <ul>
-        <li>Migración Python 2.7→3.5 y Django 1.6→1.10.</li>
-        <li>Adopción de Gitflow y prácticas ágiles.</li>
-      </ul>
+        <article class="exp-card">
+          <header>
+            <h3>Nyx Software and Technology</h3>
+            <p class="role">CTO / Software Engineer Sr <span class="period">(Abr 2016–Ago 2017)</span></p>
+          </header>
+          <ul>
+            <li>Migración Python 2.7→3.5 y Django 1.6→1.10.</li>
+            <li>Adopción de Gitflow y prácticas ágiles.</li>
+          </ul>
+        </article>
 
-      <p><strong>Otros roles (2011–2016):</strong> AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.</p>
-    </div>`
+        <article class="exp-card">
+          <header>
+            <h3>Otros roles (2011–2016)</h3>
+            <p class="role muted">AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.</p>
+          </header>
+        </article>
+      </section>
+    `
   };
 
   /**
@@ -1116,21 +998,41 @@
   const Skills = {
     props:['t'],
     template: `
-    <div>
-      <h2>{{ t('skills.title') }}</h2>
-      <div class="grid cols-2">
-        <div>
-          <p><strong>Backend:</strong> Python · PHP · .NET Core · Node.js</p>
-          <p><strong>Bases de datos:</strong> DocumentDB/MongoDB · MySQL</p>
-          <p><strong>Frontend:</strong> Angular (mantenimiento) · JS</p>
+      <section class="skills">
+        <h2 class="skills-title">{{ t('skills.title') }}</h2>
+        <div class="skills-grid">
+          <div class="skills-col">
+            <div class="skills-block">
+              <h3>Backend</h3>
+              <p>Python · PHP · .NET Core · Node.js</p>
+            </div>
+            <div class="skills-block">
+              <h3>Bases de datos</h3>
+              <p>DocumentDB / MongoDB · MySQL</p>
+            </div>
+            <div class="skills-block">
+              <h3>Frontend</h3>
+              <p>Angular (mantenimiento) · JavaScript</p>
+            </div>
+          </div>
+
+          <div class="skills-col">
+            <div class="skills-block">
+              <h3>Cloud / DevOps</h3>
+              <p>AWS (Lambda, S3/CloudFront, RDS, DocumentDB, EC2) · Docker · CI/CD</p>
+            </div>
+            <div class="skills-block">
+              <h3>Procesos</h3>
+              <p>Liderazgo técnico · Scrum / Kanban · Code Reviews · Políticas y procedimientos</p>
+            </div>
+            <div class="skills-block">
+              <h3>Estándares</h3>
+              <p>PSR · RFC 2119 · Gitflow</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <p><strong>Cloud / DevOps:</strong> AWS (Lambda, S3/CloudFront, RDS, DocumentDB, EC2) · Docker · CI/CD</p>
-          <p><strong>Procesos:</strong> Liderazgo técnico · Scrum/Kanban · Code Reviews · Políticas y procedimientos</p>
-          <p><strong>Estándares:</strong> PSR · RFC 2119 · Gitflow</p>
-        </div>
-      </div>
-    </div>`
+      </section>
+    `
   };
 
   /**
@@ -1143,12 +1045,39 @@
    */
   const Education = {
     props:['t'],
-    template:`<div>
-        <h2>{{ t('education.title') }}</h2>
-        <p><strong>Ing. en Sistemas Computacionales</strong> — México</p>
-        <p>Complementos: PMBOK 7, Lean Delivery, DevOps, Conflict Management, Leadership for Tech Teams.</p>
-        <p>En curso: Kubernetes → OpenShift y actualización avanzada de PHP / Python / Java.</p>
-      </div>`
+    template:`
+      <section class="education">
+        <h2 class="edu-title">{{ t('education.title') }}</h2>
+
+        <article class="edu-block">
+          <header>
+            <h3>Ing. en Sistemas Computacionales</h3>
+            <p class="edu-meta">México · Titulación completa</p>
+          </header>
+          <p class="edu-detail">Base académica en ingeniería de software, estructuras de datos y sistemas distribuidos.</p>
+        </article>
+
+        <article class="edu-block">
+          <header>
+            <h3>Formación complementaria</h3>
+          </header>
+          <ul class="edu-list">
+            <li>PMBOK 7</li>
+            <li>Lean Delivery</li>
+            <li>DevOps</li>
+            <li>Conflict Management</li>
+            <li>Leadership for Tech Teams</li>
+          </ul>
+        </article>
+
+        <article class="edu-block">
+          <header>
+            <h3>En curso</h3>
+          </header>
+          <p class="edu-detail">Kubernetes → OpenShift y actualización avanzada de PHP / Python / Java.</p>
+        </article>
+      </section>
+    `
   };
 
   /**
@@ -1167,14 +1096,36 @@
   const Download = {
     props:['t'],
     emits:['open-viewer','download'],
-    template:`<div>
-        <h2>{{ t('download.title') }}</h2>
-        <p class="muted">{{ t('download.hint') }}</p>
-        <p><a class="link" href="/cv/angel-barrientos.pdf" download @click="$emit('download')">⬇ CV — PDF</a></p>
-        <p><a class="link" href="#" @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:'CV de Angel'})">🗎 Ver CV</a></p>
+    template:`
+      <section class="download">
+        <header class="download-header">
+          <h2 class="download-title">{{ t('download.title') }}</h2>
+          <p class="muted">{{ t('download.hint') }}</p>
+        </header>
+
+        <div class="download-actions">
+          <a class="btn-download" href="/cv/angel-barrientos.pdf" download
+             @click="$emit('download')">⬇ Descargar CV (PDF)</a>
+
+          <button class="btn-view"
+                  @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:'CV de Angel'})">
+            🗎 Ver CV en visor
+          </button>
+        </div>
+
         <div class="hr"></div>
-        <p><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a> · <a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a> · <a class="link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a></p>
-      </div>`
+
+        <footer class="download-footer">
+          <nav>
+            <a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a>
+            <span>·</span>
+            <a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a>
+            <span>·</span>
+            <a class="link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a>
+          </nav>
+        </footer>
+      </section>
+    `
   };
 
   /**
@@ -1204,18 +1155,33 @@
    */
   const Contact = {
     props:['t'],
-    template:`<div>
-        <h2>{{ t('contact.title') }}</h2>
-        <p>📧 <a class="link" href="mailto:uetiko@gmail.com">e-mail</a></p>
-        <!--form @submit.prevent="$emit('submit',{form_id:'contact', status:'ok'})">
-          <div class="grid cols-2">
-            <input required name="name" placeholder="Nombre" style="padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text)" />
-            <input required name="email" placeholder="Email" type="email" style="padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text)" />
+    template:`
+      <section class="contact">
+        <h2 class="contact-title">{{ t('contact.title') }}</h2>
+
+        <div class="contact-card">
+          <div class="contact-row">
+            <span class="contact-icon">📧</span>
+            <a class="contact-link" href="mailto:uetiko@gmail.com">uetiko@gmail.com</a>
           </div>
-          <textarea required name="msg" placeholder="Mensaje" rows="5" style="margin-top:10px;padding:10px;border-radius:8px;border:1px solid #1c2736;background:#0b1118;color:var(--text); width:100%"></textarea>
-          <div style="margin-top:10px"><button class="btn" type="submit">Enviar</button></div>
-        </form-->
-      </div>`
+
+          <div class="contact-row">
+            <span class="contact-icon">🌐</span>
+            <a class="contact-link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a>
+            <span>·</span>
+            <a class="contact-link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a>
+            <span>·</span>
+            <a class="contact-link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <p class="muted contact-footnote">
+          Si deseas colaborar o tienes un proyecto interesante, no dudes en escribirme.
+        </p>
+      </section>
+    `
   };
 
   /**
@@ -1243,17 +1209,21 @@
   const DocumentViewer = {
     props: ['src', 'type', 'title', 'telemetry'],
     template: `
-      <div style="display:grid;grid-template-rows:auto 1fr;height:100%;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
-          <strong>{{ title }}</strong>
-          <div>
-            <a class="link" :href="src" download @click="telemetry.download({file_name: src.split('/').pop(), element:'download_link'})">⬇ Descargar</a>
+      <section class="doc-viewer">
+        <header class="doc-header">
+          <h3 class="doc-title">{{ title }}</h3>
+          <div class="doc-actions">
+            <a class="btn-doc" :href="src" download
+               @click="telemetry.download({file_name: src.split('/').pop(), element:'download_link'})">
+              ⬇ Descargar
+            </a>
           </div>
+        </header>
+
+        <div class="doc-frame">
+          <component :is="componentType" :src="src" class="doc-content" />
         </div>
-        <div style="width:100%;height:100%;border-radius:8px;overflow:hidden;background:#0b1118;">
-          <component :is="componentType" :src="src" style="width:100%;height:100%;border:none;object-fit:contain;" />
-        </div>
-      </div>
+      </section>
     `,
     computed: {
       componentType() {
@@ -1270,6 +1240,101 @@
     unmounted() {
       this.telemetry.closeWindow('document_viewer', {file: this.src});
     }
+  };
+
+  const ProjectsBadges = {
+    props:['t'],
+    template: `
+      <article>
+        <h2>{{ t('projects.title') }}</h2>
+        <div class="projects-grid">
+          <section class="project-group">
+            <h3>tiempo total de codificación</h3>
+            <div class="project-list">
+              <div class="project">
+                <a href="https://wakatime.com/@8a272fcb-113b-4d48-b227-e717ab94571a"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a.svg" alt="Total time coded since Feb 11 2015" /></a>
+              </div>
+            </div>
+          </section>
+          <section class="project-group">
+            <h3>Stoyco</h3>
+            <div class="project-list">
+              <div class="project">
+                <h4>Landing Eladio</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Stoyco AWS Console</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>admisistración y reportes en base de datos </h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Scripts varios (nodejs)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Core (.net core 6)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Micro servicio Usuario (nodejs)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Backoffice (mantenimiento de errores criticos, Nodejs)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Queue multi propocito (follows, reports, mailchimp)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3.svg" alt="wakatime"></a>
+              </div>
+            </div>
+          </section>
+          <section class="project-group">
+            <h3>City Express (hoteles)</h3>
+            <div class="project-list">
+              <div class="project">
+                <h4>Channel Manager Backend (fastApi)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Channel Manager Frontend (Svelt)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb.svg" alt="wakatime"></a>
+              </div>
+            </div>
+          </section>
+          <section class="project-group">
+            <h3>Vass</h3>
+            <div class="project-list">
+              <div class="project">
+                <h4>wiki</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ed56c836-1a05-4d96-9bba-3d1461326bca"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ed56c836-1a05-4d96-9bba-3d1461326bca.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Magento (telefonica chile)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/5b0b8537-7c4a-40d3-a782-d72f25d9820e"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/5b0b8537-7c4a-40d3-a782-d72f25d9820e.svg" alt="wakatime"></a>
+              </div>
+              <div class="project">
+                <h4>Banco Estado (Symphony)</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3b9407cd-283b-4dce-a6a9-d86392b100f2"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3b9407cd-283b-4dce-a6a9-d86392b100f2.svg" alt="wakatime"></a>
+              </div>
+            </div>
+          </section>
+          <section class="project-group">
+            <h3>Enova</h3>
+            <div class="project-list">
+              <div class="project">
+                <h4>Mako</h4>
+                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3caf4d19-3057-4614-b57f-69a9a347eaaa"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3caf4d19-3057-4614-b57f-69a9a347eaaa.svg" alt="wakatime"></a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </article>
+    `
   };
 
   const { createApp, onMounted, ref, reactive, computed } = Vue;
@@ -1302,10 +1367,10 @@
    * (e.g., `startDrag`, `onDrag`, `endDrag`) to enhance and manage app interactions dynamically.
    */
   const app = createApp({
-    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer },
+    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer, ProjectsBadges },
     setup() {
-      const env = (new URLSearchParams(location.search).get('env')) || 'dev';
-      const appName = 'retro-desktop';
+      const env = (new URLSearchParams(location.search).get('env')) || 'live';
+      const appName = 'desktop';
       const lang = ref((navigator.language || 'es').startsWith('es') ? 'es' : 'en');
       const t = (key) => i18n(lang.value)(key);
 
@@ -1461,6 +1526,7 @@
           case 'education': makeWin('education', t('menu.education'), '🎓', 'Education'); break;
           case 'download': makeWin('download', t('menu.download'), '⬇', 'Download'); break;
           case 'contact': makeWin('contact', t('menu.contact'), '✉', 'Contact'); break;
+          case 'badges': makeWin('badges', t('menu.badges'), '','ProjectsBadges'); break;
         }
         telemetry.cta('open_app', { name });
       };
