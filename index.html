@@ -18,11 +18,63 @@
   <meta name="twitter:site" content="@OldSilents">
   <meta name="twitter:creator" content="@OldSilents">
   <meta name="twitter:title" content="Angel Profile">
-  <meta name="twitter:description" content="CV interactivo de Angel Barrientos en formato de escritorio retro (Win95/GNOME 1).">
+  <meta name="twitter:description" content="CV interactivo de Angel Barrientos en formato de escritorio.">
   <meta name="twitter:image" content="https://d3vyx978zojruw.cloudfront.net/img/profile/angel_war.png">
   <meta name="theme-color" content="#0a0c10">
+  <link rel="canonical" href="https://www.uetiko.com/">
+  <meta name="keywords" content="Ángel Barrientos, Technical Lead, Software Architect, Backend, AWS, Clean Architecture, DocumentDB, México, CV interactivo">
+  <meta name="author" content="Ángel Barrientos">
+  <meta name="publisher" content="uetiko.com">
   <title>Angel Barrientos — Retro Desktop</title>
-  <meta name="description" content="CV interactivo de Angel Barrientos en formato de escritorio retro (Win95/GNOME 1)." />
+  <meta name="description" content="CV interactivo de Angel Barrientos en formato de escritorio." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/microsoft/cascadia-code@v2405.31/fonts/webfonts/Cascadia.css">
+  <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Angel Barrientos",
+      "alternateName": "Ángel Barrientos",
+      "jobTitle": "Technical Lead & Software Architect",
+      "url": "https://tu-dominio.com",
+      "image": "https://tu-dominio.com/android-chrome-192x192.png",
+      "sameAs": [
+        "https://linkedin.com/in/uetiko",
+        "https://github.com/uetiko",
+        "https://blog.uetiko.com"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Nyx Software y Tecnología"
+      },
+      "knowsAbout": [
+        "AWS",
+        "Backend Architecture",
+        "Clean Architecture",
+        "DocumentDB",
+        "DevOps",
+        "FastAPI",
+        "Magento",
+        "Symfony",
+        "Laravel",
+        "Kubernetes"
+      ],
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Instituto Tecnológico de México"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Ciudad de México",
+        "addressCountry": "MX"
+      }
+    }
+  </script>
+
+
+
   <link rel="icon" href="https://d3vyx978zojruw.cloudfront.net/icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/style.css">
 
@@ -36,6 +88,13 @@
   </script>
 </head>
 <body>
+<h1 class="visually-hidden">
+  Ángel Barrientos — Technical Lead & Software Architect
+</h1>
+<noscript>
+  <h2>Perfil profesional de Ángel Barrientos</h2>
+  <p>Technical Lead & Software Architect especializado en backend, AWS y arquitectura limpia.</p>
+</noscript>
 <main id="app" class="desktop" @contextmenu.prevent>
   <!-- Desktop icons -->
   <nav class="desktop-grid">
@@ -126,7 +185,7 @@
   <!-- Start Menu -->
   <nav v-if="ui.menu" class="menu" @click.outside>
     <div class="item" @click="openApp('about'); ui.menu=false">
-      <span>🛈</span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
+      <span><img src="./favicon-16x16.png"> </span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
     </div>
     <div class="item" @click="openApp('experience'); ui.menu=false"><span>💼</span><div>{{ t('menu.experience') }}</div><span></span></div>
     <div class="item" @click="openApp('skills'); ui.menu=false"><span>🧰</span><div>{{ t('menu.skills') }}</div><span></span></div>
@@ -173,17 +232,25 @@
   const messages = {
     es: {
       icons: { about: 'Acerca de mí', experience: 'Experiencia', skills: 'Skills', education: 'Educación', cv: 'Descargar CV', contact: 'Contacto' },
-      menu: { about: 'Acerca de Angel', about_hint: 'Perfil y resumen ejecutivo', experience: 'Experiencia', skills: 'Competencias técnicas', education: 'Formación', download: 'Descargar CV (PDF)', contact: 'Contacto', compositor: 'Alternar compositor (vidrio/sólido)' },
+      menu: { about: 'Acerca de Angel', about_hint: 'Perfil y resumen ejecutivo', experience: 'Experiencia', skills: 'Competencias técnicas', education: 'Formación', download: 'Descargar CV (PDF)', contact: 'Contacto', compositor: 'Alternar compositor (vidrio/sólido)', badges: 'Distintivos' },
 
       about: {
         title: 'Angel Barrientos — Technical Lead & Software Architect',
-        summary: 'Ingeniero en sistemas con 16 años de experiencia. Especializado en backend, con criterio de arquitectura y operación.',
-        profile: 'Me formé en backend con orientación a objetos —mucho PHP desde hace ~13 años— y paso profesional por Java (1.6), Perl, Python, C#/.NET Core y JavaScript. También administro infraestructura: primero on-premise; hoy AWS.',
-        location: 'Ubicación: CDMX · modalidad actual: remoto',
+        summary: 'Ingeniero en sistemas con 16 años de experiencia, especializado en backend, arquitectura y entornos de infraestructura.',
+        profile: `Desarrollador backend senior con dieciséis años de práctica continua. Trabajo principalmente con PHP —desde 5.6 hasta 8.x— y Python 3.x, además de JavaScript con Node.js; en los últimos años he incorporado C# sobre .NET 6. Conservo experiencia histórica en Java 1.6, de ahí mi obsesión por la programación orientada a objetos.
+Uso Linux como sistema diario desde 2008 —vengo de la época del kernel 2.6—, con scripting en Bash/Shell, administración básica de sistemas y una evolución natural hacia entornos cloud y contenedorizados.
+
+La idea siempre es que el software debe pensarse como una estructura viva: modular, escalable y entendible. La arquitectura hexagonal es, por decirlo así, la arquitectura de la casa.
+Amo los estándares y convenciones del ecosistema (PSR en PHP, PEP en Python), disfruto las pruebas unitarias y escribir documentación en Markdown —soy un hombre de gustos simples—.
+
+En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis habilidades blandas: comunicación, liderazgo técnico y la paciencia necesaria para que un equipo funcione sin ruido, incluso cuando el sistema sí lo hace.`,
+        location_key: 'Ubicación:',
+        location: ' CDMX · modalidad actual: remoto',
         languages: 'Idiomas: Español nativo · Inglés B1',
         value: 'Valor: Orden en entornos caóticos, decisiones técnicas sostenibles, documentación que explica el porqué y no sólo el qué.',
-        role_now: 'Líder técnico: estándares, revisiones, soporte a equipos, coordinación con negocio y clientes. Mantengo AWS y cierro brechas de código legado.',
-        softskills: 'Soft Skills: Negociación, comunicación asertiva, escucha activa, manejo de sesgos, delegación y selección. Sirven para que la parte técnica llegue entera al usuario.',
+        role_key: 'Líder técnico',
+        role_now: ' estándares, revisiones, soporte a equipos, coordinación con negocio y clientes. Mantengo AWS y cierro brechas de código legado.',
+        softskills: ' Negociación, comunicación asertiva, escucha activa, manejo de sesgos, delegación y selección. Sirven para que la parte técnica llegue entera al usuario.',
       },
 
       experience: {
@@ -210,7 +277,8 @@
 
       download: { title: 'Descarga de CV', hint: 'Versión ejecutiva en PDF para reclutadores.' },
       education: { title: 'Formación y aprendizaje continuo' },
-      contact: { title: 'Contacto directo' }
+      contact: { title: 'Contacto directo' },
+      projects: { title: 'Proyectos' },
     },
 
     en: {
@@ -256,7 +324,8 @@
 
       download: { title: 'CV download', hint: 'Executive PDF version for recruiters.' },
       education: { title: 'Education & continuous learning' },
-      contact: { title: 'Direct contact' }
+      contact: { title: 'Direct contact' },
+      projects: { title: 'Proyectos' },
     }
   };
 
@@ -854,7 +923,7 @@
     template:`
       <section class="about">
         <header class="about-header">
-          <div class="about-avatar"></div>
+          <div class="about-avatar"><img src="./favicon-32x32.png"> </div>
           <div>
             <h2 class="about-name">{{ t('about.title')}}</h2>
             <p class="about-summary">{{ t('about.summary') }}</p>
@@ -862,20 +931,23 @@
         </header>
         <div class="hr"></div>
         <article class="about-body">
-          <p>{{ t('about.profile') }}</p>
+          <p class="about-profile">{{ t('about.profile') }}</p>
         </article>
         <section class="about-info grid cols-2">
           <div class="about-col">
-            <p><strong>{{ t('about.location') }}</strong><br><span class="muted">{{ t('about.languages') }}</span></p>
+            <p>
+              <strong>{{ t('about.location_key') }}</strong><span class="muted">{{ t('about.location')}}</span>
+              <br>
+              <span class="muted">{{ t('about.languages') }}</span></p>
           </div>
           <div class="about-col">
             <p><strong>{{ t('about.value').split(':')[0] }}:</strong> <span class="muted">{{ t('about.value').split(':')[1] }}</span></p>
           </div>
           <div class="about-col">
-            <p>{{ t('about.role_now') }}</p>
+            <p><strong>{{ t('about.role_key') }}</strong> <span>{{ t('about.role_now') }}</span></p>
           </div>
           <div class="about-col">
-            <p><strong>Soft Skills:</strong> <span class="muted">{{ t('about.softskills') }}</span></p>
+            <p><strong>Soft Skills:</strong> <span>{{ t('about.softskills') }}</span></p>
           </div>
         </section>
       </section>
@@ -1001,35 +1073,92 @@
       <section class="skills">
         <h2 class="skills-title">{{ t('skills.title') }}</h2>
         <div class="skills-grid">
+
+          <!-- Columna izquierda -->
           <div class="skills-col">
+            <div class="skills-block">
+              <h3>Soft Skills</h3>
+              <p><strong>Habilidades principales:</strong> Comunicación asertiva · Escucha activa · Negociación · Delegación asertiva · Gestión de conflictos</p>
+              <p><strong>Competencias interpersonales:</strong> Igualdad y combate a sesgos · Manejo de clientes difíciles · Reclutamiento y selección técnica · Lectura rápida</p>
+              <p class="desc">
+                Formación continua en liderazgo y comunicación aplicada. Desarrollo de estrategias para
+                negociación efectiva, empatía profesional y resolución de conflictos. Capacidad comprobada para
+                mantener equipos funcionales bajo presión sin sacrificar la claridad ni el respeto.
+              </p>
+              <p class="desc">
+                Cursos y certificaciones recientes: “Conviértete en Estratega” · “Liderazgo y Gerencia en Tecnología” ·
+                “Gestión de Conflictos y Negociación” · “Comunicación Asertiva (Masterclass)” · “Administración de Operaciones”.
+              </p>
+            </div>
             <div class="skills-block">
               <h3>Backend</h3>
-              <p>Python · PHP · .NET Core · Node.js</p>
+              <p><strong>Lenguajes:</strong> Python · PHP · .NET Core · Node.js</p>
+              <p><strong>Frameworks:</strong> FastAPI · Django · Laravel · Symfony · Svelte · Angular (mantenimiento) · Knockout (Magento)</p>
+              <p class="desc">
+                Diseño y mantenimiento de servicios orientados a dominio. Desarrollo de APIs y microservicios,
+                integración con sistemas externos y refactorización de código heredado.
+                En frontend, trabajo con lógica funcional y componentes reactivos, no diseño visual.
+              </p>
             </div>
+
             <div class="skills-block">
               <h3>Bases de datos</h3>
-              <p>DocumentDB / MongoDB · MySQL</p>
+              <p><strong>Relacionales:</strong> MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora</p>
+              <p><strong>NoSQL:</strong> Amazon DocumentDB / MongoDB</p>
+              <p class="desc">
+                Modelado lógico y físico de datos, agregaciones complejas y optimización de índices.
+                Experiencia en integración analítica (Athena, Glue) y monitoreo de rendimiento.
+              </p>
             </div>
+
             <div class="skills-block">
               <h3>Frontend</h3>
-              <p>Angular (mantenimiento) · JavaScript</p>
+              <p><strong>Entorno:</strong> Angular (mantenimiento) · JavaScript</p>
+              <p><strong>Enfoque:</strong> lógica funcional y validaciones reactivas</p>
+              <p class="desc">
+                Refactorización de componentes existentes, integración con APIs REST,
+                mantenimiento de comportamiento y testing funcional. Sin foco en UI/UX ni maquetación.
+              </p>
             </div>
+
           </div>
 
+          <!-- Columna derecha -->
           <div class="skills-col">
+
             <div class="skills-block">
-              <h3>Cloud / DevOps</h3>
-              <p>AWS (Lambda, S3/CloudFront, RDS, DocumentDB, EC2) · Docker · CI/CD</p>
+              <h3>Infraestructura / Cloud</h3>
+              <p><strong>Plataformas:</strong> AWS (Arquitecto Jr)</p>
+              <p><strong>Rol:</strong> Arquitecto junior AWS</p>
+              <p class="desc">
+                Planificación y control de entornos cloud, gestión de costos, networking (VPCs, subredes),
+                integración de pipelines y monitoreo centralizado. Participación en la planificación y administración.
+              </p>
             </div>
+
             <div class="skills-block">
               <h3>Procesos</h3>
-              <p>Liderazgo técnico · Scrum / Kanban · Code Reviews · Políticas y procedimientos</p>
+              <p><strong>Metodologías:</strong> Scrum · Kanban · Lean Delivery · PMBOK 7</p>
+              <p><strong>Prácticas:</strong> Code Reviews · Definición de políticas · Gestión de QA · Liderazgo técnico</p>
+              <p class="desc">
+                Enfoque en la entrega sostenida y la claridad del proceso.
+                Facilito revisiones de código, mentoring y priorización técnica bajo modelos de mejora continua.
+              </p>
             </div>
+
             <div class="skills-block">
-              <h3>Estándares</h3>
-              <p>PSR · RFC 2119 · Gitflow</p>
+              <h3>Estándares y control de versiones</h3>
+              <p><strong>Estándares:</strong> PSR · RFC 2119</p>
+              <p><strong>Versionado:</strong> Gitflow · Trunk-Based · Flujos híbridos</p>
+              <p class="desc">
+                Aplicación consciente de convenciones y documentación técnica.
+                Los estándares no son una referencia, sino una práctica constante;
+                adapto el flujo de trabajo según el equipo y la escala del proyecto.
+              </p>
             </div>
+
           </div>
+
         </div>
       </section>
     `
@@ -1051,8 +1180,8 @@
 
         <article class="edu-block">
           <header>
-            <h3>Ing. en Sistemas Computacionales</h3>
-            <p class="edu-meta">México · Titulación completa</p>
+            <h3>Ing. en Sistemas Computacionales, UNITEC Campus sur</h3>
+            <p class="edu-meta">México · Titulación en proceso</p>
           </header>
           <p class="edu-detail">Base académica en ingeniería de software, estructuras de datos y sistemas distribuidos.</p>
         </article>
@@ -1253,6 +1382,12 @@
             <div class="project-list">
               <div class="project">
                 <a href="https://wakatime.com/@8a272fcb-113b-4d48-b227-e717ab94571a"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a.svg" alt="Total time coded since Feb 11 2015" /></a>
+              </div>
+              <div class="project">
+                <img src="https://camo.githubusercontent.com/1f36fad378243c766e543e59aed261a5cbabada25f46066e55d601804f9e6c11/68747470733a2f2f77616b6174696d652e636f6d2f73686172652f40756574696b6f2f37326638383765382d643830642d343032322d393163362d3434646463626137633866352e706e67" alt="Coding activity" width="600px" data-canonical-src="https://wakatime.com/share/@uetiko/72f887e8-d80d-4022-91c6-44ddcba7c8f5.png" style="max-width: 100%;">
+              </div>
+              <div class="project">
+                <a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565"><img src="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565" alt="uetiko" data-canonical-src="https://github-readme-stats.vercel.app/api?username=uetiko&amp;show_icons=true" style="max-width: 100%;"></a>
               </div>
             </div>
           </section>
