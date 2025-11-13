@@ -42,7 +42,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
 }
-.desktop-grid { padding: 20px; display: grid; grid-auto-rows: 92px; grid-template-columns: repeat(auto-fill, 92px); gap: 18px; align-content: start; }
+.desktop-grid { padding: 20px; display: flow; grid-auto-rows: 92px; grid-template-columns: repeat(auto-fill, 92px); gap: 18px; align-content: start; }
 .icon { width: 92px; height: 92px; display: grid; grid-template-rows: 56px 1fr; place-items: center; border-radius: 10px; cursor: default; }
 .icon:hover { background: rgba(255,255,255,0.04); }
 .icon img { width: 42px; height: 42px; filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
@@ -275,6 +275,22 @@ a, .link { color: var(--accent); text-decoration: none; }
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+}
+
+.project .desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.35;
+  min-height: 38px;
+  text-wrap: balance;
+}
+
+.project .usage {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .about-profile {

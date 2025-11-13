@@ -38,8 +38,8 @@
       "name": "Angel Barrientos",
       "alternateName": "Ángel Barrientos",
       "jobTitle": "Technical Lead & Software Architect",
-      "url": "https://tu-dominio.com",
-      "image": "https://tu-dominio.com/android-chrome-192x192.png",
+      "url": "https://www.uetiko.com",
+      "image": "https://www.uetiko.com/img/profile/technoviking.png",
       "sameAs": [
         "https://linkedin.com/in/uetiko",
         "https://github.com/uetiko",
@@ -47,7 +47,7 @@
       ],
       "worksFor": {
         "@type": "Organization",
-        "name": "Nyx Software y Tecnología"
+        "name": ""
       },
       "knowsAbout": [
         "AWS",
@@ -99,27 +99,27 @@
   <!-- Desktop icons -->
   <nav class="desktop-grid">
     <div class="icon" tabindex="0" @dblclick="openApp('about')" @click="telemetry.click('icon', {element:'about'})">
-      <img alt="About" src="https://api.iconify.design/mdi:account-badge.svg" />
+      <img alt="About" src="./img/icons/64x64/view-pim-contacts.png" />
       <span>{{ t('icons.about') }}</span>
     </div>
     <div class="icon" tabindex="0" @dblclick="openApp('experience')" @click="telemetry.click('icon', {element:'experience'})">
-      <img alt="Experience" src="https://api.iconify.design/mdi:briefcase.svg" />
+      <img alt="Experience" src="./img/icons/64x64/applications-internet.png" />
       <span>{{ t('icons.experience') }}</span>
     </div>
     <div class="icon" tabindex="0" @dblclick="openApp('skills')" @click="telemetry.click('icon', {element:'skills'})">
-      <img alt="Skills" src="https://api.iconify.design/mdi:code-tags.svg" />
+      <img alt="Skills" src="./img/icons/64x64/basket.png" />
       <span>{{ t('icons.skills') }}</span>
     </div>
     <div class="icon" tabindex="0" @dblclick="openApp('education')" @click="telemetry.click('icon', {element:'education'})">
-      <img alt="Education" src="https://api.iconify.design/mdi:school.svg" />
+      <img alt="Education" src="./img/icons/64x64/kformula.png" />
       <span>{{ t('icons.education') }}</span>
     </div>
     <div class="icon" tabindex="0" @dblclick="openApp('download')" @click="telemetry.click('icon', {element:'download'})">
-      <img alt="Download CV" src="https://api.iconify.design/mdi:file-download.svg" />
+      <img alt="Download CV" src="./img/icons/64x64/folder-downloads.png" />
       <span>{{ t('icons.cv') }}</span>
     </div>
     <div class="icon" tabindex="0" @dblclick="openApp('contact')" @click="telemetry.click('icon', {element:'contact'})">
-      <img alt="Contact" src="https://api.iconify.design/mdi:email.svg" />
+      <img alt="Contact" src="./img/icons/64x64/internet-mail.png" />
       <span>{{ t('icons.contact') }}</span>
     </div>
   </nav>
@@ -129,7 +129,7 @@
     <article class="window" :class="{solid: !compositor.glass}" :style="win.style" :key="win.id" :data-win-id="win.id" @mousedown="focus(win.id)">
       <header class="titlebar" @dblclick="toggleMaximize(win.id)" @mousedown="startDrag($event, win.id)">
         <div class="title">
-          <span class="pill">{{ win.icon }}</span>
+          <span class="pill"> <img :src="win.icon"></span>
           <span>{{ win.title }}</span>
         </div>
         <nav class="controls">
@@ -187,12 +187,12 @@
     <div class="item" @click="openApp('about'); ui.menu=false">
       <span><img src="./favicon-16x16.png"> </span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
     </div>
-    <div class="item" @click="openApp('experience'); ui.menu=false"><span>💼</span><div>{{ t('menu.experience') }}</div><span></span></div>
-    <div class="item" @click="openApp('skills'); ui.menu=false"><span>🧰</span><div>{{ t('menu.skills') }}</div><span></span></div>
-    <div class="item" @click="openApp('education'); ui.menu=false"><span>🎓</span><div>{{ t('menu.education') }}</div><span></span></div>
-    <div class="item" @click="openApp('download'); ui.menu=false"><span>⬇</span><div>{{ t('menu.download') }}</div><span></span></div>
-    <div class="item" @click="openApp('contact'); ui.menu=false"><span>✉</span><div>{{ t('menu.contact') }}</div><span></span></div>
-    <div class="item" @click="openApp('badges'); ui.menu=false"><span></span><div>{{ t('menu.badges')}}</div><span></span></div>
+    <div class="item" @click="openApp('experience'); ui.menu=false"><span><img src="./img/icons/24x24/applications-internet.png"></span><div>{{ t('menu.experience') }}</div><span></span></div>
+    <div class="item" @click="openApp('skills'); ui.menu=false"><span><img src="./img/icons/24x24/basket.png"></span><div>{{ t('menu.skills') }}</div><span></span></div>
+    <div class="item" @click="openApp('education'); ui.menu=false"><span><img src="./img/icons/24x24/kbruch.png"></span><div>{{ t('menu.education') }}</div><span></span></div>
+    <div class="item" @click="openApp('download'); ui.menu=false"><span><img src="./img/icons/24x24/folder-downloads.png"></span><div>{{ t('menu.download') }}</div><span></span></div>
+    <div class="item" @click="openApp('contact'); ui.menu=false"><span><img src="./img/icons/24x24/mail-message.png"></span><div>{{ t('menu.contact') }}</div><span></span></div>
+    <div class="item" @click="openApp('badges'); ui.menu=false"><span><img src="./img/icons/24x24/certificate-server.png"></span><div>{{ t('menu.badges')}}</div><span></span></div>
     <div class="hr"></div>
     <div class="item" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
   </nav>
@@ -237,13 +237,12 @@
       about: {
         title: 'Angel Barrientos — Technical Lead & Software Architect',
         summary: 'Ingeniero en sistemas con 16 años de experiencia, especializado en backend, arquitectura y entornos de infraestructura.',
-        profile: `Desarrollador backend senior con dieciséis años de práctica continua. Trabajo principalmente con PHP —desde 5.6 hasta 8.x— y Python 3.x, además de JavaScript con Node.js; en los últimos años he incorporado C# sobre .NET 6. Conservo experiencia histórica en Java 1.6, de ahí mi obsesión por la programación orientada a objetos.
-Uso Linux como sistema diario desde 2008 —vengo de la época del kernel 2.6—, con scripting en Bash/Shell, administración básica de sistemas y una evolución natural hacia entornos cloud y contenedorizados.
+        profile: `Desarrollador backend senior con dieciséis años de trayectoria profesional. Trabajo principalmente con PHP —desde 5.6 hasta 8.x— y Python 3.x, además de JavaScript con Node.js; en los últimos años he incorporado C# sobre .NET 6. Conservo experiencia histórica en Java 1.6, de ahí mi obsesión por la programación orientada a objetos.
+Uso Linux como sistema principal desde 2008 —vengo de la época del kernel 2.6—, con scripting en Bash/Shell, administración de servicios y una evolución natural hacia entornos cloud y contenedorizados.
 
-La idea siempre es que el software debe pensarse como una estructura viva: modular, escalable y entendible. La arquitectura hexagonal es, por decirlo así, la arquitectura de la casa.
-Amo los estándares y convenciones del ecosistema (PSR en PHP, PEP en Python), disfruto las pruebas unitarias y escribir documentación en Markdown —soy un hombre de gustos simples—.
-
-En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis habilidades blandas: comunicación, liderazgo técnico y la paciencia necesaria para que un equipo funcione sin ruido, incluso cuando el sistema sí lo hace.`,
+Concibo el software como una estructura viva: modular, escalable y entendible. La arquitectura hexagonal es, por decirlo así, la arquitectura de la casa.
+Respeto los estándares y convenciones del ecosistema (PSR en PHP, PEP en Python), disfruto las pruebas unitarias y la documentación en Markdown.
+Soy un hombre de gustos simples.`,
         location_key: 'Ubicación:',
         location: ' CDMX · modalidad actual: remoto',
         languages: 'Idiomas: Español nativo · Inglés B1',
@@ -531,7 +530,7 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
         fit: 'cover',
         effectsEnabled: true,
         reducedMotion: false,
-        animationSpeed: 1.0 // factor multiplicador (1 = normal)
+        animationSpeed: 1.0
       }, init);
     }
     /**
@@ -930,8 +929,8 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
           </div>
         </header>
         <div class="hr"></div>
-        <article class="about-body">
-          <p class="about-profile">{{ t('about.profile') }}</p>
+        <article class="about-col">
+          <p class="muted">{{ t('about.profile') }}</p>
         </article>
         <section class="about-info grid cols-2">
           <div class="about-col">
@@ -944,10 +943,10 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
             <p><strong>{{ t('about.value').split(':')[0] }}:</strong> <span class="muted">{{ t('about.value').split(':')[1] }}</span></p>
           </div>
           <div class="about-col">
-            <p><strong>{{ t('about.role_key') }}</strong> <span>{{ t('about.role_now') }}</span></p>
+            <p><strong>{{ t('about.role_key') }}</strong> <span class="muted">{{ t('about.role_now') }}</span></p>
           </div>
           <div class="about-col">
-            <p><strong>Soft Skills:</strong> <span>{{ t('about.softskills') }}</span></p>
+            <p><strong>Soft Skills:</strong> <span class="muted">{{ t('about.softskills') }}</span></p>
           </div>
         </section>
       </section>
@@ -1378,16 +1377,28 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
         <h2>{{ t('projects.title') }}</h2>
         <div class="projects-grid">
           <section class="project-group">
-            <h3>tiempo total de codificación</h3>
+            <h3>Metricas Personales</h3>
             <div class="project-list">
               <div class="project">
-                <a href="https://wakatime.com/@8a272fcb-113b-4d48-b227-e717ab94571a"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a.svg" alt="Total time coded since Feb 11 2015" /></a>
+                <h4>Actividad técnica acumulada</h4>
+                <p class="desc">Registro histórico de todas las horas de interacción técnica: editores, terminal, desarrollo, automatizaciones y trabajo operativo. Una visión continua de diez años de actividad medida.</p>
+                <p class="usage">
+                  <a href="https://wakatime.com/@8a272fcb-113b-4d48-b227-e717ab94571a"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a.svg" alt="Total time coded since Feb 11 2015" /></a>
+                </p>
               </div>
               <div class="project">
-                <img src="https://camo.githubusercontent.com/1f36fad378243c766e543e59aed261a5cbabada25f46066e55d601804f9e6c11/68747470733a2f2f77616b6174696d652e636f6d2f73686172652f40756574696b6f2f37326638383765382d643830642d343032322d393163362d3434646463626137633866352e706e67" alt="Coding activity" width="600px" data-canonical-src="https://wakatime.com/share/@uetiko/72f887e8-d80d-4022-91c6-44ddcba7c8f5.png" style="max-width: 100%;">
+                <h4>Ritmo anual de contribución</h4>
+                <p class="desc">Compilación anual de commits realizados en proyectos personales, laborales y repositorios privados. Refleja constancia técnica en múltiples plataformas de control de versiones.</p>
+                <p class="usage">
+                  <img src="https://camo.githubusercontent.com/1f36fad378243c766e543e59aed261a5cbabada25f46066e55d601804f9e6c11/68747470733a2f2f77616b6174696d652e636f6d2f73686172652f40756574696b6f2f37326638383765382d643830642d343032322d393163362d3434646463626137633866352e706e67" alt="Coding activity" width="600px" data-canonical-src="https://wakatime.com/share/@uetiko/72f887e8-d80d-4022-91c6-44ddcba7c8f5.png" style="max-width: 100%;">
+                </p>
               </div>
               <div class="project">
-                <a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565"><img src="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565" alt="uetiko" data-canonical-src="https://github-readme-stats.vercel.app/api?username=uetiko&amp;show_icons=true" style="max-width: 100%;"></a>
+                <h4>Actividad pública en GitHub</h4>
+                <p class="desc">Indicadores visibles de mi trabajo en repositorios abiertos: contribuciones, issues, PRs y actividad anual. Es la parte auditada públicamente de una práctica profesional mayoritariamente privada.</p>
+                <p class="usage">
+                  <a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565"><img src="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565" alt="uetiko" data-canonical-src="https://github-readme-stats.vercel.app/api?username=uetiko&amp;show_icons=true" style="max-width: 100%;"></a>
+                </p>
               </div>
             </div>
           </section>
@@ -1396,35 +1407,59 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
             <div class="project-list">
               <div class="project">
                 <h4>Landing Eladio</h4>
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c.svg" alt="wakatime"></a>
+                <p class="desc">Implementación real de una landing estilo Windows 95 para el artista Eladio (Rimas). Se partió de un HTML base y se reconstruyó como un escritorio funcional con música, imágenes y contenido interactivo.</p>
+                <p class="usage">
+                  <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Stoyco AWS Console</h4>
+                <p class="desc">Tiempo dedicado a la administración completa de la cuenta AWS de Stoyco: servicios, seguridad, recursos, monitoreo y operación diaria del entorno cloud.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>admisistración y reportes en base de datos </h4>
+                <p class="desc">Gestión y análisis de DocumentDB: consultas complejas, modelados, reportes operativos, limpieza de datos y diagramación de relaciones para analítica interna.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Scripts varios (nodejs)</h4>
+                <p class="desc">Conjunto de scripts orientados a mantenimiento y saneamiento de datos sobre Amazon DocumentDB, usados para operaciones internas y automatizaciones puntuales.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Core (.net core 6)</h4>
+                <p class="desc">Microservicio principal en .NET 6 desplegado en Kubernetes. Incluye soporte de bugs críticos y la reimplementación del módulo de saldo de Stoycoins.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Micro servicio Usuario (nodejs)</h4>
+                <p class="desc">Separación formal de la lógica de usuarios desde el microservicio Core. Implementado en Node.js y ejecutado en AWS Lambda para aislar responsabilidades y mejorar mantenibilidad.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Backoffice (mantenimiento de errores criticos, Nodejs)</h4>
+                <p class="desc">Mantenimiento operativo y corrección de errores críticos en el backoffice administrativo, desarrollado con Angular.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Queue multi propocito (follows, reports, mailchimp)</h4>
+                <p class="desc">Cola de procesamiento para flujos internos: follows, reportes, Mailchimp y otros servicios. Diseñada para dar continuidad y estabilidad al sistema.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3.svg" alt="wakatime"></a>
+                </p>
               </div>
             </div>
           </section>
@@ -1433,11 +1468,17 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
             <div class="project-list">
               <div class="project">
                 <h4>Channel Manager Backend (fastApi)</h4>
+                <p class="desc">Apoyo técnico puntual al equipo interno de Norte19. Corrección de problemas en las integraciones con Booking y Expedia, ajuste de flujos de reservas y estabilización del pipeline de despliegue. Las migraciones de base de datos se automatizaron para evitar fallos al promover nuevas versiones.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40.svg" alt="wakatime"></a>
+                </p>
               </div>
               <div class="project">
                 <h4>Channel Manager Frontend (Svelt)</h4>
+                <p class="usage">Corrección de errores críticos y normalización del manejo de respuestas. Se sustituyeron los retornos 200 genéricos por respuestas basadas en JSON:API, mejorando claridad, trazabilidad y mensajes de error para el usuario. Ajuste del sistema de alertas para ofrecer retroalimentación más útil y menos ambigua.</p>
+                <p class="usage">
                 <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb.svg" alt="wakatime"></a>
+                </p>
               </div>
             </div>
           </section>
@@ -1655,13 +1696,13 @@ En los últimos años mi rol me ha llevado a desarrollar con más conciencia mis
        */
       const openApp = (name) => {
         switch(name){
-          case 'about': makeWin('about', t('menu.about'), '🛈', 'About'); break;
-          case 'experience': makeWin('experience', t('menu.experience'), '💼', 'Experience'); break;
-          case 'skills': makeWin('skills', t('menu.skills'), '🧰', 'Skills'); break;
-          case 'education': makeWin('education', t('menu.education'), '🎓', 'Education'); break;
-          case 'download': makeWin('download', t('menu.download'), '⬇', 'Download'); break;
-          case 'contact': makeWin('contact', t('menu.contact'), '✉', 'Contact'); break;
-          case 'badges': makeWin('badges', t('menu.badges'), '','ProjectsBadges'); break;
+          case 'about': makeWin('about', t('menu.about'), './img/icons/24x24/office-address-book.png', 'About'); break;
+          case 'experience': makeWin('experience', t('menu.experience'), './img/icons/24x24/preferences-system-network.png', 'Experience'); break;
+          case 'skills': makeWin('skills', t('menu.skills'), './img/icons/24x24/basket.png', 'Skills'); break;
+          case 'education': makeWin('education', t('menu.education'), './img/icons/24x24/applications-education-university.png', 'Education'); break;
+          case 'download': makeWin('download', t('menu.download'), './img/icons/24x24/folder-downloads.png', 'Download'); break;
+          case 'contact': makeWin('contact', t('menu.contact'), './img/icons/24x24/mail-folder-inbox.png', 'Contact'); break;
+          case 'badges': makeWin('badges', t('menu.badges'), './img/icons/24x24/certificate-server.png','ProjectsBadges'); break;
         }
         telemetry.cta('open_app', { name });
       };
