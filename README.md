@@ -8,11 +8,11 @@ Portafolio/CV presentado como **escritorio** con ventanas, barra de tareas y “
 
 ## Propósito
 
-Este repositorio implementa un escritorio web de inspiración Win95/GNOME 1 con un administrador de ventanas, un compositor de efectos y una capa de telemetría integrada. El objetivo es ofrecer un entorno demostrativo, autosuficiente y legible, donde la interacción se piense como un sistema y no como un conjunto de trucos visuales. La aplicación se ejecuta como un sitio estático, sin build ni herramienta de empaquetado, y se sostiene sobre Vue 3 vía CDN. El archivo `index.html` contiene todo el núcleo funcional y la plantilla de interfaz, de modo que la arquitectura y el flujo de control pueden inspeccionarse sin obstáculos.
+Este repositorio implementa un escritorio web de inspiración Win95/GNOME 1 con un administrador de ventanas, un compositor de efectos y una capa de telemetría integrada. La aplicación se ejecuta como un sitio estático, sin build ni herramienta de empaquetado, y se sostiene sobre Vue 3 vía CDN. `index.html` contiene el shell HTML y la plantilla; el runtime está organizado en módulos ES nativos bajo `js/`.
 
 ## Alcance y arquitectura
 
-El escritorio se apoya en cuatro piezas con responsabilidades acotadas. El `WindowManager` mantiene la pila de ventanas, el z-index, la geometría y las banderas de estado; expone operaciones atómicas para crear, enfocar, minimizar, restaurar, maximizar y cerrar, y serializa el estilo inline para que el render en Vue sea determinista. El `EventBus` ofrece publicación y suscripción en memoria y define el contrato de eventos del ciclo de vida de una ventana, desde la apertura hasta el cierre, pasando por foco, blur, minimizado y restauración. El `EffectManager` registra efectos con nombre y los ejecuta bajo control del compositor, respetando las preferencias de movimiento reducido y la velocidad de animación. El `Compositor` orquesta las transiciones en respuesta a los eventos del bus y expone flags reactivos como “glass”, “wallpaper” y “fit” que se proyectan en el template. La interfaz de usuario en Vue solo refleja el estado de estas capas, sin lógica acoplada a efectos ni a detalles de apilamiento.
+El escritorio se apoya en módulos cohesivos con responsabilidades acotadas. `WindowManager` mantiene la pila, el z-index, la geometría y las banderas de estado, y serializa el estilo inline; `EventBus` define el contrato de eventos; `EffectManager` registra y ejecuta efectos; `Compositor` orquesta las transiciones con una función DOM inyectada desde el shell. Los componentes de contenido, i18n, telemetría, journal y proyectos permanecen en módulos separados sin cambiar el comportamiento visible.
 
 ## Flujo de control
 
@@ -20,7 +20,7 @@ La interacción sigue un camino claro. Un gesto de usuario provoca una llamada a
 
 ## Window Manager
 
-`WindowManager` encapsula la pila de ventanas y todas las operaciones atómicas sobre una unidad “ventana”. Cada instancia creada por `create` lleva identidad estable (`id`), metadatos (`title`, `icon`, `component`, `props`) y geometría (`x`, `y`, `w`, `h`) junto con banderas `minimized` y `maximized`. El administrador preserva un contador `z` que garantiza orden por apilamiento. El método `focus` actualiza el z-index de la ventana objetivo y reordena la pila de forma creciente para que el último foco quede al frente. `toggleMax` alterna maximización guardando un snapshot mínimo de la geometría normal en `win.prev` para restauración exacta. `style(win)` serializa el estado operativo de una ventana a CSS inline, incluyendo `display:none` cuando el estado es minimizado. `syncToDOM(id)` permite empujar al DOM cualquier cambio que no fluye por reactividad (p. ej. un toggle de maximizado que altera dimensiones inmediatamente). Cierre y minimizado son idempotentes y no fallan si el `id` no existe.
+`WindowManager` encapsula la pila de ventanas y las operaciones atómicas sobre una unidad “ventana”. Cada instancia creada por `create` lleva identidad estable (`id`), metadatos (`title`, `icon`, `component`) y geometría (`x`, `y`, `w`, `h`) junto con banderas `minimized` y `maximized`. El administrador preserva un contador `z`, serializa el estilo operativo a CSS inline y no conoce el DOM ni lo consulta.
 
 El administrador no conoce la barra de tareas ni emite eventos; es deliberadamente mudo. Cualquier efecto secundario se dispara desde el “shell” de la app que llama sus métodos y a la vez publica en el `EventBus` los eventos correspondientes.
 
@@ -30,7 +30,7 @@ El administrador no conoce la barra de tareas ni emite eventos; es deliberadamen
 
 ## Compositor y efectos
 
-El compositor se inicializa con referencias al bus, al `StateManager` y al `EffectManager`. Expone flags observables como `glass`, `wallpaper` y `fit` que el template usa para clases o estilos. El compositor no define transiciones; registra en el `EffectManager` un catálogo de efectos con nombre. La coreografía es simple: al abrir una ventana, reproduce `transition:open` seguido de `material:shadow:strong`; al cerrar o minimizar ejecuta `transition:close` o `transition:minimize` y solo entonces invoca `onDone`. La recuperación de foco cambia la sombra de `weak` a `strong`. La restauración limpia residuos de clases “is-closing”, marca “is-open” y refuerza la sombra. La orden `compositor.toggleGlass` invierte el flag “glass” y dispara un efecto corto que ajusta `backdrop-filter` sin reflow agresivo. El compositor resuelve elementos de ventana con un selector por atributo `data-win-id`, de modo que no depende de referencias de Vue.
+El compositor se inicializa con el bus, `StateManager`, `EffectManager` y una función `getElement(id)` inyectada por `app.js`. Orquesta transiciones en respuesta a eventos del bus, sin acceder a ventanas, tareas ni estado de Vue o `WindowManager`.
 
 Los efectos registrados cubren transiciones de apertura y cierre, un minimizar con FLIP hacia el botón de tarea, restablecimiento con breve “scale” para evitar popping, sombras diferenciadas por foco, una animación de atención y un “shake” de feedback. La velocidad respeta `prefers-reduced-motion` y un factor multiplicador dinámico. No hay coupling con los estilos finales; los efectos solo añaden o quitan clases y esperan `transitionend` con un timeout de seguridad.
 
@@ -77,7 +77,7 @@ Desktop Environment
 
 ## Cómo crear una nueva ventana
 
-La creación se aborda desde el punto de extensión correcto: un nombre lógico para la app, un componente Vue para el contenido y un registro en el switch de `openApp`. Primero se implementa un componente con API de props y sin efectos secundarios globales. Un ejemplo minimalista que respeta el estilo existente sería:
+La creación se aborda desde el punto de extensión correcto: un nombre lógico para la app, un componente Vue para el contenido y una entrada en el registro estático de `openApp`. Primero se implementa un componente con API de props y sin efectos secundarios globales.
 
 ```js
 const Notes = {
@@ -91,17 +91,11 @@ const Notes = {
 };
 ```
 
-La instancia Vue debe declararlo en `components`. A continuación se extiende la función `openApp` para aceptar un nuevo nombre y delegar a `makeWin` con un `id` estable, un título localizado, un icono textual y el nombre del componente. Un registro correcto tiene esta forma:
+La instancia Vue debe declararlo en `components`. A continuación se añade una entrada al registro estático de `openApp` con un `id` estable, un título localizado, un icono y el nombre del componente.
 
 ```js
-const openApp = (name) => {
-  switch (name) {
-    case 'notes':
-      makeWin('notes', 'Notas', '📝', 'Notes');
-      break;
-    // casos existentes...
-  }
-  telemetry.cta('open_app', { name });
+const appRegistry = {
+  notes: { id: 'notes', title: 'menu.notes', icon: '📝', component: 'Notes' }
 };
 ```
 
@@ -157,7 +151,7 @@ La minimización es cooperativa entre UI, bus y `WindowManager`. El botón de mi
 
 ## Arrastre y redimensionado
 
-El arrastre se inicia en el `@mousedown` del `header` de la ventana. Si la ventana está maximizada se publica un evento de feedback y no se permite el movimiento. Durante la operación se activa el “ghost” para evitar reflows costosos; al terminar se materializan las nuevas coordenadas en el objeto gestionado por `WindowManager` y se limpia el estado del “ghost”. El redimensionado usa el mismo patrón con mínimos de anchura y altura y límites duros respecto al tamaño de la ventana gráfica. Tras confirmar el tamaño final, `wm.syncToDOM` no es necesario porque la geometría se refleja por el getter reactivo `style`.
+El arrastre se inicia en el `@mousedown` del `header` de la ventana. Si la ventana está maximizada se publica un evento de feedback y no se permite el movimiento. Durante la operación se activa el “ghost” para evitar reflows costosos; al terminar se materializan las nuevas coordenadas en el modelo del `WindowManager` y se limpia el estado del “ghost”. El redimensionado usa el mismo patrón con mínimos de anchura y altura y límites duros respecto al tamaño de la ventana gráfica. El getter reactivo `style` refleja la geometría sin sincronización directa con el DOM.
 
 ## Compositor: interruptor “glass”
 
@@ -187,15 +181,9 @@ const Notes = {
 
 // 2) Registro en createApp({ components: { ..., Notes } })
 
-// 3) Switch de openApp
-const openApp = (name) => {
-  switch (name) {
-    case 'notes':
-      makeWin('notes', 'Notas', '📝', 'Notes');
-      break;
-    // casos ya existentes
-  }
-  telemetry.cta('open_app', { name });
+// 3) Registro estático de openApp
+const appRegistry = {
+  notes: { id: 'notes', title: 'menu.notes', icon: '📝', component: 'Notes' }
 };
 ```
 
