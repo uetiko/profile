@@ -30,11 +30,58 @@ const parseJournalEntries = data => {
   }).filter(entry => entry !== null && entry.url);
 };
 
-async function fetchJournal({ limit = 10 } = {}) {
-  const url = `https://blog.uetiko.com/feeds/posts/default?alt=json&max-results=${encodeURIComponent(limit)}`;
-  const response = await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } });
-  if (!response.ok) throw new Error(`Journal feed error: HTTP ${response.status}`);
-  return parseJournalEntries(await response.json());
+let journalJsonpSequence = 0;
+
+const nextJournalJsonpCallbackName = () => {
+  let callbackName;
+  do {
+    callbackName = `__journal_jsonp_${Date.now()}_${++journalJsonpSequence}`;
+  } while (callbackName in globalThis);
+  return callbackName;
+};
+
+function fetchJournal({ limit = 10 } = {}) {
+  const callbackName = nextJournalJsonpCallbackName();
+  const url = new URL('https://blog.uetiko.com/feeds/posts/default');
+  url.searchParams.set('alt', 'json-in-script');
+  url.searchParams.set('callback', callbackName);
+  url.searchParams.set('max-results', String(limit));
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    let settled = false;
+    let timeoutId;
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      script.remove();
+      delete globalThis[callbackName];
+    };
+    const settle = (handler, value) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      handler(value);
+    };
+
+    globalThis[callbackName] = data => {
+      try {
+        settle(resolve, parseJournalEntries(data));
+      } catch (error) {
+        settle(reject, error);
+      }
+    };
+    script.async = true;
+    script.src = url.href;
+    script.onerror = () => settle(reject, new Error('Journal feed request failed'));
+    timeoutId = setTimeout(() => settle(reject, new Error('Journal feed request timed out')), 10000);
+
+    try {
+      document.head.append(script);
+    } catch (error) {
+      settle(reject, error);
+    }
+  });
 }
 
 const Journal = {
