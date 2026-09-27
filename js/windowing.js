@@ -309,6 +309,11 @@ class Compositor {
       if (!element) return;
       await this._effects.play('material:shadow:weak', { id, element });
     });
+    this._bus.on('window.feedback', async ({ id, kind }) => {
+      const element = this._getElement(id);
+      if (!element) return;
+      if (kind === 'shake') await this._effects.play('feedback:shake', { id, element });
+    });
     this._bus.on('window.restored', async ({ id }) => {
       const element = this._getElement(id);
       if (!element) return;

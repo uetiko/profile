@@ -128,8 +128,6 @@ if (!Vue) {
           wm.restore(id);
           const view = windows.find(item => item.id === id);
           if (view) view.minimized = false;
-          const task = tasks.find(item => item.id === id);
-          if (task) task.active = true;
           bus.emit('window.restored', { id });
           bus.emit('window.focus', { id });
         };
@@ -216,6 +214,10 @@ if (!Vue) {
           event.stopPropagation();
           const win = wm.find(id);
           if (!win) return;
+          if (win.maximized) {
+            bus.emit('window.feedback', { id, kind: 'shake' });
+            return;
+          }
           drag.active = true;
           drag.id = id;
           drag.startX = event.clientX;
