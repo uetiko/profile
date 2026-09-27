@@ -27,9 +27,15 @@
   <meta name="publisher" content="uetiko.com">
   <title>Angel Barrientos — Retro Desktop</title>
   <meta name="description" content="CV interactivo de Angel Barrientos en formato de escritorio." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://rsms.me">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/microsoft/cascadia-code@v2405.31/fonts/webfonts/Cascadia.css">
   <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="license" type="application/rsl+xml" href="https://www.uetiko.com/license.xml">
 
   <script type="application/ld+json">
     {
@@ -98,27 +104,27 @@
 <main id="app" class="desktop" @contextmenu.prevent>
   <!-- Desktop icons -->
   <nav class="desktop-grid">
-    <div class="icon" tabindex="0" @dblclick="openApp('about')" @click="telemetry.click('icon', {element:'about'})">
+    <div class="icon" tabindex="0" role="button" @dblclick="openApp('about')" @click="telemetry.click('icon', {element:'about'})" @keydown.enter="openApp('about')" @keydown.space.prevent="openApp('about')">
       <img alt="About" src="./img/icons/64x64/view-pim-contacts.png" />
       <span>{{ t('icons.about') }}</span>
     </div>
-    <div class="icon" tabindex="0" @dblclick="openApp('experience')" @click="telemetry.click('icon', {element:'experience'})">
+    <div class="icon" tabindex="0" role="button" @dblclick="openApp('experience')" @click="telemetry.click('icon', {element:'experience'})" @keydown.enter="openApp('experience')" @keydown.space.prevent="openApp('experience')">
       <img alt="Experience" src="./img/icons/64x64/applications-internet.png" />
       <span>{{ t('icons.experience') }}</span>
     </div>
-    <div class="icon" tabindex="0" @dblclick="openApp('skills')" @click="telemetry.click('icon', {element:'skills'})">
+    <div class="icon" tabindex="0" role="button" @dblclick="openApp('skills')" @click="telemetry.click('icon', {element:'skills'})" @keydown.enter="openApp('skills')" @keydown.space.prevent="openApp('skills')">
       <img alt="Skills" src="./img/icons/64x64/basket.png" />
       <span>{{ t('icons.skills') }}</span>
     </div>
-    <div class="icon" tabindex="0" @dblclick="openApp('education')" @click="telemetry.click('icon', {element:'education'})">
+    <div class="icon" tabindex="0" role="button" @dblclick="openApp('education')" @click="telemetry.click('icon', {element:'education'})" @keydown.enter="openApp('education')" @keydown.space.prevent="openApp('education')">
       <img alt="Education" src="./img/icons/64x64/kformula.png" />
       <span>{{ t('icons.education') }}</span>
     </div>
-    <div class="icon" tabindex="0" @dblclick="openApp('download')" @click="telemetry.click('icon', {element:'download'})">
+    <div class="icon" tabindex="0" role="button" @dblclick="openApp('download')" @click="telemetry.click('icon', {element:'download'})" @keydown.enter="openApp('download')" @keydown.space.prevent="openApp('download')">
       <img alt="Download CV" src="./img/icons/64x64/folder-downloads.png" />
       <span>{{ t('icons.cv') }}</span>
     </div>
-    <div class="icon" tabindex="0" @dblclick="openApp('contact')" @click="telemetry.click('icon', {element:'contact'})">
+    <div class="icon" tabindex="0" role="button" @dblclick="openApp('contact')" @click="telemetry.click('icon', {element:'contact'})" @keydown.enter="openApp('contact')" @keydown.space.prevent="openApp('contact')">
       <img alt="Contact" src="./img/icons/64x64/internet-mail.png" />
       <span>{{ t('icons.contact') }}</span>
     </div>
@@ -183,23 +189,24 @@
     </aside>
   </footer>
   <!-- Start Menu -->
-  <nav v-if="ui.menu" class="menu" @click.outside>
-    <div class="item" @click="openApp('about'); ui.menu=false">
+  <nav v-if="ui.menu" class="menu">
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('about'); ui.menu=false" @keydown.enter="openApp('about'); ui.menu=false" @keydown.space.prevent="openApp('about'); ui.menu=false">
       <span><img src="./favicon-16x16.png"> </span><div>{{ t('menu.about') }}<div class="hint">{{ t('menu.about_hint') }}</div></div><span class="kbd">Enter</span>
     </div>
-    <div class="item" @click="openApp('experience'); ui.menu=false"><span><img src="./img/icons/24x24/applications-internet.png"></span><div>{{ t('menu.experience') }}</div><span></span></div>
-    <div class="item" @click="openApp('skills'); ui.menu=false"><span><img src="./img/icons/24x24/basket.png"></span><div>{{ t('menu.skills') }}</div><span></span></div>
-    <div class="item" @click="openApp('education'); ui.menu=false"><span><img src="./img/icons/24x24/kbruch.png"></span><div>{{ t('menu.education') }}</div><span></span></div>
-    <div class="item" @click="openApp('download'); ui.menu=false"><span><img src="./img/icons/24x24/folder-downloads.png"></span><div>{{ t('menu.download') }}</div><span></span></div>
-    <div class="item" @click="openApp('contact'); ui.menu=false"><span><img src="./img/icons/24x24/mail-message.png"></span><div>{{ t('menu.contact') }}</div><span></span></div>
-    <div class="item" @click="openApp('badges'); ui.menu=false"><span><img src="./img/icons/24x24/certificate-server.png"></span><div>{{ t('menu.badges')}}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('experience'); ui.menu=false" @keydown.enter="openApp('experience'); ui.menu=false" @keydown.space.prevent="openApp('experience'); ui.menu=false"><span><img src="./img/icons/24x24/applications-internet.png"></span><div>{{ t('menu.experience') }}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('skills'); ui.menu=false" @keydown.enter="openApp('skills'); ui.menu=false" @keydown.space.prevent="openApp('skills'); ui.menu=false"><span><img src="./img/icons/24x24/basket.png"></span><div>{{ t('menu.skills') }}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('education'); ui.menu=false" @keydown.enter="openApp('education'); ui.menu=false" @keydown.space.prevent="openApp('education'); ui.menu=false"><span><img src="./img/icons/24x24/kbruch.png"></span><div>{{ t('menu.education') }}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('download'); ui.menu=false" @keydown.enter="openApp('download'); ui.menu=false" @keydown.space.prevent="openApp('download'); ui.menu=false"><span><img src="./img/icons/24x24/folder-downloads.png"></span><div>{{ t('menu.download') }}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('contact'); ui.menu=false" @keydown.enter="openApp('contact'); ui.menu=false" @keydown.space.prevent="openApp('contact'); ui.menu=false"><span><img src="./img/icons/24x24/mail-message.png"></span><div>{{ t('menu.contact') }}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('badges'); ui.menu=false" @keydown.enter="openApp('badges'); ui.menu=false" @keydown.space.prevent="openApp('badges'); ui.menu=false"><span><img src="./img/icons/24x24/certificate-server.png"></span><div>{{ t('menu.badges')}}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('journal'); ui.menu=false" @keydown.enter="openApp('journal'); ui.menu=false" @keydown.space.prevent="openApp('journal'); ui.menu=false"><span><img src="img/icons/24x24/application-rss.png"></span><div>{{ t('menu.journal')}}</div><span></span></div>
     <div class="hr"></div>
-    <div class="item" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})" @keydown.enter="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})" @keydown.space.prevent="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
   </nav>
 </main>
 
 <!-- Vue 3 (CDN) -->
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
 <script type="module">
   /* ============================
      Utilities & Kernel Services
@@ -232,52 +239,236 @@
   const messages = {
     es: {
       icons: { about: 'Acerca de mí', experience: 'Experiencia', skills: 'Skills', education: 'Educación', cv: 'Descargar CV', contact: 'Contacto' },
-      menu: { about: 'Acerca de Angel', about_hint: 'Perfil y resumen ejecutivo', experience: 'Experiencia', skills: 'Competencias técnicas', education: 'Formación', download: 'Descargar CV (PDF)', contact: 'Contacto', compositor: 'Alternar compositor (vidrio/sólido)', badges: 'Distintivos' },
-
+      menu: {
+        about: 'Acerca de Angel',
+        about_hint: 'Perfil y resumen ejecutivo',
+        experience: 'Experiencia',
+        skills: 'Competencias técnicas',
+        education: 'Formación',
+        download: 'Descargar CV (PDF)',
+        contact: 'Contacto',
+        compositor: 'Alternar compositor (vidrio/sólido)',
+        badges: 'Distintivos',
+        journal: 'Journal'
+      },
+      common: { download: 'Descargar' },
       about: {
         title: 'Angel Barrientos — Technical Lead & Software Architect',
         summary: 'Ingeniero en sistemas con 16 años de experiencia, especializado en backend, arquitectura y entornos de infraestructura.',
-        profile: `Desarrollador backend senior con dieciséis años de trayectoria profesional. Trabajo principalmente con PHP —desde 5.6 hasta 8.x— y Python 3.x, además de JavaScript con Node.js; en los últimos años he incorporado C# sobre .NET 6. Conservo experiencia histórica en Java 1.6, de ahí mi obsesión por la programación orientada a objetos.
-Uso Linux como sistema principal desde 2008 —vengo de la época del kernel 2.6—, con scripting en Bash/Shell, administración de servicios y una evolución natural hacia entornos cloud y contenedorizados.
-
-Concibo el software como una estructura viva: modular, escalable y entendible. La arquitectura hexagonal es, por decirlo así, la arquitectura de la casa.
-Respeto los estándares y convenciones del ecosistema (PSR en PHP, PEP en Python), disfruto las pruebas unitarias y la documentación en Markdown.
-Soy un hombre de gustos simples.`,
+        profile: `Desarrollador backend senior con dieciséis años de trayectoria profesional. Trabajo principalmente con PHP —desde 5.6 hasta 8.x— y Python 3.x, además de JavaScript con Node.js; en los últimos años he incorporado C# sobre .NET 6. Conservo experiencia histórica en Java 1.6, de ahí mi obsesión por la programación orientada a objetos.\nUso Linux como sistema principal desde 2008 —vengo de la época del kernel 2.6—, con scripting en Bash/Shell, administración de servicios y una evolución natural hacia entornos cloud y contenedorizados.\n\nConcibo el software como una estructura viva: modular, escalable y entendible. La arquitectura hexagonal es, por decirlo así, la arquitectura de la casa.\nRespeto los estándares y convenciones del ecosistema (PSR en PHP, PEP en Python), disfruto las pruebas unitarias y la documentación en Markdown.\nSoy un hombre de gustos simples.`,
         location_key: 'Ubicación:',
         location: ' CDMX · modalidad actual: remoto',
         languages: 'Idiomas: Español nativo · Inglés B1',
-        value: 'Valor: Orden en entornos caóticos, decisiones técnicas sostenibles, documentación que explica el porqué y no sólo el qué.',
+        value_key: 'Valor',
+        value_detail: 'Orden en entornos caóticos, decisiones técnicas sostenibles, documentación que explica el porqué y no sólo el qué.',
         role_key: 'Líder técnico',
         role_now: ' estándares, revisiones, soporte a equipos, coordinación con negocio y clientes. Mantengo AWS y cierro brechas de código legado.',
         softskills: ' Negociación, comunicación asertiva, escucha activa, manejo de sesgos, delegación y selección. Sirven para que la parte técnica llegue entera al usuario.',
       },
-
       experience: {
         title: 'Experiencia profesional destacada',
         items: [
-          { role: 'Technical Lead', company: 'Nyx', period: '2023–Presente', details: 'Arquitectura AWS, automatización, observabilidad y estándares de entrega.' },
-          { role: 'Senior Software Engineer', company: 'VASS Latam / Telefónica Chile', period: '2021–2023', details: 'Magento 2.4; refactor de pagos; reducción de errores críticos; checkout más rápido.' },
-          { role: 'Senior Backend', company: 'PagoFácil.net', period: '2018–2021', details: 'Gateway CNP para Magento; facturación electrónica; antifraude.' },
-          { role: 'Developer / Jr PM', company: 'Enova', period: '2014–2018', details: 'Scrum + XP, documentación técnica, despliegues en proyectos educativos.' },
-          { role: 'Freelance / Consultor', company: 'Varios', period: '2008–2014', details: 'PHP full-stack, Linux admin, soporte Java para e-commerce e institucional.' }
+          {
+            company: 'Nyx Software y Tecnología',
+            role: 'Senior Software Engineer / Team Lead',
+            period: 'Ago 2023–Presente',
+            bullets: [
+              'Liderazgo transversal en arquitectura, infraestructura, datos y QA.',
+              'Reducción del 70% en bugs críticos y estabilización del backlog.',
+              'Diseño de reportes y relaciones en DocumentDB para analítica externa.',
+              'Creación de sistema estandarizado de landing pages con integración analítica.',
+              'Optimización de costos y escalabilidad en AWS (CloudFront/S3, IAM).'
+            ]
+          },
+          {
+            company: 'VASS Chile',
+            role: 'Senior Software Engineer (Magento)',
+            period: 'Nov 2020–Jul 2023',
+            bullets: [
+              'Migración de Telefónica Chile de Magento 2.2 a 2.4 con integraciones críticas.',
+              'Desarrollo de módulos de pago e interfaces en Magento 2.',
+              'Reducción de hallazgos en Kiuwan mediante estándares de código y guías internas.'
+            ]
+          },
+          {
+            company: 'PagoFácil',
+            role: 'Software Engineer Sr (Magento)',
+            period: 'Oct 2019–Feb 2020',
+            bullets: ['Implementación de gateway de pagos para Magento 2.3 con Pagofácil.']
+          },
+          {
+            company: 'ENOVA México',
+            role: 'Software Engineer Sr / Project Manager Jr',
+            period: 'Oct 2017–Abr 2019',
+            bullets: [
+              'Implementación de facturación CFDI 3.3 en Mako.',
+              'Establecimiento de Scrum; reducción del 80% en tickets de error.',
+              'Publicación de paquetes en Packagist y herramientas internas en Python.'
+            ]
+          },
+          {
+            company: 'Nyx Software and Technology',
+            role: 'CTO / Software Engineer Sr',
+            period: 'Abr 2016–Ago 2017',
+            bullets: [
+              'Migración Python 2.7→3.5 y Django 1.6→1.10.',
+              'Adopción de Gitflow y prácticas ágiles.'
+            ]
+          },
+          {
+            company: 'Otros roles (2011–2016)',
+            period: '',
+            bullets: [],
+            subtitle: 'AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.'
+          }
         ]
       },
-
       skills: {
         title: 'Competencias técnicas',
-        paragraphs: [
-          'Backend como especialidad. PHP es mi lenguaje principal; el resto lo uso con respeto: Python, C#/.NET, JavaScript; antes Java y Perl.',
-          'Bases de datos: SQL estándar (MySQL/MariaDB, PostgreSQL, Oracle) a nivel consulta y operación; admin más frecuente: MySQL/MariaDB, PostgreSQL y SQL Server on-premise.',
-          'NoSQL: Amazon DocumentDB (compatibilidad MongoDB 3.6/4.0/5.0). No es un fork; es un motor propio compatible con la API.',
-          'Infraestructura: AWS (Lambda, S3, CloudFront, IAM, DocumentDB, CloudWatch). Contenedores y orquestación: Docker → Kubernetes → OpenShift.',
-          'Arquitectura: Clean Architecture, DDD, SOLID, CQRS, CI/CD. Linux y Git en casa.'
+        left: [
+          {
+            heading: 'Soft Skills',
+            rows: [
+              { label: 'Habilidades principales', value: 'Comunicación asertiva · Escucha activa · Negociación · Delegación asertiva · Gestión de conflictos' },
+              { label: 'Competencias interpersonales', value: 'Igualdad y combate a sesgos · Manejo de clientes difíciles · Reclutamiento y selección técnica · Lectura rápida' }
+            ],
+            descs: [
+              'Formación continua en liderazgo y comunicación aplicada. Desarrollo de estrategias para negociación efectiva, empatía profesional y resolución de conflictos. Capacidad comprobada para mantener equipos funcionales bajo presión sin sacrificar la claridad ni el respeto.',
+              'Cursos y certificaciones recientes: "Conviértete en Estratega" · "Liderazgo y Gerencia en Tecnología" · "Gestión de Conflictos y Negociación" · "Comunicación Asertiva (Masterclass)" · "Administración de Operaciones".'
+            ]
+          },
+          {
+            heading: 'Backend',
+            rows: [
+              { label: 'Lenguajes', value: 'Python · PHP · .NET Core · Node.js' },
+              { label: 'Frameworks', value: 'FastAPI · Django · Laravel · Symfony · Svelte · Angular (mantenimiento) · Knockout (Magento)' }
+            ],
+            descs: ['Diseño y mantenimiento de servicios orientados a dominio. Desarrollo de APIs y microservicios, integración con sistemas externos y refactorización de código heredado. En frontend, trabajo con lógica funcional y componentes reactivos, no diseño visual.']
+          },
+          {
+            heading: 'Bases de datos',
+            rows: [
+              { label: 'Relacionales', value: 'MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora' },
+              { label: 'NoSQL', value: 'Amazon DocumentDB / MongoDB' }
+            ],
+            descs: ['Modelado lógico y físico de datos, agregaciones complejas y optimización de índices. Experiencia en integración analítica (Athena, Glue) y monitoreo de rendimiento.']
+          },
+          {
+            heading: 'Frontend',
+            rows: [
+              { label: 'Entorno', value: 'Angular (mantenimiento) · JavaScript' },
+              { label: 'Enfoque', value: 'lógica funcional y validaciones reactivas' }
+            ],
+            descs: ['Refactorización de componentes existentes, integración con APIs REST, mantenimiento de comportamiento y testing funcional. Sin foco en UI/UX ni maquetación.']
+          }
+        ],
+        right: [
+          {
+            heading: 'Infraestructura / Cloud',
+            rows: [
+              { label: 'Plataformas', value: 'AWS (Arquitecto Jr)' },
+              { label: 'Rol', value: 'Arquitecto junior AWS' }
+            ],
+            descs: ['Planificación y control de entornos cloud, gestión de costos, networking (VPCs, subredes), integración de pipelines y monitoreo centralizado. Participación en la planificación y administración.']
+          },
+          {
+            heading: 'Procesos',
+            rows: [
+              { label: 'Metodologías', value: 'Scrum · Kanban · Lean Delivery · PMBOK 7' },
+              { label: 'Prácticas', value: 'Code Reviews · Definición de políticas · Gestión de QA · Liderazgo técnico' }
+            ],
+            descs: ['Enfoque en la entrega sostenida y la claridad del proceso. Facilito revisiones de código, mentoring y priorización técnica bajo modelos de mejora continua.']
+          },
+          {
+            heading: 'Estándares y control de versiones',
+            rows: [
+              { label: 'Estándares', value: 'PSR · RFC 2119' },
+              { label: 'Versionado', value: 'Gitflow · Trunk-Based · Flujos híbridos' }
+            ],
+            descs: ['Aplicación consciente de convenciones y documentación técnica. Los estándares no son una referencia, sino una práctica constante; adapto el flujo de trabajo según el equipo y la escala del proyecto.']
+          }
         ]
       },
-
-      download: { title: 'Descarga de CV', hint: 'Versión ejecutiva en PDF para reclutadores.' },
-      education: { title: 'Formación y aprendizaje continuo' },
-      contact: { title: 'Contacto directo' },
-      projects: { title: 'Proyectos' },
+      download: {
+        title: 'Descarga de CV',
+        hint: 'Versión ejecutiva en PDF para reclutadores.',
+        btn_download: '⬇ Descargar CV (PDF)',
+        btn_view: '🗎 Ver CV en visor',
+        viewer_title: 'CV de Angel'
+      },
+      education: {
+        title: 'Formación y aprendizaje continuo',
+        formal: {
+          title: 'Ing. en Sistemas Computacionales, UNITEC Campus sur',
+          meta: 'México · Titulación en proceso',
+          detail: 'Base académica en ingeniería de software, estructuras de datos y sistemas distribuidos.'
+        },
+        complementary: {
+          title: 'Formación complementaria',
+          items: ['PMBOK 7', 'Lean Delivery', 'DevOps', 'Conflict Management', 'Leadership for Tech Teams']
+        },
+        current: {
+          title: 'En curso',
+          detail: 'Kubernetes → OpenShift y actualización avanzada de PHP / Python / Java.'
+        }
+      },
+      contact: {
+        title: 'Contacto directo',
+        footnote: 'Si deseas colaborar o tienes un proyecto interesante, no dudes en escribirme.'
+      },
+      journal_ui: {
+        header_desc: 'Entradas recientes del blog. Lectura completa en blog.uetiko.com',
+        loading: 'Cargando…',
+        error: 'No disponible por ahora.',
+        no_title: '(sin título)'
+      },
+      projects: {
+        title: 'Proyectos',
+        groups: [
+          {
+            heading: 'Métricas personales',
+            items: [
+              { title: 'Actividad técnica acumulada', desc: 'Registro histórico de todas las horas de interacción técnica: editores, terminal, desarrollo, automatizaciones y trabajo operativo. Una visión continua de diez años de actividad medida.', badge: 'wakatime_user' },
+              { title: 'Ritmo anual de contribución', desc: 'Compilación anual de commits realizados en proyectos personales, laborales y repositorios privados. Refleja constancia técnica en múltiples plataformas de control de versiones.', badge: 'wakatime_yearly' },
+              { title: 'Actividad pública en GitHub', desc: 'Indicadores visibles de mi trabajo en repositorios abiertos: contribuciones, issues, PRs y actividad anual. Es la parte auditada públicamente de una práctica profesional mayoritariamente privada.', badge: 'github_stats' }
+            ]
+          },
+          {
+            heading: 'Stoyco',
+            items: [
+              { title: 'Landing Eladio', desc: 'Implementación real de una landing estilo Windows 95 para el artista Eladio (Rimas). Se partió de un HTML base y se reconstruyó como un escritorio funcional con música, imágenes y contenido interactivo.', badge: 'wakatime_eladio' },
+              { title: 'Stoyco AWS Console', desc: 'Tiempo dedicado a la administración completa de la cuenta AWS de Stoyco: servicios, seguridad, recursos, monitoreo y operación diaria del entorno cloud.', badge: 'wakatime_stoyco_aws' },
+              { title: 'Administración y reportes en base de datos', desc: 'Gestión y análisis de DocumentDB: consultas complejas, modelados, reportes operativos, limpieza de datos y diagramación de relaciones para analítica interna.', badge: 'wakatime_stoyco_db' },
+              { title: 'Scripts varios (Node.js)', desc: 'Conjunto de scripts orientados a mantenimiento y saneamiento de datos sobre Amazon DocumentDB, usados para operaciones internas y automatizaciones puntuales.', badge: 'wakatime_stoyco_scripts' },
+              { title: 'Core (.NET Core 6)', desc: 'Microservicio principal en .NET 6 desplegado en Kubernetes. Incluye soporte de bugs críticos y la reimplementación del módulo de saldo de Stoycoins.', badge: 'wakatime_stoyco_core' },
+              { title: 'Microservicio Usuario (Node.js)', desc: 'Separación formal de la lógica de usuarios desde el microservicio Core. Implementado en Node.js y ejecutado en AWS Lambda para aislar responsabilidades y mejorar mantenibilidad.', badge: 'wakatime_stoyco_user' },
+              { title: 'Backoffice (mantenimiento de errores críticos, Node.js)', desc: 'Mantenimiento operativo y corrección de errores críticos en el backoffice administrativo, desarrollado con Angular.', badge: 'wakatime_stoyco_backoffice' },
+              { title: 'Queue multipropósito (follows, reports, Mailchimp)', desc: 'Cola de procesamiento para flujos internos: follows, reportes, Mailchimp y otros servicios. Diseñada para dar continuidad y estabilidad al sistema.', badge: 'wakatime_stoyco_queue' }
+            ]
+          },
+          {
+            heading: 'City Express (hoteles)',
+            items: [
+              { title: 'Channel Manager Backend (FastAPI)', desc: 'Apoyo técnico puntual al equipo interno de Norte19. Corrección de problemas en las integraciones con Booking y Expedia, ajuste de flujos de reservas y estabilización del pipeline de despliegue. Las migraciones de base de datos se automatizaron para evitar fallos al promover nuevas versiones.', badge: 'wakatime_cityexpress_backend' },
+              { title: 'Channel Manager Frontend (Svelte)', desc: 'Corrección de errores críticos y normalización del manejo de respuestas. Se sustituyeron los retornos 200 genéricos por respuestas basadas en JSON:API, mejorando claridad, trazabilidad y mensajes de error para el usuario.', badge: 'wakatime_cityexpress_frontend' }
+            ]
+          },
+          {
+            heading: 'Vass',
+            items: [
+              { title: 'Wiki', desc: '', badge: 'wakatime_vass_wiki' },
+              { title: 'Magento (Telefónica Chile)', desc: '', badge: 'wakatime_vass_magento' },
+              { title: 'Banco Estado (Symfony)', desc: '', badge: 'wakatime_vass_bancostado' }
+            ]
+          },
+          {
+            heading: 'Enova',
+            items: [
+              { title: 'Mako', desc: '', badge: 'wakatime_enova_mako' }
+            ]
+          }
+        ]
+      }
     },
 
     en: {
@@ -285,51 +476,251 @@ Soy un hombre de gustos simples.`,
       menu: {
         about: 'About Angel', about_hint: 'Profile & executive summary', experience: 'Experience',
         skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact',
-        compositor: 'Toggle compositor (glass/solid)', badges: 'Badges'
+        compositor: 'Toggle compositor (glass/solid)', badges: 'Badges', journal: 'Journal'
       },
-
+      common: { download: 'Download' },
       about: {
         title: 'Angel Barrientos — Technical Lead & Software Architect',
         summary: 'Software engineer with 16 years of experience. Backend-first, with architectural and operational criteria.',
-        profile: 'OO-oriented backend —~13 years of PHP— with professional stints in Java (1.6), Perl, Python, C#/.NET Core and JavaScript. Infra admin on-prem first; today AWS.',
+        profile: `Senior backend developer with sixteen years of professional experience. I work primarily in PHP — from 5.6 through 8.x — and Python 3.x, as well as JavaScript with Node.js; in recent years I have added C# on .NET 6. I retain working experience in Java 1.6, which explains my bias toward object-oriented design.\nI have used Linux as my primary OS since 2008 — back in the kernel 2.6 era — with Bash/Shell scripting, service administration, and a natural progression toward cloud and containerized environments.\n\nI think of software as a living structure: modular, scalable, and readable. Hexagonal architecture is, put simply, the architecture of the house. I follow ecosystem conventions (PSR in PHP, PEP in Python), enjoy unit testing, and document in Markdown. Simple tastes, precise tools.`,
+        location_key: 'Location:',
         location: 'Mexico City · current mode: remote',
-        languages: 'Native Spanish · English B1',
-        value: 'Order under pressure, sustainable technical decisions, documentation that explains the why —not only the what.',
-        role_now: 'Technical lead: standards, reviews, team support, business/client coordination. I keep AWS healthy and close gaps in legacy code.',
+        languages: 'Languages: Native Spanish · English B1',
+        value_key: 'Value',
+        value_detail: 'Order under pressure, sustainable technical decisions, documentation that explains the why — not only the what.',
+        role_key: 'Technical Lead',
+        role_now: 'Standards, reviews, team support, business and client coordination. I keep AWS healthy and close gaps in legacy code.',
         softskills: 'Negotiation, assertive communication, active listening, bias handling, delegation and hiring. They make the technical part land intact.'
       },
-
       experience: {
         title: 'Highlighted professional experience',
         items: [
-          { role: 'Technical Lead', company: 'Nyx', period: '2023–Present', details: 'AWS architecture, automation, observability and delivery standards.' },
-          { role: 'Senior Software Engineer', company: 'VASS Latam / Telefónica Chile', period: '2021–2023', details: 'Magento 2.4; payments refactor; fewer critical errors; faster checkout.' },
-          { role: 'Senior Backend', company: 'PagoFácil.net', period: '2018–2021', details: 'CNP gateway for Magento; e-invoicing; antifraud.' },
-          { role: 'Developer / Jr PM', company: 'Enova', period: '2014–2018', details: 'Scrum + XP, technical docs, deployments in education projects.' },
-          { role: 'Freelance / Consultant', company: 'Various', period: '2008–2014', details: 'PHP full-stack, Linux admin, Java support for e-commerce and institutional.' }
+          {
+            company: 'Nyx Software y Tecnología',
+            role: 'Senior Software Engineer / Team Lead',
+            period: 'Aug 2023–Present',
+            bullets: [
+              'Cross-functional leadership across architecture, infrastructure, data, and QA.',
+              '70% reduction in critical bugs and backlog stabilization.',
+              'Design of DocumentDB reports and relations for external analytics.',
+              'Built a standardized landing page system with analytics integration.',
+              'Cost and scalability optimization on AWS (CloudFront/S3, IAM).'
+            ]
+          },
+          {
+            company: 'VASS Chile',
+            role: 'Senior Software Engineer (Magento)',
+            period: 'Nov 2020–Jul 2023',
+            bullets: [
+              'Migrated Telefónica Chile from Magento 2.2 to 2.4 with critical integrations.',
+              'Developed payment modules and interfaces in Magento 2.',
+              'Reduced Kiuwan findings through code standards and internal guidelines.'
+            ]
+          },
+          {
+            company: 'PagoFácil',
+            role: 'Software Engineer Sr (Magento)',
+            period: 'Oct 2019–Feb 2020',
+            bullets: ['Implemented a payment gateway for Magento 2.3 with PagoFácil.']
+          },
+          {
+            company: 'ENOVA México',
+            role: 'Software Engineer Sr / Project Manager Jr',
+            period: 'Oct 2017–Apr 2019',
+            bullets: [
+              'Implemented CFDI 3.3 e-invoicing in Mako.',
+              'Established Scrum; 80% reduction in error tickets.',
+              'Published Packagist packages and internal Python tools.'
+            ]
+          },
+          {
+            company: 'Nyx Software and Technology',
+            role: 'CTO / Software Engineer Sr',
+            period: 'Apr 2016–Aug 2017',
+            bullets: [
+              'Python 2.7→3.5 and Django 1.6→1.10 migration.',
+              'Adopted Gitflow and agile practices.'
+            ]
+          },
+          {
+            company: 'Other roles (2011–2016)',
+            period: '',
+            bullets: [],
+            subtitle: 'AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.'
+          }
         ]
       },
-
       skills: {
         title: 'Technical competencies',
-        paragraphs: [
-          'Backend as a specialty. PHP is my main language; I use the rest with respect: Python, C#/.NET, JavaScript; earlier Java and Perl.',
-          'Databases: standard SQL (MySQL/MariaDB, PostgreSQL, Oracle) for querying and ops; more admin experience with MySQL/MariaDB, PostgreSQL and on-prem SQL Server.',
-          'NoSQL: Amazon DocumentDB (MongoDB API compatibility 3.6/4.0/5.0). Not a fork; its own engine with API compatibility.',
-          'Infrastructure: AWS (Lambda, S3, CloudFront, IAM, DocumentDB, CloudWatch). Containers & orchestration: Docker → Kubernetes → OpenShift.',
-          'Architecture: Clean Architecture, DDD, SOLID, CQRS, CI/CD. Linux and Git at home.'
+        left: [
+          {
+            heading: 'Soft Skills',
+            rows: [
+              { label: 'Core skills', value: 'Assertive communication · Active listening · Negotiation · Assertive delegation · Conflict resolution' },
+              { label: 'Interpersonal competencies', value: 'Bias awareness · Difficult client management · Technical recruiting and screening · Speed reading' }
+            ],
+            descs: [
+              'Ongoing training in leadership and applied communication. Strategies for effective negotiation, professional empathy, and conflict resolution. Proven ability to keep teams functional under pressure without sacrificing clarity or respect.',
+              'Recent courses and certifications: "Become a Strategist" · "Leadership and Management in Technology" · "Conflict Management and Negotiation" · "Assertive Communication (Masterclass)" · "Operations Management".'
+            ]
+          },
+          {
+            heading: 'Backend',
+            rows: [
+              { label: 'Languages', value: 'Python · PHP · .NET Core · Node.js' },
+              { label: 'Frameworks', value: 'FastAPI · Django · Laravel · Symfony · Svelte · Angular (maintenance) · Knockout (Magento)' }
+            ],
+            descs: ['Design and maintenance of domain-oriented services. API and microservice development, integration with external systems, and legacy code refactoring. On the frontend side, I work with functional logic and reactive components — not visual design.']
+          },
+          {
+            heading: 'Databases',
+            rows: [
+              { label: 'Relational', value: 'MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora' },
+              { label: 'NoSQL', value: 'Amazon DocumentDB / MongoDB' }
+            ],
+            descs: ['Logical and physical data modeling, complex aggregations, and index optimization. Experience with analytics integration (Athena, Glue) and performance monitoring.']
+          },
+          {
+            heading: 'Frontend',
+            rows: [
+              { label: 'Environment', value: 'Angular (maintenance) · JavaScript' },
+              { label: 'Approach', value: 'functional logic and reactive validations' }
+            ],
+            descs: ['Refactoring of existing components, REST API integration, behavior maintenance, and functional testing. No focus on UI/UX or layout design.']
+          }
+        ],
+        right: [
+          {
+            heading: 'Infrastructure / Cloud',
+            rows: [
+              { label: 'Platforms', value: 'AWS (Junior Architect)' },
+              { label: 'Role', value: 'Junior AWS Architect' }
+            ],
+            descs: ['Cloud environment planning and control, cost management, networking (VPCs, subnets), pipeline integration, and centralized monitoring. Involved in planning and administration.']
+          },
+          {
+            heading: 'Process',
+            rows: [
+              { label: 'Methodologies', value: 'Scrum · Kanban · Lean Delivery · PMBOK 7' },
+              { label: 'Practices', value: 'Code Reviews · Policy definition · QA management · Technical leadership' }
+            ],
+            descs: ['Focus on sustained delivery and process clarity. I facilitate code reviews, mentoring, and technical prioritization under continuous improvement models.']
+          },
+          {
+            heading: 'Standards & Version Control',
+            rows: [
+              { label: 'Standards', value: 'PSR · RFC 2119' },
+              { label: 'Versioning', value: 'Gitflow · Trunk-Based · Hybrid flows' }
+            ],
+            descs: ['Deliberate application of conventions and technical documentation. Standards are a constant practice, not a reference; I adapt the workflow to the team and project scale.']
+          }
         ]
       },
-
-      download: { title: 'CV download', hint: 'Executive PDF version for recruiters.' },
-      education: { title: 'Education & continuous learning' },
-      contact: { title: 'Direct contact' },
-      projects: { title: 'Proyectos' },
+      download: {
+        title: 'CV download',
+        hint: 'Executive PDF version for recruiters.',
+        btn_download: '⬇ Download CV (PDF)',
+        btn_view: '🗎 View CV',
+        viewer_title: "Angel's CV"
+      },
+      education: {
+        title: 'Education & continuous learning',
+        formal: {
+          title: 'B.Sc. Computer Systems Engineering, UNITEC (Mexico City)',
+          meta: 'Mexico · Degree in progress',
+          detail: 'Academic background in software engineering, data structures, and distributed systems.'
+        },
+        complementary: {
+          title: 'Additional training',
+          items: ['PMBOK 7', 'Lean Delivery', 'DevOps', 'Conflict Management', 'Leadership for Tech Teams']
+        },
+        current: {
+          title: 'In progress',
+          detail: 'Kubernetes → OpenShift and advanced update in PHP / Python / Java.'
+        }
+      },
+      contact: {
+        title: 'Direct contact',
+        footnote: "If you'd like to collaborate or have an interesting project, feel free to reach out."
+      },
+      journal_ui: {
+        header_desc: 'Recent blog entries. Full reading at blog.uetiko.com',
+        loading: 'Loading…',
+        error: 'Not available right now.',
+        no_title: '(untitled)'
+      },
+      projects: {
+        title: 'Projects',
+        groups: [
+          {
+            heading: 'Personal Metrics',
+            items: [
+              { title: 'Cumulative technical activity', desc: 'Historical record of all technical interaction hours: editors, terminal, development, automations, and operational work. A continuous view of ten years of measured activity.', badge: 'wakatime_user' },
+              { title: 'Annual contribution pace', desc: 'Annual compilation of commits across personal, work, and private repositories. Reflects consistent technical output across multiple version control platforms.', badge: 'wakatime_yearly' },
+              { title: 'Public GitHub activity', desc: 'Visible indicators of my work on open repositories: contributions, issues, PRs, and yearly activity. The publicly audited portion of a largely private professional practice.', badge: 'github_stats' }
+            ]
+          },
+          {
+            heading: 'Stoyco',
+            items: [
+              { title: 'Landing Eladio', desc: 'Production implementation of a Windows 95-style landing for artist Eladio (Rimas). Built from a base HTML file into a functional desktop with music, images, and interactive content.', badge: 'wakatime_eladio' },
+              { title: 'Stoyco AWS Console', desc: "Time dedicated to full administration of Stoyco's AWS account: services, security, resources, monitoring, and day-to-day cloud operations.", badge: 'wakatime_stoyco_aws' },
+              { title: 'Database management and reporting', desc: 'DocumentDB management and analysis: complex queries, data modeling, operational reports, data cleanup, and relation diagramming for internal analytics.', badge: 'wakatime_stoyco_db' },
+              { title: 'Various scripts (Node.js)', desc: 'Set of scripts for maintenance and data sanitization on Amazon DocumentDB, used for internal operations and targeted automations.', badge: 'wakatime_stoyco_scripts' },
+              { title: 'Core (.NET Core 6)', desc: 'Main microservice in .NET 6 deployed on Kubernetes. Includes critical bug support and reimplementation of the Stoycoins balance module.', badge: 'wakatime_stoyco_core' },
+              { title: 'User microservice (Node.js)', desc: 'Formal separation of user logic from the Core microservice. Implemented in Node.js and deployed on AWS Lambda to isolate responsibilities and improve maintainability.', badge: 'wakatime_stoyco_user' },
+              { title: 'Backoffice (critical error maintenance, Node.js)', desc: 'Operational maintenance and critical error fixes in the administrative backoffice, built with Angular.', badge: 'wakatime_stoyco_backoffice' },
+              { title: 'Multi-purpose queue (follows, reports, Mailchimp)', desc: 'Processing queue for internal flows: follows, reports, Mailchimp, and other services. Designed for continuity and system stability.', badge: 'wakatime_stoyco_queue' }
+            ]
+          },
+          {
+            heading: 'City Express (hotels)',
+            items: [
+              { title: 'Channel Manager Backend (FastAPI)', desc: 'Targeted technical support for the Norte19 internal team. Fixed integration issues with Booking and Expedia, adjusted reservation flows, and stabilized the deployment pipeline. Database migrations were automated to prevent failures when promoting new versions.', badge: 'wakatime_cityexpress_backend' },
+              { title: 'Channel Manager Frontend (Svelte)', desc: 'Critical bug fixes and response handling normalization. Replaced generic 200 returns with JSON:API-based responses, improving clarity, traceability, and user-facing error messages.', badge: 'wakatime_cityexpress_frontend' }
+            ]
+          },
+          {
+            heading: 'Vass',
+            items: [
+              { title: 'Wiki', desc: '', badge: 'wakatime_vass_wiki' },
+              { title: 'Magento (Telefónica Chile)', desc: '', badge: 'wakatime_vass_magento' },
+              { title: 'Banco Estado (Symfony)', desc: '', badge: 'wakatime_vass_bancostado' }
+            ]
+          },
+          {
+            heading: 'Enova',
+            items: [
+              { title: 'Mako', desc: '', badge: 'wakatime_enova_mako' }
+            ]
+          }
+        ]
+      }
     }
   };
 
 
-  const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) || key;
+  const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) ?? key;
+
+  const BADGE_HTML = {
+    wakatime_user: '<a href="https://wakatime.com/@8a272fcb-113b-4d48-b227-e717ab94571a"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a.svg" alt="Total time coded since Feb 11 2015" /></a>',
+    wakatime_yearly: '<img src="https://camo.githubusercontent.com/1f36fad378243c766e543e59aed261a5cbabada25f46066e55d601804f9e6c11/68747470733a2f2f77616b6174696d652e636f6d2f73686172652f40756574696b6f2f37326638383765382d643830642d343032322d393163362d3434646463626137633866352e706e67" alt="Coding activity" width="600px" style="max-width:100%">',
+    github_stats: '<a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com/uetiko"><img src="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565" alt="uetiko github stats" style="max-width:100%;"></a>',
+    wakatime_eladio: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c.svg" alt="wakatime"></a>',
+    wakatime_stoyco_aws: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91.svg" alt="wakatime"></a>',
+    wakatime_stoyco_db: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079.svg" alt="wakatime"></a>',
+    wakatime_stoyco_scripts: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f.svg" alt="wakatime"></a>',
+    wakatime_stoyco_core: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d.svg" alt="wakatime"></a>',
+    wakatime_stoyco_user: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90.svg" alt="wakatime"></a>',
+    wakatime_stoyco_backoffice: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0.svg" alt="wakatime"></a>',
+    wakatime_stoyco_queue: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3.svg" alt="wakatime"></a>',
+    wakatime_cityexpress_backend: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40.svg" alt="wakatime"></a>',
+    wakatime_cityexpress_frontend: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb.svg" alt="wakatime"></a>',
+    wakatime_vass_wiki: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ed56c836-1a05-4d96-9bba-3d1461326bca"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ed56c836-1a05-4d96-9bba-3d1461326bca.svg" alt="wakatime"></a>',
+    wakatime_vass_magento: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/5b0b8537-7c4a-40d3-a782-d72f25d9820e"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/5b0b8537-7c4a-40d3-a782-d72f25d9820e.svg" alt="wakatime"></a>',
+    wakatime_vass_bancostado: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3b9407cd-283b-4dce-a6a9-d86392b100f2"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3b9407cd-283b-4dce-a6a9-d86392b100f2.svg" alt="wakatime"></a>',
+    wakatime_enova_mako: '<a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3caf4d19-3057-4614-b57f-69a9a347eaaa"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3caf4d19-3057-4614-b57f-69a9a347eaaa.svg" alt="wakatime"></a>'
+  };
 
   /**
    * A class for managing client-side telemetry, allowing for the tracking and sending of user interaction events
@@ -882,6 +1273,11 @@ Soy un hombre de gustos simples.`,
       });
     }
 
+
+    // --- Journal service
+
+
+
     /**
      * Retrieves an element from the DOM based on a specified window ID.
      *
@@ -899,6 +1295,95 @@ Soy un hombre de gustos simples.`,
     setWallpaper(url){ const s=this._state.set('wallpaper', url); this.wallpaper = s.wallpaper; }
     setFit(mode){ const s=this._state.set('fit', mode); this.fit = s.fit; }
   }
+
+  // --- Journal service
+  function extractImageFromHtml(html) {
+    if (!html) return null;
+    const match = html.match(/<img[^>]+src="([^">]+)"/i);
+    return match ? match[1] : null;
+  }
+
+  function extractTextExcerpt(html, max = 160) {
+    if (!html) return '';
+    const text = html
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return text.length > max ? text.slice(0, max) + '…' : text;
+  }
+
+  function parseJournalEntries(data) {
+    const rawEntries = data?.feed?.entry || [];
+    return rawEntries
+      .map(entry => {
+        try {
+          const content = entry.content?.$t || entry.summary?.$t || '';
+          const altLink = Array.isArray(entry.link)
+            ? entry.link.find(l => l.rel === 'alternate')?.href
+            : undefined;
+          return {
+            id:        entry.id?.$t        ?? '',
+            title:     entry.title?.$t     ?? '',
+            url:       altLink             ?? null,
+            published: entry.published?.$t ?? null,
+            excerpt:   extractTextExcerpt(content),
+            image:     extractImageFromHtml(content)
+          };
+        } catch {
+          return null;
+        }
+      })
+      .filter(e => e !== null && e.url);
+  }
+
+  // NOTA CORS: Blogger no incluye Access-Control-Allow-Origin en el feed
+  // ?alt=json. El fetch() desde uetiko.com será bloqueado por el browser.
+  // Siguiente fase: CloudFront Function en /api/journal que reenvíe la
+  // petición a Blogger añadiendo el header Access-Control-Allow-Origin.
+  //
+  // Ejemplo de CloudFront Function (event handler):
+  //   const r = await fetch('https://blog.uetiko.com/feeds/posts/default?alt=json&max-results=10');
+  //   return { statusCode: 200, headers: { 'access-control-allow-origin': '*',
+  //     'content-type': 'application/json' }, body: await r.text() };
+  //
+  // Una vez activo el proxy, cambiar la URL base a:
+  //   const url = `/api/journal?max-results=${encodeURIComponent(limit)}`;
+  async function fetchJournal({ limit = 10 } = {}) {
+    const url =
+      `https://blog.uetiko.com/feeds/posts/default` +
+      `?alt=json&max-results=${encodeURIComponent(limit)}`;
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Journal feed error: HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    return parseJournalEntries(data);
+  }
+
+  function extractPreviewFromHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+
+    const img = tmp.querySelector('img');
+    const image = img?.getAttribute('src') || '';
+
+    const text = (tmp.textContent || '')
+      .replace(/\u00A0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const excerpt = text.length > 220 ? text.slice(0, 220).trimEnd() + '…' : text;
+
+    return { excerpt, image };
+  }
+
+
 
   /* Content components (simple, static for MVP) */
   /**
@@ -940,7 +1425,7 @@ Soy un hombre de gustos simples.`,
               <span class="muted">{{ t('about.languages') }}</span></p>
           </div>
           <div class="about-col">
-            <p><strong>{{ t('about.value').split(':')[0] }}:</strong> <span class="muted">{{ t('about.value').split(':')[1] }}</span></p>
+            <p><strong>{{ t('about.value_key') }}:</strong> <span class="muted">{{ t('about.value_detail') }}</span></p>
           </div>
           <div class="about-col">
             <p><strong>{{ t('about.role_key') }}</strong> <span class="muted">{{ t('about.role_now') }}</span></p>
@@ -976,71 +1461,15 @@ Soy un hombre de gustos simples.`,
     template: `
       <section class="experience">
         <h2 class="exp-title">{{ t('experience.title') }}</h2>
-
-        <article class="exp-card">
+        <article v-for="item in t('experience.items')" :key="item.company" class="exp-card">
           <header>
-            <h3>Nyx Software y Tecnología</h3>
-            <p class="role">Senior Software Engineer / Team Lead <span class="period">(Ago 2023–Presente)</span></p>
+            <h3>{{ item.company }}</h3>
+            <p v-if="item.role" class="role">{{ item.role }} <span v-if="item.period" class="period">({{ item.period }})</span></p>
           </header>
-          <ul>
-            <li>Liderazgo transversal en arquitectura, infraestructura, datos y QA.</li>
-            <li>Reducción del 70% en bugs críticos y estabilización del backlog.</li>
-            <li>Diseño de reportes y relaciones en DocumentDB para analítica externa.</li>
-            <li>Creación de sistema estandarizado de landing pages con integración analítica.</li>
-            <li>Optimización de costos y escalabilidad en AWS (CloudFront/S3, IAM).</li>
+          <ul v-if="item.bullets && item.bullets.length">
+            <li v-for="b in item.bullets" :key="b">{{ b }}</li>
           </ul>
-        </article>
-
-        <article class="exp-card">
-          <header>
-            <h3>VASS Chile</h3>
-            <p class="role">Senior Software Engineer (Magento) <span class="period">(Nov 2020–Jul 2023)</span></p>
-          </header>
-          <ul>
-            <li>Migración de Telefónica Chile de Magento 2.2 a 2.4 con integraciones críticas.</li>
-            <li>Desarrollo de módulos de pago e interfaces en Magento 2.</li>
-            <li>Reducción de hallazgos en Kiuwan mediante estándares de código y guías internas.</li>
-          </ul>
-        </article>
-
-        <article class="exp-card">
-          <header>
-            <h3>PagoFácil</h3>
-            <p class="role">Software Engineer Sr (Magento) <span class="period">(Oct 2019–Feb 2020)</span></p>
-          </header>
-          <ul>
-            <li>Implementación de gateway de pagos para Magento 2.3 con Pagofácil.</li>
-          </ul>
-        </article>
-
-        <article class="exp-card">
-          <header>
-            <h3>ENOVA México</h3>
-            <p class="role">Software Engineer Sr / Project Manager Jr <span class="period">(Oct 2017–Abr 2019)</span></p>
-          </header>
-          <ul>
-            <li>Implementación de facturación CFDI 3.3 en Mako.</li>
-            <li>Establecimiento de Scrum; reducción del 80% en tickets de error.</li>
-            <li>Publicación de paquetes en Packagist y herramientas internas en Python.</li>
-          </ul>
-        </article>
-
-        <article class="exp-card">
-          <header>
-            <h3>Nyx Software and Technology</h3>
-            <p class="role">CTO / Software Engineer Sr <span class="period">(Abr 2016–Ago 2017)</span></p>
-          </header>
-          <ul>
-            <li>Migración Python 2.7→3.5 y Django 1.6→1.10.</li>
-            <li>Adopción de Gitflow y prácticas ágiles.</li>
-          </ul>
-        </article>
-
-        <article class="exp-card">
-          <header>
-            <h3>Otros roles (2011–2016)</h3>
-            <p class="role muted">AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.</p>
-          </header>
+          <p v-if="item.subtitle" class="role muted">{{ item.subtitle }}</p>
         </article>
       </section>
     `
@@ -1069,95 +1498,23 @@ Soy un hombre de gustos simples.`,
   const Skills = {
     props:['t'],
     template: `
-      <section class="skills">
-        <h2 class="skills-title">{{ t('skills.title') }}</h2>
-        <div class="skills-grid">
-
-          <!-- Columna izquierda -->
-          <div class="skills-col">
-            <div class="skills-block">
-              <h3>Soft Skills</h3>
-              <p><strong>Habilidades principales:</strong> Comunicación asertiva · Escucha activa · Negociación · Delegación asertiva · Gestión de conflictos</p>
-              <p><strong>Competencias interpersonales:</strong> Igualdad y combate a sesgos · Manejo de clientes difíciles · Reclutamiento y selección técnica · Lectura rápida</p>
-              <p class="desc">
-                Formación continua en liderazgo y comunicación aplicada. Desarrollo de estrategias para
-                negociación efectiva, empatía profesional y resolución de conflictos. Capacidad comprobada para
-                mantener equipos funcionales bajo presión sin sacrificar la claridad ni el respeto.
-              </p>
-              <p class="desc">
-                Cursos y certificaciones recientes: “Conviértete en Estratega” · “Liderazgo y Gerencia en Tecnología” ·
-                “Gestión de Conflictos y Negociación” · “Comunicación Asertiva (Masterclass)” · “Administración de Operaciones”.
-              </p>
+      <section class=”skills”>
+        <h2 class=”skills-title”>{{ t('skills.title') }}</h2>
+        <div class=”skills-grid”>
+          <div class=”skills-col”>
+            <div v-for=”block in t('skills.left')” :key=”block.heading” class=”skills-block”>
+              <h3>{{ block.heading }}</h3>
+              <p v-for=”row in block.rows” :key=”row.label”><strong>{{ row.label }}:</strong> {{ row.value }}</p>
+              <p v-for=”desc in block.descs” :key=”desc” class=”desc”>{{ desc }}</p>
             </div>
-            <div class="skills-block">
-              <h3>Backend</h3>
-              <p><strong>Lenguajes:</strong> Python · PHP · .NET Core · Node.js</p>
-              <p><strong>Frameworks:</strong> FastAPI · Django · Laravel · Symfony · Svelte · Angular (mantenimiento) · Knockout (Magento)</p>
-              <p class="desc">
-                Diseño y mantenimiento de servicios orientados a dominio. Desarrollo de APIs y microservicios,
-                integración con sistemas externos y refactorización de código heredado.
-                En frontend, trabajo con lógica funcional y componentes reactivos, no diseño visual.
-              </p>
-            </div>
-
-            <div class="skills-block">
-              <h3>Bases de datos</h3>
-              <p><strong>Relacionales:</strong> MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora</p>
-              <p><strong>NoSQL:</strong> Amazon DocumentDB / MongoDB</p>
-              <p class="desc">
-                Modelado lógico y físico de datos, agregaciones complejas y optimización de índices.
-                Experiencia en integración analítica (Athena, Glue) y monitoreo de rendimiento.
-              </p>
-            </div>
-
-            <div class="skills-block">
-              <h3>Frontend</h3>
-              <p><strong>Entorno:</strong> Angular (mantenimiento) · JavaScript</p>
-              <p><strong>Enfoque:</strong> lógica funcional y validaciones reactivas</p>
-              <p class="desc">
-                Refactorización de componentes existentes, integración con APIs REST,
-                mantenimiento de comportamiento y testing funcional. Sin foco en UI/UX ni maquetación.
-              </p>
-            </div>
-
           </div>
-
-          <!-- Columna derecha -->
-          <div class="skills-col">
-
-            <div class="skills-block">
-              <h3>Infraestructura / Cloud</h3>
-              <p><strong>Plataformas:</strong> AWS (Arquitecto Jr)</p>
-              <p><strong>Rol:</strong> Arquitecto junior AWS</p>
-              <p class="desc">
-                Planificación y control de entornos cloud, gestión de costos, networking (VPCs, subredes),
-                integración de pipelines y monitoreo centralizado. Participación en la planificación y administración.
-              </p>
+          <div class=”skills-col”>
+            <div v-for=”block in t('skills.right')” :key=”block.heading” class=”skills-block”>
+              <h3>{{ block.heading }}</h3>
+              <p v-for=”row in block.rows” :key=”row.label”><strong>{{ row.label }}:</strong> {{ row.value }}</p>
+              <p v-for=”desc in block.descs” :key=”desc” class=”desc”>{{ desc }}</p>
             </div>
-
-            <div class="skills-block">
-              <h3>Procesos</h3>
-              <p><strong>Metodologías:</strong> Scrum · Kanban · Lean Delivery · PMBOK 7</p>
-              <p><strong>Prácticas:</strong> Code Reviews · Definición de políticas · Gestión de QA · Liderazgo técnico</p>
-              <p class="desc">
-                Enfoque en la entrega sostenida y la claridad del proceso.
-                Facilito revisiones de código, mentoring y priorización técnica bajo modelos de mejora continua.
-              </p>
-            </div>
-
-            <div class="skills-block">
-              <h3>Estándares y control de versiones</h3>
-              <p><strong>Estándares:</strong> PSR · RFC 2119</p>
-              <p><strong>Versionado:</strong> Gitflow · Trunk-Based · Flujos híbridos</p>
-              <p class="desc">
-                Aplicación consciente de convenciones y documentación técnica.
-                Los estándares no son una referencia, sino una práctica constante;
-                adapto el flujo de trabajo según el equipo y la escala del proyecto.
-              </p>
-            </div>
-
           </div>
-
         </div>
       </section>
     `
@@ -1179,30 +1536,26 @@ Soy un hombre de gustos simples.`,
 
         <article class="edu-block">
           <header>
-            <h3>Ing. en Sistemas Computacionales, UNITEC Campus sur</h3>
-            <p class="edu-meta">México · Titulación en proceso</p>
+            <h3>{{ t('education.formal.title') }}</h3>
+            <p class="edu-meta">{{ t('education.formal.meta') }}</p>
           </header>
-          <p class="edu-detail">Base académica en ingeniería de software, estructuras de datos y sistemas distribuidos.</p>
+          <p class="edu-detail">{{ t('education.formal.detail') }}</p>
         </article>
 
         <article class="edu-block">
           <header>
-            <h3>Formación complementaria</h3>
+            <h3>{{ t('education.complementary.title') }}</h3>
           </header>
           <ul class="edu-list">
-            <li>PMBOK 7</li>
-            <li>Lean Delivery</li>
-            <li>DevOps</li>
-            <li>Conflict Management</li>
-            <li>Leadership for Tech Teams</li>
+            <li v-for="item in t('education.complementary.items')" :key="item">{{ item }}</li>
           </ul>
         </article>
 
         <article class="edu-block">
           <header>
-            <h3>En curso</h3>
+            <h3>{{ t('education.current.title') }}</h3>
           </header>
-          <p class="edu-detail">Kubernetes → OpenShift y actualización avanzada de PHP / Python / Java.</p>
+          <p class="edu-detail">{{ t('education.current.detail') }}</p>
         </article>
       </section>
     `
@@ -1233,11 +1586,11 @@ Soy un hombre de gustos simples.`,
 
         <div class="download-actions">
           <a class="btn-download" href="/cv/angel-barrientos.pdf" download
-             @click="$emit('download')">⬇ Descargar CV (PDF)</a>
+             @click="$emit('download')">{{ t('download.btn_download') }}</a>
 
           <button class="btn-view"
-                  @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:'CV de Angel'})">
-            🗎 Ver CV en visor
+                  @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:t('download.viewer_title')})">
+            {{ t('download.btn_view') }}
           </button>
         </div>
 
@@ -1305,9 +1658,7 @@ Soy un hombre de gustos simples.`,
 
         <div class="hr"></div>
 
-        <p class="muted contact-footnote">
-          Si deseas colaborar o tienes un proyecto interesante, no dudes en escribirme.
-        </p>
+        <p class="muted contact-footnote">{{ t('contact.footnote') }}</p>
       </section>
     `
   };
@@ -1335,7 +1686,7 @@ Soy un hombre de gustos simples.`,
    * - Ensures responsive behavior by creating a grid layout with an auto header and an expandable document viewing area.
    */
   const DocumentViewer = {
-    props: ['src', 'type', 'title', 'telemetry'],
+    props: ['src', 'type', 'title', 'telemetry', 't'],
     template: `
       <section class="doc-viewer">
         <header class="doc-header">
@@ -1343,7 +1694,7 @@ Soy un hombre de gustos simples.`,
           <div class="doc-actions">
             <a class="btn-doc" :href="src" download
                @click="telemetry.download({file_name: src.split('/').pop(), element:'download_link'})">
-              ⬇ Descargar
+              ⬇ {{ t('common.download') }}
             </a>
           </div>
         </header>
@@ -1372,139 +1723,18 @@ Soy un hombre de gustos simples.`,
 
   const ProjectsBadges = {
     props:['t'],
+    data() { return { badges: BADGE_HTML }; },
     template: `
       <article>
         <h2>{{ t('projects.title') }}</h2>
         <div class="projects-grid">
-          <section class="project-group">
-            <h3>Metricas Personales</h3>
+          <section v-for="group in t('projects.groups')" :key="group.heading" class="project-group">
+            <h3>{{ group.heading }}</h3>
             <div class="project-list">
-              <div class="project">
-                <h4>Actividad técnica acumulada</h4>
-                <p class="desc">Registro histórico de todas las horas de interacción técnica: editores, terminal, desarrollo, automatizaciones y trabajo operativo. Una visión continua de diez años de actividad medida.</p>
-                <p class="usage">
-                  <a href="https://wakatime.com/@8a272fcb-113b-4d48-b227-e717ab94571a"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a.svg" alt="Total time coded since Feb 11 2015" /></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Ritmo anual de contribución</h4>
-                <p class="desc">Compilación anual de commits realizados en proyectos personales, laborales y repositorios privados. Refleja constancia técnica en múltiples plataformas de control de versiones.</p>
-                <p class="usage">
-                  <img src="https://camo.githubusercontent.com/1f36fad378243c766e543e59aed261a5cbabada25f46066e55d601804f9e6c11/68747470733a2f2f77616b6174696d652e636f6d2f73686172652f40756574696b6f2f37326638383765382d643830642d343032322d393163362d3434646463626137633866352e706e67" alt="Coding activity" width="600px" data-canonical-src="https://wakatime.com/share/@uetiko/72f887e8-d80d-4022-91c6-44ddcba7c8f5.png" style="max-width: 100%;">
-                </p>
-              </div>
-              <div class="project">
-                <h4>Actividad pública en GitHub</h4>
-                <p class="desc">Indicadores visibles de mi trabajo en repositorios abiertos: contribuciones, issues, PRs y actividad anual. Es la parte auditada públicamente de una práctica profesional mayoritariamente privada.</p>
-                <p class="usage">
-                  <a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565"><img src="https://camo.githubusercontent.com/725a1c154d1d4c64ddac1f14372a2ce8f442affa823469f257da933a21d05a48/68747470733a2f2f6769746875622d726561646d652d73746174732e76657263656c2e6170702f6170693f757365726e616d653d756574696b6f2673686f775f69636f6e733d74727565" alt="uetiko" data-canonical-src="https://github-readme-stats.vercel.app/api?username=uetiko&amp;show_icons=true" style="max-width: 100%;"></a>
-                </p>
-              </div>
-            </div>
-          </section>
-          <section class="project-group">
-            <h3>Stoyco</h3>
-            <div class="project-list">
-              <div class="project">
-                <h4>Landing Eladio</h4>
-                <p class="desc">Implementación real de una landing estilo Windows 95 para el artista Eladio (Rimas). Se partió de un HTML base y se reconstruyó como un escritorio funcional con música, imágenes y contenido interactivo.</p>
-                <p class="usage">
-                  <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/6d2cd5d8-2d27-4977-ad44-6156cd050b9c.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Stoyco AWS Console</h4>
-                <p class="desc">Tiempo dedicado a la administración completa de la cuenta AWS de Stoyco: servicios, seguridad, recursos, monitoreo y operación diaria del entorno cloud.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/be7a8e5d-2037-4ab7-adf9-a1eb4d27cd91.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>admisistración y reportes en base de datos </h4>
-                <p class="desc">Gestión y análisis de DocumentDB: consultas complejas, modelados, reportes operativos, limpieza de datos y diagramación de relaciones para analítica interna.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e77ba-493c-468d-bca0-8bc28233c079.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Scripts varios (nodejs)</h4>
-                <p class="desc">Conjunto de scripts orientados a mantenimiento y saneamiento de datos sobre Amazon DocumentDB, usados para operaciones internas y automatizaciones puntuales.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/acbf0d75-3e83-4a08-a5f5-c34b0bbcb68f.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Core (.net core 6)</h4>
-                <p class="desc">Microservicio principal en .NET 6 desplegado en Kubernetes. Incluye soporte de bugs críticos y la reimplementación del módulo de saldo de Stoycoins.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e1b6f-dae8-4cb3-aa67-5dadc962c57d.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Micro servicio Usuario (nodejs)</h4>
-                <p class="desc">Separación formal de la lógica de usuarios desde el microservicio Core. Implementado en Node.js y ejecutado en AWS Lambda para aislar responsabilidades y mejorar mantenibilidad.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0787bcd2-6c67-42e7-bacd-332ab40adc90.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Backoffice (mantenimiento de errores criticos, Nodejs)</h4>
-                <p class="desc">Mantenimiento operativo y corrección de errores críticos en el backoffice administrativo, desarrollado con Angular.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/018e3e0a-25c5-45f6-9d17-7f6799e24ee0.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Queue multi propocito (follows, reports, mailchimp)</h4>
-                <p class="desc">Cola de procesamiento para flujos internos: follows, reportes, Mailchimp y otros servicios. Diseñada para dar continuidad y estabilidad al sistema.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/0fcc38b9-2d7f-49ee-b5c0-ffa536c37fe3.svg" alt="wakatime"></a>
-                </p>
-              </div>
-            </div>
-          </section>
-          <section class="project-group">
-            <h3>City Express (hoteles)</h3>
-            <div class="project-list">
-              <div class="project">
-                <h4>Channel Manager Backend (fastApi)</h4>
-                <p class="desc">Apoyo técnico puntual al equipo interno de Norte19. Corrección de problemas en las integraciones con Booking y Expedia, ajuste de flujos de reservas y estabilización del pipeline de despliegue. Las migraciones de base de datos se automatizaron para evitar fallos al promover nuevas versiones.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/cf4a7486-e86c-48be-aa66-5287f23a4e40.svg" alt="wakatime"></a>
-                </p>
-              </div>
-              <div class="project">
-                <h4>Channel Manager Frontend (Svelt)</h4>
-                <p class="usage">Corrección de errores críticos y normalización del manejo de respuestas. Se sustituyeron los retornos 200 genéricos por respuestas basadas en JSON:API, mejorando claridad, trazabilidad y mensajes de error para el usuario. Ajuste del sistema de alertas para ofrecer retroalimentación más útil y menos ambigua.</p>
-                <p class="usage">
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ef7e5e89-6788-4f38-82e7-67f4f5c546eb.svg" alt="wakatime"></a>
-                </p>
-              </div>
-            </div>
-          </section>
-          <section class="project-group">
-            <h3>Vass</h3>
-            <div class="project-list">
-              <div class="project">
-                <h4>wiki</h4>
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ed56c836-1a05-4d96-9bba-3d1461326bca"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/ed56c836-1a05-4d96-9bba-3d1461326bca.svg" alt="wakatime"></a>
-              </div>
-              <div class="project">
-                <h4>Magento (telefonica chile)</h4>
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/5b0b8537-7c4a-40d3-a782-d72f25d9820e"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/5b0b8537-7c4a-40d3-a782-d72f25d9820e.svg" alt="wakatime"></a>
-              </div>
-              <div class="project">
-                <h4>Banco Estado (Symphony)</h4>
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3b9407cd-283b-4dce-a6a9-d86392b100f2"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3b9407cd-283b-4dce-a6a9-d86392b100f2.svg" alt="wakatime"></a>
-              </div>
-            </div>
-          </section>
-          <section class="project-group">
-            <h3>Enova</h3>
-            <div class="project-list">
-              <div class="project">
-                <h4>Mako</h4>
-                <a href="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3caf4d19-3057-4614-b57f-69a9a347eaaa"><img src="https://wakatime.com/badge/user/8a272fcb-113b-4d48-b227-e717ab94571a/project/3caf4d19-3057-4614-b57f-69a9a347eaaa.svg" alt="wakatime"></a>
+              <div v-for="item in group.items" :key="item.title" class="project">
+                <h4>{{ item.title }}</h4>
+                <p v-if="item.desc" class="desc">{{ item.desc }}</p>
+                <p v-if="item.badge && badges[item.badge]" class="usage" v-html="badges[item.badge]"></p>
               </div>
             </div>
           </section>
@@ -1513,7 +1743,111 @@ Soy un hombre de gustos simples.`,
     `
   };
 
-  const { createApp, onMounted, ref, reactive, computed } = Vue;
+  /**
+   * Represents a Vue.js component for displaying a journal with recent blog entries.
+   * The component provides functionalities such as fetching journal data, telemetry tracking,
+   * and formatting dates for the journal entries.
+   *
+   * Properties:
+   * - `props` (`Array`): An array specifying the properties passed to the component.
+   *   - `t` (Function): A localization function for translations.
+   *   - `telemetry` (Object): An optional telemetry object with methods for logging events.
+   *
+   * Data:
+   * - `items` (`Array`): A list of journal entries fetched from an external source.
+   * - `loading` (`Boolean`): Indicates whether the journal data is being loaded.
+   * - `error` (`String|null`): An error message if fetching the data fails, or null if no error occurs.
+   *
+   * Lifecycle Hooks:
+   * - `mounted`: An asynchronous lifecycle hook triggered when the component is mounted.
+   *   It fetches the journal data, tracks the telemetry event for opening the journal window,
+   *   and handles error states.
+   * - `beforeUnmount`: A lifecycle hook triggered before the component is destroyed.
+   *   It tracks the telemetry event for closing the journal window.
+   *
+   * Methods:
+   * - `openPost(item)`: Opens a specific journal entry in a new browser tab.
+   *   Tracks a telemetry event for opening the journal post.
+   * - `fmtDate(iso)`: Formats an ISO date string into a localized date string using the language
+   *   of the application. Returns an empty string for invalid or missing dates.
+   *
+   * Template:
+   * The template includes the component structure, which consists of:
+   * - A header section with a title and description.
+   * - Conditional rendering for loading, error, or displaying journal entries.
+   * - A list of journal entries rendered dynamically from the `items` data.
+   * - Each entry displays the image (or a fallback), title, date, URL, and excerpt of the journal entry.
+   *
+   * Telemetry Integration:
+   * The component uses the optional `telemetry` object to track key events such as:
+   * - Journal window open/close.
+   * - Post opening.
+   * - Errors during data fetching.
+   */
+  const Journal = {
+    props: ['t', 'telemetry'],
+    data() {
+      return { items: [], loading: true, error: null };
+    },
+    async mounted() {
+      try {
+        this.items = await fetchJournal({ limit: 10 });
+        this.telemetry?.openWindow?.('journal', { count: this.items.length });
+      } catch (e) {
+        this.error = String(e?.message || e);
+        this.telemetry?.error?.('journal', { message: this.error });
+      } finally {
+        this.loading = false;
+      }
+    },
+    beforeUnmount() {
+      this.telemetry?.closeWindow?.('journal', {});
+    },
+    methods: {
+      openPost(item) {
+        this.telemetry?.cta?.('journal_open_post', { id: item.id, url: item.url, title: item.title });
+        window.open(item.url, '_blank', 'noopener');
+      },
+      fmtDate(iso) {
+        if (!iso) return '';
+        try {
+          const d = new Date(iso);
+          return d.toLocaleDateString(this.$root?.lang || 'es', { year: 'numeric', month: 'short', day: '2-digit' });
+        } catch { return iso; }
+      }
+    },
+    template: `
+    <section class="journal">
+      <header class="journal-header">
+        <h2>Journal</h2>
+        <p class="muted">{{ t('journal_ui.header_desc') }}</p>
+      </header>
+
+      <div class="hr"></div>
+
+      <p v-if="loading" class="muted">{{ t('journal_ui.loading') }}</p>
+      <p v-else-if="error" class="muted">{{ t('journal_ui.error') }} ({{ error }})</p>
+
+      <div v-else class="journal-list">
+        <article v-for="it in items" :key="it.id" class="journal-item" @click="openPost(it)" tabindex="0">
+          <div class="thumb">
+            <img v-if="it.image" :src="it.image" alt="" loading="lazy" />
+            <div v-else class="thumb-fallback"></div>
+          </div>
+
+          <div class="meta">
+            <h3 class="title">{{ it.title || t('journal_ui.no_title') }}</h3>
+            <p class="sub muted">{{ fmtDate(it.date) }} · {{ it.url }}</p>
+            <p class="excerpt">{{ it.excerpt }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  `
+  };
+
+
+  const { createApp, onMounted, onUnmounted, ref, reactive, computed } = Vue;
 
   /**
    * Represents the main application instance created via `createApp` function with setup logic.
@@ -1543,7 +1877,7 @@ Soy un hombre de gustos simples.`,
    * (e.g., `startDrag`, `onDrag`, `endDrag`) to enhance and manage app interactions dynamically.
    */
   const app = createApp({
-    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer, ProjectsBadges },
+    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer, ProjectsBadges, Journal },
     setup() {
       const env = (new URLSearchParams(location.search).get('env')) || 'live';
       const appName = 'desktop';
@@ -1552,6 +1886,13 @@ Soy un hombre de gustos simples.`,
 
       const telemetry = new Telemetry({ env, app: appName });
       telemetry.pageView();
+
+      window.addEventListener('error', (e) => {
+        telemetry.error('global_js', { message: e.message, filename: e.filename, lineno: e.lineno, colno: e.colno });
+      });
+      window.addEventListener('unhandledrejection', (e) => {
+        telemetry.error('unhandled_promise', { reason: String(e.reason) });
+      });
 
       const wm = new WindowManager();
       const bus = new EventBus();
@@ -1703,6 +2044,7 @@ Soy un hombre de gustos simples.`,
           case 'download': makeWin('download', t('menu.download'), './img/icons/24x24/folder-downloads.png', 'Download'); break;
           case 'contact': makeWin('contact', t('menu.contact'), './img/icons/24x24/mail-folder-inbox.png', 'Contact'); break;
           case 'badges': makeWin('badges', t('menu.badges'), './img/icons/24x24/certificate-server.png','ProjectsBadges'); break;
+          case 'journal': makeWin('journal', t('menu.journal'), './img/icons/24x24/application-rss.png', 'Journal'); break;
         }
         telemetry.cta('open_app', { name });
       };
@@ -1841,9 +2183,26 @@ Soy un hombre de gustos simples.`,
 
       const setLang = (l) => { lang.value = l; telemetry.cta('lang_switch', { variant:l }); };
 
+      const handleDocumentClickForStartMenu = (event) => {
+        if (!ui.menu) return;
+        const target = event.target;
+        const menuEl = document.querySelector('.menu');
+        const startEl = document.querySelector('.start');
+        const insideMenu = menuEl && menuEl.contains(target);
+        const insideStart = startEl && startEl.contains(target);
+        if (!insideMenu && !insideStart) {
+          ui.menu = false;
+        }
+      };
+
       onMounted(() => {
+        document.addEventListener('click', handleDocumentClickForStartMenu);
         // Open About by default
         openApp('about');
+      });
+
+      onUnmounted(() => {
+        document.removeEventListener('click', handleDocumentClickForStartMenu);
       });
 
       return {
@@ -1855,9 +2214,6 @@ Soy un hombre de gustos simples.`,
       };
     }
   });
-
-  // Outside click directive for menu
-  app.directive('click', { beforeMount(el, binding){ el.__clickOutside__ = (e)=>{ if(!(el===e.target||el.contains(e.target))) binding.value(e); }; document.addEventListener('click', el.__clickOutside__); }, unmounted(el){ document.removeEventListener('click', el.__clickOutside__); } });
 
   app.mount('#app');
 </script>

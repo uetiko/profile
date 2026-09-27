@@ -1,0 +1,55 @@
+<rsl xmlns="https://rslstandard.org/rsl">
+  <content url="/">
+    <license>
+      <permits type="usage">ia-index search</permits>
+      <permits type="user">personal non-commercial</permits>
+      <permits type="geo">US MX CL ES</permits>
+      <prohibits type="usage">ia-train ia-input</prohibits>
+      <prohibits type="geo">IN ID</prohibits>
+      <legal type="warranty">ownership no-malware</legal>
+      <legal type="disclaimer">no-indemnity no-liability</legal>
+      <schema type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Angel Barrientos",
+          "alternateName": "Ángel Barrientos",
+          "jobTitle": "Technical Lead/Software Architect",
+          "url": "https://www.uetiko.com",
+          "image": "https://www.uetiko.com/img/profile/technoviking.png",
+          "sameAs": [
+            "https://linkedin.com/in/uetiko",
+            "https://github.com/uetiko",
+            "https://blog.uetiko.com"
+          ],
+          "worksFor": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "knowsAbout": [
+            "AWS",
+            "Backend Architecture",
+            "Clean Architecture",
+            "DocumentDB",
+            "DevOps",
+            "FastAPI",
+            "Magento",
+            "Symfony",
+            "Laravel",
+            "Kubernetes"
+          ],
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Instituto Tecnológico de México"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Ciudad de México",
+            "addressCountry": "MX"
+          }
+        }
+      </schema>
+      <copyright type="person" contactEmail="uetiko@gmail.com">Angel Barrientos</copyright>
+    </license>
+  </content>
+</rsl>

@@ -104,10 +104,6 @@ a, .link { color: var(--accent); text-decoration: none; }
   .icon { width: 76px; height: 88px; }
 }
 /* --- compositor: transiciones base y material --- */
-.window {
-  transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease;
-  will-change: transform, opacity, box-shadow;
-}
 .window.is-opening { opacity: 0; transform: scale(.96); }
 .window.is-open    { opacity: 1; transform: scale(1); }
 .window.is-closing { opacity: 0; transform: scale(.96); }
