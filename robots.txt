@@ -2,11 +2,7 @@
 
 # robots.txt — Ángel Barrientos Portfolio
 User-agent: *
-Disallow: /assets/
-Disallow: /scripts/
 Allow: /
 
-# Sitemap location
 Sitemap: https://www.uetiko.com/sitemap.xml
-#RSL licence
 License: https://www.uetiko.com/license.xml

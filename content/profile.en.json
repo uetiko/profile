@@ -1,0 +1,155 @@
+{
+  "about": {
+    "title": "Angel Barrientos — Technical Lead & Software Architect",
+    "summary": "Software engineer with 16 years of experience. Backend-first, with architectural and operational criteria.",
+    "profile": "Senior backend developer with sixteen years of professional experience. I work primarily in PHP — from 5.6 through 8.x — and Python 3.x, as well as JavaScript with Node.js; in recent years I have added C# on .NET 6. I retain working experience in Java 1.6, which explains my bias toward object-oriented design.\nI have used Linux as my primary OS since 2008 — back in the kernel 2.6 era — with Bash/Shell scripting, service administration, and a natural progression toward cloud and containerized environments.\n\nI think of software as a living structure: modular, scalable, and readable. Hexagonal architecture is, put simply, the architecture of the house. I follow ecosystem conventions (PSR in PHP, PEP in Python), enjoy unit testing, and document in Markdown. Simple tastes, precise tools.",
+    "location_key": "Location:",
+    "location": "Mexico City · current mode: remote",
+    "languages": "Languages: Native Spanish · English B1",
+    "value_key": "Value",
+    "value_detail": "Order under pressure, sustainable technical decisions, documentation that explains the why — not only the what.",
+    "role_key": "Technical Lead",
+    "role_now": "Standards, reviews, team support, business and client coordination. I keep AWS healthy and close gaps in legacy code.",
+    "softskills": "Negotiation, assertive communication, active listening, bias handling, delegation and hiring. They make the technical part land intact."
+  },
+  "experience": {
+    "title": "Highlighted professional experience",
+    "items": [
+      {
+        "company": "Nyx Software y Tecnología",
+        "role": "Senior Software Engineer / Team Lead",
+        "period": "Aug 2023–Present",
+        "bullets": [
+          "Cross-functional leadership across architecture, infrastructure, data, and QA.",
+          "70% reduction in critical bugs and backlog stabilization.",
+          "Design of DocumentDB reports and relations for external analytics.",
+          "Built a standardized landing page system with analytics integration.",
+          "Cost and scalability optimization on AWS (CloudFront/S3, IAM)."
+        ]
+      },
+      {
+        "company": "VASS Chile",
+        "role": "Senior Software Engineer (Magento)",
+        "period": "Nov 2020–Jul 2023",
+        "bullets": [
+          "Migrated Telefónica Chile from Magento 2.2 to 2.4 with critical integrations.",
+          "Developed payment modules and interfaces in Magento 2.",
+          "Reduced Kiuwan findings through code standards and internal guidelines."
+        ]
+      },
+      {
+        "company": "PagoFácil",
+        "role": "Software Engineer Sr (Magento)",
+        "period": "Oct 2019–Feb 2020",
+        "bullets": ["Implemented a payment gateway for Magento 2.3 with PagoFácil."]
+      },
+      {
+        "company": "ENOVA México",
+        "role": "Software Engineer Sr / Project Manager Jr",
+        "period": "Oct 2017–Apr 2019",
+        "bullets": [
+          "Implemented CFDI 3.3 e-invoicing in Mako.",
+          "Established Scrum; 80% reduction in error tickets.",
+          "Published Packagist packages and internal Python tools."
+        ]
+      },
+      {
+        "company": "Nyx Software and Technology",
+        "role": "CTO / Software Engineer Sr",
+        "period": "Apr 2016–Aug 2017",
+        "bullets": [
+          "Python 2.7→3.5 and Django 1.6→1.10 migration.",
+          "Adopted Gitflow and agile practices."
+        ]
+      },
+      {
+        "company": "Other roles (2011–2016)",
+        "period": "",
+        "bullets": [],
+        "subtitle": "AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes."
+      }
+    ]
+  },
+  "skills": {
+    "title": "Technical competencies",
+    "left": [
+      {
+        "heading": "Soft Skills",
+        "rows": [
+          { "label": "Core skills", "value": "Assertive communication · Active listening · Negotiation · Assertive delegation · Conflict resolution" },
+          { "label": "Interpersonal competencies", "value": "Bias awareness · Difficult client management · Technical recruiting and screening · Speed reading" }
+        ],
+        "descs": [
+          "Ongoing training in leadership and applied communication. Strategies for effective negotiation, professional empathy, and conflict resolution. Proven ability to keep teams functional under pressure without sacrificing clarity or respect.",
+          "Recent courses and certifications: \"Become a Strategist\" · \"Leadership and Management in Technology\" · \"Conflict Management and Negotiation\" · \"Assertive Communication (Masterclass)\" · \"Operations Management\"."
+        ]
+      },
+      {
+        "heading": "Backend",
+        "rows": [
+          { "label": "Languages", "value": "Python · PHP · .NET Core · Node.js" },
+          { "label": "Frameworks", "value": "FastAPI · Django · Laravel · Symfony · Svelte · Angular (maintenance) · Knockout (Magento)" }
+        ],
+        "descs": ["Design and maintenance of domain-oriented services. API and microservice development, integration with external systems, and legacy code refactoring. On the frontend side, I work with functional logic and reactive components — not visual design."]
+      },
+      {
+        "heading": "Databases",
+        "rows": [
+          { "label": "Relational", "value": "MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora" },
+          { "label": "NoSQL", "value": "Amazon DocumentDB / MongoDB" }
+        ],
+        "descs": ["Logical and physical data modeling, complex aggregations, and index optimization. Experience with analytics integration (Athena, Glue) and performance monitoring."]
+      },
+      {
+        "heading": "Frontend",
+        "rows": [
+          { "label": "Environment", "value": "Angular (maintenance) · JavaScript" },
+          { "label": "Approach", "value": "functional logic and reactive validations" }
+        ],
+        "descs": ["Refactoring of existing components, REST API integration, behavior maintenance, and functional testing. No focus on UI/UX or layout design."]
+      }
+    ],
+    "right": [
+      {
+        "heading": "Infrastructure / Cloud",
+        "rows": [
+          { "label": "Platforms", "value": "AWS (Junior Architect)" },
+          { "label": "Role", "value": "Junior AWS Architect" }
+        ],
+        "descs": ["Cloud environment planning and control, cost management, networking (VPCs, subnets), pipeline integration, and centralized monitoring. Involved in planning and administration."]
+      },
+      {
+        "heading": "Process",
+        "rows": [
+          { "label": "Methodologies", "value": "Scrum · Kanban · Lean Delivery · PMBOK 7" },
+          { "label": "Practices", "value": "Code Reviews · Policy definition · QA management · Technical leadership" }
+        ],
+        "descs": ["Focus on sustained delivery and process clarity. I facilitate code reviews, mentoring, and technical prioritization under continuous improvement models."]
+      },
+      {
+        "heading": "Standards & Version Control",
+        "rows": [
+          { "label": "Standards", "value": "PSR · RFC 2119" },
+          { "label": "Versioning", "value": "Gitflow · Trunk-Based · Hybrid flows" }
+        ],
+        "descs": ["Deliberate application of conventions and technical documentation. Standards are a constant practice, not a reference; I adapt the workflow to the team and project scale."]
+      }
+    ]
+  },
+  "education": {
+    "title": "Education & continuous learning",
+    "formal": {
+      "title": "B.Sc. Computer Systems Engineering, UNITEC (Mexico City)",
+      "meta": "Mexico · Degree in progress",
+      "detail": "Academic background in software engineering, data structures, and distributed systems."
+    },
+    "complementary": {
+      "title": "Additional training",
+      "items": ["PMBOK 7", "Lean Delivery", "DevOps", "Conflict Management", "Leadership for Tech Teams"]
+    },
+    "current": {
+      "title": "In progress",
+      "detail": "Kubernetes → OpenShift and advanced update in PHP / Python / Java."
+    }
+  }
+}

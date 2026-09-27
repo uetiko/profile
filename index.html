@@ -200,6 +200,7 @@
     <div class="item" tabindex="0" role="menuitem" @click="openApp('contact'); ui.menu=false" @keydown.enter="openApp('contact'); ui.menu=false" @keydown.space.prevent="openApp('contact'); ui.menu=false"><span><img src="./img/icons/24x24/mail-message.png"></span><div>{{ t('menu.contact') }}</div><span></span></div>
     <div class="item" tabindex="0" role="menuitem" @click="openApp('badges'); ui.menu=false" @keydown.enter="openApp('badges'); ui.menu=false" @keydown.space.prevent="openApp('badges'); ui.menu=false"><span><img src="./img/icons/24x24/certificate-server.png"></span><div>{{ t('menu.badges')}}</div><span></span></div>
     <div class="item" tabindex="0" role="menuitem" @click="openApp('journal'); ui.menu=false" @keydown.enter="openApp('journal'); ui.menu=false" @keydown.space.prevent="openApp('journal'); ui.menu=false"><span><img src="img/icons/24x24/application-rss.png"></span><div>{{ t('menu.journal')}}</div><span></span></div>
+    <div class="item" tabindex="0" role="menuitem" @click="openApp('projects'); ui.menu=false" @keydown.enter="openApp('projects'); ui.menu=false" @keydown.space.prevent="openApp('projects'); ui.menu=false"><span><img src="img/icons/24x24/folder-development.png"></span><div>{{ t('menu.projects') }}</div><span></span></div>
     <div class="hr"></div>
     <div class="item" tabindex="0" role="menuitem" @click="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})" @keydown.enter="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})" @keydown.space.prevent="compositor.toggleGlass(); telemetry.cta('toggle_compositor',{variant: compositor.glass ? 'glass' : 'solid'})"><span>🪟</span><div>{{ t('menu.compositor') }}</div><span></span></div>
   </nav>
@@ -249,168 +250,16 @@
         contact: 'Contacto',
         compositor: 'Alternar compositor (vidrio/sólido)',
         badges: 'Distintivos',
-        journal: 'Journal'
+        journal: 'Journal',
+        projects: 'Proyectos'
       },
       common: { download: 'Descargar' },
-      about: {
-        title: 'Angel Barrientos — Technical Lead & Software Architect',
-        summary: 'Ingeniero en sistemas con 16 años de experiencia, especializado en backend, arquitectura y entornos de infraestructura.',
-        profile: `Desarrollador backend senior con dieciséis años de trayectoria profesional. Trabajo principalmente con PHP —desde 5.6 hasta 8.x— y Python 3.x, además de JavaScript con Node.js; en los últimos años he incorporado C# sobre .NET 6. Conservo experiencia histórica en Java 1.6, de ahí mi obsesión por la programación orientada a objetos.\nUso Linux como sistema principal desde 2008 —vengo de la época del kernel 2.6—, con scripting en Bash/Shell, administración de servicios y una evolución natural hacia entornos cloud y contenedorizados.\n\nConcibo el software como una estructura viva: modular, escalable y entendible. La arquitectura hexagonal es, por decirlo así, la arquitectura de la casa.\nRespeto los estándares y convenciones del ecosistema (PSR en PHP, PEP en Python), disfruto las pruebas unitarias y la documentación en Markdown.\nSoy un hombre de gustos simples.`,
-        location_key: 'Ubicación:',
-        location: ' CDMX · modalidad actual: remoto',
-        languages: 'Idiomas: Español nativo · Inglés B1',
-        value_key: 'Valor',
-        value_detail: 'Orden en entornos caóticos, decisiones técnicas sostenibles, documentación que explica el porqué y no sólo el qué.',
-        role_key: 'Líder técnico',
-        role_now: ' estándares, revisiones, soporte a equipos, coordinación con negocio y clientes. Mantengo AWS y cierro brechas de código legado.',
-        softskills: ' Negociación, comunicación asertiva, escucha activa, manejo de sesgos, delegación y selección. Sirven para que la parte técnica llegue entera al usuario.',
-      },
-      experience: {
-        title: 'Experiencia profesional destacada',
-        items: [
-          {
-            company: 'Nyx Software y Tecnología',
-            role: 'Senior Software Engineer / Team Lead',
-            period: 'Ago 2023–Presente',
-            bullets: [
-              'Liderazgo transversal en arquitectura, infraestructura, datos y QA.',
-              'Reducción del 70% en bugs críticos y estabilización del backlog.',
-              'Diseño de reportes y relaciones en DocumentDB para analítica externa.',
-              'Creación de sistema estandarizado de landing pages con integración analítica.',
-              'Optimización de costos y escalabilidad en AWS (CloudFront/S3, IAM).'
-            ]
-          },
-          {
-            company: 'VASS Chile',
-            role: 'Senior Software Engineer (Magento)',
-            period: 'Nov 2020–Jul 2023',
-            bullets: [
-              'Migración de Telefónica Chile de Magento 2.2 a 2.4 con integraciones críticas.',
-              'Desarrollo de módulos de pago e interfaces en Magento 2.',
-              'Reducción de hallazgos en Kiuwan mediante estándares de código y guías internas.'
-            ]
-          },
-          {
-            company: 'PagoFácil',
-            role: 'Software Engineer Sr (Magento)',
-            period: 'Oct 2019–Feb 2020',
-            bullets: ['Implementación de gateway de pagos para Magento 2.3 con Pagofácil.']
-          },
-          {
-            company: 'ENOVA México',
-            role: 'Software Engineer Sr / Project Manager Jr',
-            period: 'Oct 2017–Abr 2019',
-            bullets: [
-              'Implementación de facturación CFDI 3.3 en Mako.',
-              'Establecimiento de Scrum; reducción del 80% en tickets de error.',
-              'Publicación de paquetes en Packagist y herramientas internas en Python.'
-            ]
-          },
-          {
-            company: 'Nyx Software and Technology',
-            role: 'CTO / Software Engineer Sr',
-            period: 'Abr 2016–Ago 2017',
-            bullets: [
-              'Migración Python 2.7→3.5 y Django 1.6→1.10.',
-              'Adopción de Gitflow y prácticas ágiles.'
-            ]
-          },
-          {
-            company: 'Otros roles (2011–2016)',
-            period: '',
-            bullets: [],
-            subtitle: 'AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.'
-          }
-        ]
-      },
-      skills: {
-        title: 'Competencias técnicas',
-        left: [
-          {
-            heading: 'Soft Skills',
-            rows: [
-              { label: 'Habilidades principales', value: 'Comunicación asertiva · Escucha activa · Negociación · Delegación asertiva · Gestión de conflictos' },
-              { label: 'Competencias interpersonales', value: 'Igualdad y combate a sesgos · Manejo de clientes difíciles · Reclutamiento y selección técnica · Lectura rápida' }
-            ],
-            descs: [
-              'Formación continua en liderazgo y comunicación aplicada. Desarrollo de estrategias para negociación efectiva, empatía profesional y resolución de conflictos. Capacidad comprobada para mantener equipos funcionales bajo presión sin sacrificar la claridad ni el respeto.',
-              'Cursos y certificaciones recientes: "Conviértete en Estratega" · "Liderazgo y Gerencia en Tecnología" · "Gestión de Conflictos y Negociación" · "Comunicación Asertiva (Masterclass)" · "Administración de Operaciones".'
-            ]
-          },
-          {
-            heading: 'Backend',
-            rows: [
-              { label: 'Lenguajes', value: 'Python · PHP · .NET Core · Node.js' },
-              { label: 'Frameworks', value: 'FastAPI · Django · Laravel · Symfony · Svelte · Angular (mantenimiento) · Knockout (Magento)' }
-            ],
-            descs: ['Diseño y mantenimiento de servicios orientados a dominio. Desarrollo de APIs y microservicios, integración con sistemas externos y refactorización de código heredado. En frontend, trabajo con lógica funcional y componentes reactivos, no diseño visual.']
-          },
-          {
-            heading: 'Bases de datos',
-            rows: [
-              { label: 'Relacionales', value: 'MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora' },
-              { label: 'NoSQL', value: 'Amazon DocumentDB / MongoDB' }
-            ],
-            descs: ['Modelado lógico y físico de datos, agregaciones complejas y optimización de índices. Experiencia en integración analítica (Athena, Glue) y monitoreo de rendimiento.']
-          },
-          {
-            heading: 'Frontend',
-            rows: [
-              { label: 'Entorno', value: 'Angular (mantenimiento) · JavaScript' },
-              { label: 'Enfoque', value: 'lógica funcional y validaciones reactivas' }
-            ],
-            descs: ['Refactorización de componentes existentes, integración con APIs REST, mantenimiento de comportamiento y testing funcional. Sin foco en UI/UX ni maquetación.']
-          }
-        ],
-        right: [
-          {
-            heading: 'Infraestructura / Cloud',
-            rows: [
-              { label: 'Plataformas', value: 'AWS (Arquitecto Jr)' },
-              { label: 'Rol', value: 'Arquitecto junior AWS' }
-            ],
-            descs: ['Planificación y control de entornos cloud, gestión de costos, networking (VPCs, subredes), integración de pipelines y monitoreo centralizado. Participación en la planificación y administración.']
-          },
-          {
-            heading: 'Procesos',
-            rows: [
-              { label: 'Metodologías', value: 'Scrum · Kanban · Lean Delivery · PMBOK 7' },
-              { label: 'Prácticas', value: 'Code Reviews · Definición de políticas · Gestión de QA · Liderazgo técnico' }
-            ],
-            descs: ['Enfoque en la entrega sostenida y la claridad del proceso. Facilito revisiones de código, mentoring y priorización técnica bajo modelos de mejora continua.']
-          },
-          {
-            heading: 'Estándares y control de versiones',
-            rows: [
-              { label: 'Estándares', value: 'PSR · RFC 2119' },
-              { label: 'Versionado', value: 'Gitflow · Trunk-Based · Flujos híbridos' }
-            ],
-            descs: ['Aplicación consciente de convenciones y documentación técnica. Los estándares no son una referencia, sino una práctica constante; adapto el flujo de trabajo según el equipo y la escala del proyecto.']
-          }
-        ]
-      },
       download: {
         title: 'Descarga de CV',
         hint: 'Versión ejecutiva en PDF para reclutadores.',
         btn_download: '⬇ Descargar CV (PDF)',
         btn_view: '🗎 Ver CV en visor',
         viewer_title: 'CV de Angel'
-      },
-      education: {
-        title: 'Formación y aprendizaje continuo',
-        formal: {
-          title: 'Ing. en Sistemas Computacionales, UNITEC Campus sur',
-          meta: 'México · Titulación en proceso',
-          detail: 'Base académica en ingeniería de software, estructuras de datos y sistemas distribuidos.'
-        },
-        complementary: {
-          title: 'Formación complementaria',
-          items: ['PMBOK 7', 'Lean Delivery', 'DevOps', 'Conflict Management', 'Leadership for Tech Teams']
-        },
-        current: {
-          title: 'En curso',
-          detail: 'Kubernetes → OpenShift y actualización avanzada de PHP / Python / Java.'
-        }
       },
       contact: {
         title: 'Contacto directo',
@@ -476,168 +325,15 @@
       menu: {
         about: 'About Angel', about_hint: 'Profile & executive summary', experience: 'Experience',
         skills: 'Technical skills', education: 'Education', download: 'Download CV (PDF)', contact: 'Contact',
-        compositor: 'Toggle compositor (glass/solid)', badges: 'Badges', journal: 'Journal'
+        compositor: 'Toggle compositor (glass/solid)', badges: 'Badges', journal: 'Journal', projects: 'Projects'
       },
       common: { download: 'Download' },
-      about: {
-        title: 'Angel Barrientos — Technical Lead & Software Architect',
-        summary: 'Software engineer with 16 years of experience. Backend-first, with architectural and operational criteria.',
-        profile: `Senior backend developer with sixteen years of professional experience. I work primarily in PHP — from 5.6 through 8.x — and Python 3.x, as well as JavaScript with Node.js; in recent years I have added C# on .NET 6. I retain working experience in Java 1.6, which explains my bias toward object-oriented design.\nI have used Linux as my primary OS since 2008 — back in the kernel 2.6 era — with Bash/Shell scripting, service administration, and a natural progression toward cloud and containerized environments.\n\nI think of software as a living structure: modular, scalable, and readable. Hexagonal architecture is, put simply, the architecture of the house. I follow ecosystem conventions (PSR in PHP, PEP in Python), enjoy unit testing, and document in Markdown. Simple tastes, precise tools.`,
-        location_key: 'Location:',
-        location: 'Mexico City · current mode: remote',
-        languages: 'Languages: Native Spanish · English B1',
-        value_key: 'Value',
-        value_detail: 'Order under pressure, sustainable technical decisions, documentation that explains the why — not only the what.',
-        role_key: 'Technical Lead',
-        role_now: 'Standards, reviews, team support, business and client coordination. I keep AWS healthy and close gaps in legacy code.',
-        softskills: 'Negotiation, assertive communication, active listening, bias handling, delegation and hiring. They make the technical part land intact.'
-      },
-      experience: {
-        title: 'Highlighted professional experience',
-        items: [
-          {
-            company: 'Nyx Software y Tecnología',
-            role: 'Senior Software Engineer / Team Lead',
-            period: 'Aug 2023–Present',
-            bullets: [
-              'Cross-functional leadership across architecture, infrastructure, data, and QA.',
-              '70% reduction in critical bugs and backlog stabilization.',
-              'Design of DocumentDB reports and relations for external analytics.',
-              'Built a standardized landing page system with analytics integration.',
-              'Cost and scalability optimization on AWS (CloudFront/S3, IAM).'
-            ]
-          },
-          {
-            company: 'VASS Chile',
-            role: 'Senior Software Engineer (Magento)',
-            period: 'Nov 2020–Jul 2023',
-            bullets: [
-              'Migrated Telefónica Chile from Magento 2.2 to 2.4 with critical integrations.',
-              'Developed payment modules and interfaces in Magento 2.',
-              'Reduced Kiuwan findings through code standards and internal guidelines.'
-            ]
-          },
-          {
-            company: 'PagoFácil',
-            role: 'Software Engineer Sr (Magento)',
-            period: 'Oct 2019–Feb 2020',
-            bullets: ['Implemented a payment gateway for Magento 2.3 with PagoFácil.']
-          },
-          {
-            company: 'ENOVA México',
-            role: 'Software Engineer Sr / Project Manager Jr',
-            period: 'Oct 2017–Apr 2019',
-            bullets: [
-              'Implemented CFDI 3.3 e-invoicing in Mako.',
-              'Established Scrum; 80% reduction in error tickets.',
-              'Published Packagist packages and internal Python tools.'
-            ]
-          },
-          {
-            company: 'Nyx Software and Technology',
-            role: 'CTO / Software Engineer Sr',
-            period: 'Apr 2016–Aug 2017',
-            bullets: [
-              'Python 2.7→3.5 and Django 1.6→1.10 migration.',
-              'Adopted Gitflow and agile practices.'
-            ]
-          },
-          {
-            company: 'Other roles (2011–2016)',
-            period: '',
-            bullets: [],
-            subtitle: 'AMK Technologies (Sin Delantal), Gameplanet, Grupo Expansión, Linio, INE, INTELIGLOBE, ITSkill, Javanes.'
-          }
-        ]
-      },
-      skills: {
-        title: 'Technical competencies',
-        left: [
-          {
-            heading: 'Soft Skills',
-            rows: [
-              { label: 'Core skills', value: 'Assertive communication · Active listening · Negotiation · Assertive delegation · Conflict resolution' },
-              { label: 'Interpersonal competencies', value: 'Bias awareness · Difficult client management · Technical recruiting and screening · Speed reading' }
-            ],
-            descs: [
-              'Ongoing training in leadership and applied communication. Strategies for effective negotiation, professional empathy, and conflict resolution. Proven ability to keep teams functional under pressure without sacrificing clarity or respect.',
-              'Recent courses and certifications: "Become a Strategist" · "Leadership and Management in Technology" · "Conflict Management and Negotiation" · "Assertive Communication (Masterclass)" · "Operations Management".'
-            ]
-          },
-          {
-            heading: 'Backend',
-            rows: [
-              { label: 'Languages', value: 'Python · PHP · .NET Core · Node.js' },
-              { label: 'Frameworks', value: 'FastAPI · Django · Laravel · Symfony · Svelte · Angular (maintenance) · Knockout (Magento)' }
-            ],
-            descs: ['Design and maintenance of domain-oriented services. API and microservice development, integration with external systems, and legacy code refactoring. On the frontend side, I work with functional logic and reactive components — not visual design.']
-          },
-          {
-            heading: 'Databases',
-            rows: [
-              { label: 'Relational', value: 'MySQL · PostgreSQL · SQL Server (T-SQL) · Aurora' },
-              { label: 'NoSQL', value: 'Amazon DocumentDB / MongoDB' }
-            ],
-            descs: ['Logical and physical data modeling, complex aggregations, and index optimization. Experience with analytics integration (Athena, Glue) and performance monitoring.']
-          },
-          {
-            heading: 'Frontend',
-            rows: [
-              { label: 'Environment', value: 'Angular (maintenance) · JavaScript' },
-              { label: 'Approach', value: 'functional logic and reactive validations' }
-            ],
-            descs: ['Refactoring of existing components, REST API integration, behavior maintenance, and functional testing. No focus on UI/UX or layout design.']
-          }
-        ],
-        right: [
-          {
-            heading: 'Infrastructure / Cloud',
-            rows: [
-              { label: 'Platforms', value: 'AWS (Junior Architect)' },
-              { label: 'Role', value: 'Junior AWS Architect' }
-            ],
-            descs: ['Cloud environment planning and control, cost management, networking (VPCs, subnets), pipeline integration, and centralized monitoring. Involved in planning and administration.']
-          },
-          {
-            heading: 'Process',
-            rows: [
-              { label: 'Methodologies', value: 'Scrum · Kanban · Lean Delivery · PMBOK 7' },
-              { label: 'Practices', value: 'Code Reviews · Policy definition · QA management · Technical leadership' }
-            ],
-            descs: ['Focus on sustained delivery and process clarity. I facilitate code reviews, mentoring, and technical prioritization under continuous improvement models.']
-          },
-          {
-            heading: 'Standards & Version Control',
-            rows: [
-              { label: 'Standards', value: 'PSR · RFC 2119' },
-              { label: 'Versioning', value: 'Gitflow · Trunk-Based · Hybrid flows' }
-            ],
-            descs: ['Deliberate application of conventions and technical documentation. Standards are a constant practice, not a reference; I adapt the workflow to the team and project scale.']
-          }
-        ]
-      },
       download: {
         title: 'CV download',
         hint: 'Executive PDF version for recruiters.',
         btn_download: '⬇ Download CV (PDF)',
         btn_view: '🗎 View CV',
         viewer_title: "Angel's CV"
-      },
-      education: {
-        title: 'Education & continuous learning',
-        formal: {
-          title: 'B.Sc. Computer Systems Engineering, UNITEC (Mexico City)',
-          meta: 'Mexico · Degree in progress',
-          detail: 'Academic background in software engineering, data structures, and distributed systems.'
-        },
-        complementary: {
-          title: 'Additional training',
-          items: ['PMBOK 7', 'Lean Delivery', 'DevOps', 'Conflict Management', 'Leadership for Tech Teams']
-        },
-        current: {
-          title: 'In progress',
-          detail: 'Kubernetes → OpenShift and advanced update in PHP / Python / Java.'
-        }
       },
       contact: {
         title: 'Direct contact',
@@ -698,6 +394,26 @@
       }
     }
   };
+  const loadNarrative = async () => {
+    const requiredSections = ['about', 'experience', 'skills', 'education'];
+    const languages = ['es', 'en'];
+    const loaded = await Promise.all(languages.map(async (language) => {
+      const response = await fetch(`/content/profile.${language}.json`, {
+        headers: { Accept: 'application/json' }
+      });
+      if (!response.ok) throw new Error(`Narrative resource error: HTTP ${response.status}`);
+      const content = await response.json();
+      if (!requiredSections.every(section => content?.[section])) {
+        throw new Error(`Narrative resource incomplete: ${language}`);
+      }
+      return [language, content];
+    }));
+    loaded.forEach(([language, content]) => {
+      Object.assign(messages[language], content);
+    });
+  };
+
+  await loadNarrative();
 
 
   const i18n = (lang) => (key) => key.split('.').reduce((o,k)=> (o||{})[k], messages[lang]) ?? key;
@@ -1498,21 +1214,21 @@
   const Skills = {
     props:['t'],
     template: `
-      <section class=”skills”>
-        <h2 class=”skills-title”>{{ t('skills.title') }}</h2>
-        <div class=”skills-grid”>
-          <div class=”skills-col”>
-            <div v-for=”block in t('skills.left')” :key=”block.heading” class=”skills-block”>
+      <section class="skills">
+        <h2 class="skills-title">{{ t('skills.title') }}</h2>
+        <div class="skills-grid">
+          <div class="skills-col">
+            <div v-for="block in t('skills.left')" :key="block.heading" class="skills-block">
               <h3>{{ block.heading }}</h3>
-              <p v-for=”row in block.rows” :key=”row.label”><strong>{{ row.label }}:</strong> {{ row.value }}</p>
-              <p v-for=”desc in block.descs” :key=”desc” class=”desc”>{{ desc }}</p>
+              <p v-for="row in block.rows" :key="row.label"><strong>{{ row.label }}:</strong> {{ row.value }}</p>
+              <p v-for="desc in block.descs" :key="desc" class="desc">{{ desc }}</p>
             </div>
           </div>
-          <div class=”skills-col”>
-            <div v-for=”block in t('skills.right')” :key=”block.heading” class=”skills-block”>
+          <div class="skills-col">
+            <div v-for="block in t('skills.right')" :key="block.heading" class="skills-block">
               <h3>{{ block.heading }}</h3>
-              <p v-for=”row in block.rows” :key=”row.label”><strong>{{ row.label }}:</strong> {{ row.value }}</p>
-              <p v-for=”desc in block.descs” :key=”desc” class=”desc”>{{ desc }}</p>
+              <p v-for="row in block.rows" :key="row.label"><strong>{{ row.label }}:</strong> {{ row.value }}</p>
+              <p v-for="desc in block.descs" :key="desc" class="desc">{{ desc }}</p>
             </div>
           </div>
         </div>
@@ -1742,6 +1458,7 @@
       </article>
     `
   };
+  const Projects = ProjectsBadges;
 
   /**
    * Represents a Vue.js component for displaying a journal with recent blog entries.
@@ -1877,7 +1594,7 @@
    * (e.g., `startDrag`, `onDrag`, `endDrag`) to enhance and manage app interactions dynamically.
    */
   const app = createApp({
-    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer, ProjectsBadges, Journal },
+    components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer, ProjectsBadges, Projects, Journal },
     setup() {
       const env = (new URLSearchParams(location.search).get('env')) || 'live';
       const appName = 'desktop';
@@ -2044,6 +1761,7 @@
           case 'download': makeWin('download', t('menu.download'), './img/icons/24x24/folder-downloads.png', 'Download'); break;
           case 'contact': makeWin('contact', t('menu.contact'), './img/icons/24x24/mail-folder-inbox.png', 'Contact'); break;
           case 'badges': makeWin('badges', t('menu.badges'), './img/icons/24x24/certificate-server.png','ProjectsBadges'); break;
+          case 'projects': makeWin('projects', t('menu.projects'), './img/icons/24x24/folder-development.png', 'Projects'); break;
           case 'journal': makeWin('journal', t('menu.journal'), './img/icons/24x24/application-rss.png', 'Journal'); break;
         }
         telemetry.cta('open_app', { name });
