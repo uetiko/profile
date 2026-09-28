@@ -171,7 +171,7 @@ if (!Vue) {
 
         const openApp = name => {
           const definition = appRegistry[name];
-          if (definition) makeWin(definition.id, t(definition.title), definition.icon, definition.component);
+          if (definition) makeWin(definition.id, t(definition.title), definition.icon, definition.component, name === 'journal' ? { telemetry } : undefined);
           telemetry.cta('open_app', { name });
         };
 
