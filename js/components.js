@@ -61,27 +61,27 @@ const Education = {
 };
 
 const Download = {
-  props: ['t'],
+  props: ['t', 'telemetry', 'lang'],
   emits: ['open-viewer', 'download'],
   template: `
     <section class="download">
       <header class="download-header"><h2 class="download-title">{{ t('download.title') }}</h2><p class="muted">{{ t('download.hint') }}</p></header>
       <div class="download-actions">
-        <a class="btn-download" href="/cv/angel-barrientos.pdf" download @click="$emit('download')">{{ t('download.btn_download') }}</a>
+        <a class="btn-download" href="/cv/angel-barrientos.pdf" download @click="$emit('download'); telemetry.cvDownload({ document_language: lang })">{{ t('download.btn_download') }}</a>
         <button class="btn-view" @click.prevent="$emit('open-viewer',{src:'/cv/angel-barrientos.pdf',type:'pdf',title:t('download.viewer_title')})">{{ t('download.btn_view') }}</button>
       </div>
       <div class="hr"></div>
-      <footer class="download-footer"><nav><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a><span>·</span><a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a><span>·</span><a class="link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a></nav></footer>
+      <footer class="download-footer"><nav><a class="link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener" @click="telemetry.externalLinkClick('linkedin','download')">LinkedIn</a><span>·</span><a class="link" href="https://github.com/uetiko" target="_blank" rel="noopener" @click="telemetry.externalLinkClick('github','download')">GitHub</a><span>·</span><a class="link" href="https://blog.uetiko.com" target="_blank" rel="noopener" @click="telemetry.externalLinkClick('blog','download')">Blog</a></nav></footer>
     </section>
   `
 };
 
 const Contact = {
-  props: ['t'],
+  props: ['t', 'telemetry'],
   template: `
     <section class="contact">
       <h2 class="contact-title">{{ t('contact.title') }}</h2>
-      <div class="contact-card"><div class="contact-row"><span class="contact-icon">📧</span><a class="contact-link" href="mailto:uetiko@gmail.com">uetiko@gmail.com</a></div><div class="contact-row"><span class="contact-icon">🌐</span><a class="contact-link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener">LinkedIn</a><span>·</span><a class="contact-link" href="https://github.com/uetiko" target="_blank" rel="noopener">GitHub</a><span>·</span><a class="contact-link" href="https://blog.uetiko.com" target="_blank" rel="noopener">Blog</a></div></div>
+      <div class="contact-card"><div class="contact-row"><span class="contact-icon">📧</span><a class="contact-link" href="mailto:uetiko@gmail.com" @click="telemetry.contactClick('email')">uetiko@gmail.com</a></div><div class="contact-row"><span class="contact-icon">🌐</span><a class="contact-link" href="https://linkedin.com/in/uetiko" target="_blank" rel="noopener" @click="telemetry.contactClick('linkedin')">LinkedIn</a><span>·</span><a class="contact-link" href="https://github.com/uetiko" target="_blank" rel="noopener" @click="telemetry.contactClick('github')">GitHub</a><span>·</span><a class="contact-link" href="https://blog.uetiko.com" target="_blank" rel="noopener" @click="telemetry.contactClick('blog')">Blog</a></div></div>
       <div class="hr"></div><p class="muted contact-footnote">{{ t('contact.footnote') }}</p>
     </section>
   `

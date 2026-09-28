@@ -19,7 +19,7 @@ const BADGE_HTML = {
 };
 
 const ProjectsBadges = {
-  props: ['t'],
+  props: ['t', 'telemetry'],
   data() { return { badges: BADGE_HTML }; },
   template: `
     <article>

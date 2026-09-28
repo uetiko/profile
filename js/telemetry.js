@@ -5,6 +5,7 @@ const uuidv4 = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c =
 });
 
 const nowISO = () => new Date().toISOString();
+const TELEMETRY_UNAVAILABLE_GRACE_MS = 4000;
 
 class Telemetry {
   constructor({ env = 'dev', app = 'desktop' } = {}) {
@@ -16,6 +17,9 @@ class Telemetry {
     try {
       if (window.gtag) window.gtag('get', 'G-6CR8Q1NYHV', 'client_id', cid => { this.client_id = cid; });
     } catch {}
+    this._unavailableReported = false;
+    this._createdAt = Date.now();
+    setTimeout(() => this._reportUnavailableIfNeeded(), TELEMETRY_UNAVAILABLE_GRACE_MS);
   }
 
   base() {
@@ -32,11 +36,22 @@ class Telemetry {
       transport_type: 'beacon'
     };
   }
+  _reportUnavailableIfNeeded() {
+    if (this._unavailableReported) return;
+    if (typeof window.gtag === 'function') return;
+    if (Date.now() - this._createdAt < TELEMETRY_UNAVAILABLE_GRACE_MS) return;
+    this._unavailableReported = true;
+    const payload = { ...this.base(), reason: 'gtag_undefined', ga_available: false };
+    console.warn('[telemetry:portfolio_telemetry_unavailable]', payload);
+  }
 
   send(name, extra = {}) {
     const payload = { ...this.base(), ...extra };
-    if (window.gtag) window.gtag('event', name, payload);
-    else console.debug('[telemetry:fallback]', name, payload);
+    if (typeof window.gtag === 'function') window.gtag('event', name, payload);
+    else {
+      console.debug('[telemetry:fallback]', name, payload);
+      this._reportUnavailableIfNeeded();
+    }
   }
 
   pageView(extra = {}) { this.send('page_view', extra); }
@@ -48,6 +63,16 @@ class Telemetry {
   download(extra) { this.send('download', { ...extra }); }
   videoPlay(extra) { this.send('video_play', { ...extra }); }
   error(scope, extra) { this.send('error', { scope, ...extra }); }
+  languageChange(language, previousLanguage, extra = {}) { this.send('portfolio_language_change', { language, previous_language: previousLanguage, ...extra }); }
+  windowOpen(appName, extra = {}) { this.send('portfolio_window_open', { app_name: appName, ...extra }); }
+  windowFocus(appName, extra = {}) { this.send('portfolio_window_focus', { app_name: appName, ...extra }); }
+  windowMinimize(appName, extra = {}) { this.send('portfolio_window_minimize', { app_name: appName, ...extra }); }
+  windowRestore(appName, extra = {}) { this.send('portfolio_window_restore', { app_name: appName, ...extra }); }
+  windowClose(appName, extra = {}) { this.send('portfolio_window_close', { app_name: appName, ...extra }); }
+  windowDuration(appName, durationMs, extra = {}) { this.send('portfolio_window_duration', { app_name: appName, duration_ms: durationMs, engagement_ms: durationMs, ...extra }); }
+  cvDownload(extra = {}) { this.send('portfolio_cv_download', { document_type: 'cv', source_window: 'download', ...extra }); }
+  contactClick(linkUrlCategory, extra = {}) { this.send('portfolio_contact_click', { interaction_type: 'contact', link_url_category: linkUrlCategory, ...extra }); }
+  externalLinkClick(linkUrlCategory, sourceWindow, extra = {}) { this.send('portfolio_external_link_click', { link_url_category: linkUrlCategory, source_window: sourceWindow, ...extra }); }
 }
 
 export { Telemetry, nowISO, uuidv4 };

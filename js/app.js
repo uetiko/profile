@@ -69,16 +69,19 @@ if (!Vue) {
 
         const makeWin = (id, title, icon, component, props = {}, titleKey = `menu.${id}`) => {
           if (wm.find(id)) {
-            wm.restore(id);
             const view = windows.find(item => item.id === id);
+            const wasMinimized = !!view?.minimized;
+            wm.restore(id);
             if (view) view.minimized = false;
+            if (wasMinimized) telemetry.windowRestore(appNameFor(id), { language: lang.value });
             focus(id);
             return;
           }
           wm.create({ id, title, icon, component });
           const managerWindow = wm.find(id);
           windows.push({ id, title, titleKey, icon, component, props, minimized: false, maximized: false, get style() { return wm.style(managerWindow); } });
-          tasks.push({ id, title, titleKey, active: true });
+          tasks.push({ id, title, titleKey, active: false });
+          telemetry.windowOpen(component === 'DocumentViewer' ? 'document_viewer' : id, { window_title: title, language: lang.value });
           focus(id);
           requestAnimationFrame(() => bus.emit('window.opened', { id }));
         };
@@ -103,12 +106,30 @@ if (!Vue) {
           telemetry.openWindow('document_viewer', { file: src, type });
         };
 
+        const focusStartedAt = new Map();
+        const appNameFor = id => {
+          const view = windows.find(item => item.id === id);
+          return view?.component === 'DocumentViewer' ? 'document_viewer' : id;
+        };
+        const endWindowDuration = (id, appName = appNameFor(id)) => {
+          const startedAt = focusStartedAt.get(id);
+          if (startedAt === undefined) return;
+          focusStartedAt.delete(id);
+          telemetry.windowDuration(appName, Date.now() - startedAt, { language: lang.value });
+        };
+
         const focus = id => {
           const previous = tasks.find(task => task.active);
+          const isNewFocus = !previous || previous.id !== id;
           if (previous && previous.id !== id) bus.emit('window.blur', { id: previous.id });
           wm.focus(id);
           tasks.forEach(task => { task.active = task.id === id; });
           bus.emit('window.focus', { id });
+          if (isNewFocus) {
+            if (previous) endWindowDuration(previous.id);
+            telemetry.windowFocus(appNameFor(id), { language: lang.value });
+            focusStartedAt.set(id, Date.now());
+          }
         };
 
         const minimize = id => {
@@ -120,6 +141,9 @@ if (!Vue) {
               if (view) view.minimized = true;
               const task = tasks.find(item => item.id === id);
               if (task) task.active = false;
+              const appName = appNameFor(id);
+              endWindowDuration(id, appName);
+              telemetry.windowMinimize(appName, { language: lang.value });
             }
           });
         };
@@ -130,6 +154,7 @@ if (!Vue) {
           if (view) view.minimized = false;
           bus.emit('window.restored', { id });
           bus.emit('window.focus', { id });
+          telemetry.windowRestore(appNameFor(id), { language: lang.value });
         };
 
         const isNarrowViewport = () => window.innerWidth <= 768;
@@ -148,11 +173,14 @@ if (!Vue) {
           bus.emit('window.closing', {
             id,
             onDone: () => {
+              const appName = appNameFor(id);
               wm.close(id);
               const index = windows.findIndex(window => window.id === id);
               if (index > -1) windows.splice(index, 1);
               const taskIndex = tasks.findIndex(task => task.id === id);
               if (taskIndex > -1) tasks.splice(taskIndex, 1);
+              endWindowDuration(id, appName);
+              telemetry.windowClose(appName, { language: lang.value });
             }
           });
         };
@@ -169,9 +197,10 @@ if (!Vue) {
           journal: { id: 'journal', title: 'menu.journal', icon: './img/icons/24x24/application-rss.png', component: 'Journal' }
         };
 
+        const appsWithTelemetryProp = ['journal', 'download', 'contact', 'projects', 'badges'];
         const openApp = name => {
           const definition = appRegistry[name];
-          if (definition) makeWin(definition.id, t(definition.title), definition.icon, definition.component, name === 'journal' ? { telemetry } : undefined);
+          if (definition) makeWin(definition.id, t(definition.title), definition.icon, definition.component, appsWithTelemetryProp.includes(name) ? { telemetry } : undefined);
           telemetry.cta('open_app', { name });
         };
 
@@ -269,10 +298,13 @@ if (!Vue) {
         const ui = reactive({ menu: false });
         const setLang = language => {
           if (!['es', 'en'].includes(language)) throw new Error(`Unsupported language: ${language}`);
+          const previousLanguage = lang.value;
           lang.value = language;
           updateWindowTitles();
           telemetry.cta('lang_switch', { variant: language });
+          if (language !== previousLanguage) telemetry.languageChange(language, previousLanguage);
         };
+
         const handleDocumentClickForStartMenu = event => {
           if (!ui.menu) return;
           const menu = document.querySelector('.menu');
@@ -280,11 +312,22 @@ if (!Vue) {
           if (!menu?.contains(event.target) && !start?.contains(event.target)) ui.menu = false;
         };
 
+        const handleVisibilityChange = () => {
+          if (document.hidden) {
+            const activeTask = tasks.find(task => task.active);
+            if (activeTask) endWindowDuration(activeTask.id);
+          }
+        };
+
         onMounted(() => {
           document.addEventListener('click', handleDocumentClickForStartMenu);
+          document.addEventListener('visibilitychange', handleVisibilityChange);
           openApp('about');
         });
-        onUnmounted(() => document.removeEventListener('click', handleDocumentClickForStartMenu));
+        onUnmounted(() => {
+          document.removeEventListener('click', handleDocumentClickForStartMenu);
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+        });
 
         return { env, appName, lang, t, telemetry, compositor, windows, tasks, ui, openApp, openViewer, focus, minimize, restore, toggleMaximize, closeWindow, startDrag, startResize, drag, clock, setLang };
       }
