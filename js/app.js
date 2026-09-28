@@ -132,7 +132,12 @@ if (!Vue) {
           bus.emit('window.focus', { id });
         };
 
+        const isNarrowViewport = () => window.innerWidth <= 768;
         const toggleMaximize = id => {
+          if (isNarrowViewport()) {
+            bus.emit('window.feedback', { id, kind: 'shake' });
+            return;
+          }
           wm.toggleMax(id);
           const view = windows.find(item => item.id === id);
           if (view) view.maximized = wm.find(id)?.maximized || false;
@@ -178,6 +183,10 @@ if (!Vue) {
             bus.emit('window.feedback', { id, kind: 'shake' });
             return;
           }
+          if (isNarrowViewport()) {
+            bus.emit('window.feedback', { id, kind: 'shake' });
+            return;
+          }
           drag.active = true;
           drag.id = id;
           drag.startX = event.clientX;
@@ -200,8 +209,10 @@ if (!Vue) {
           if (!drag.active) return;
           const win = wm.find(drag.id);
           if (!win) return;
-          const x = Math.max(4, Math.min(drag.start.x + (event.clientX - drag.startX), innerWidth - 60));
-          const y = Math.max(4, Math.min(drag.start.y + (event.clientY - drag.startY), innerHeight - 100));
+          const maxX = innerWidth - win.w;
+          const maxY = innerHeight - win.h;
+          const x = Math.max(Math.min(4, maxX), Math.min(drag.start.x + (event.clientX - drag.startX), maxX));
+          const y = Math.max(Math.min(4, maxY), Math.min(drag.start.y + (event.clientY - drag.startY), maxY));
           wm.move(drag.id, x, y);
           drag.active = false;
           drag.id = null;
@@ -215,6 +226,10 @@ if (!Vue) {
           const win = wm.find(id);
           if (!win) return;
           if (win.maximized) {
+            bus.emit('window.feedback', { id, kind: 'shake' });
+            return;
+          }
+          if (isNarrowViewport()) {
             bus.emit('window.feedback', { id, kind: 'shake' });
             return;
           }
@@ -233,7 +248,7 @@ if (!Vue) {
           const onUp = upEvent => {
             const width = Math.max(340, drag.start.w + (upEvent.clientX - drag.startX));
             const height = Math.max(220, drag.start.h + (upEvent.clientY - drag.startY));
-            wm.resize(id, Math.min(width, innerWidth - win.x - 12), Math.min(height, innerHeight - win.y - 54));
+            wm.resize(id, Math.min(width, innerWidth - win.x), Math.min(height, innerHeight - win.y));
             drag.active = false;
             drag.id = null;
             drag.ghost = false;
