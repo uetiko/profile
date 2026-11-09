@@ -205,6 +205,33 @@ if (!Vue) {
         };
 
         const drag = reactive({ active: false, id: null, startX: 0, startY: 0, start: {}, ghost: false, ghostStyle: '' });
+        let dragElement = null;
+        let dragFrame = 0;
+        let dragPosition = null;
+        let dragBounds = null;
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+        const getDragBounds = win => {
+          const panelHeight = document.querySelector('.panel')?.getBoundingClientRect().height ?? 42;
+          return {
+            maxX: Math.max(0, innerWidth - win.w),
+            maxY: Math.max(0, innerHeight - panelHeight - win.h)
+          };
+        };
+        const getDragPosition = event => {
+          const win = wm.find(drag.id);
+          if (!win || !dragBounds) return null;
+          return {
+            x: clamp(drag.start.x + (event.clientX - drag.startX), 0, dragBounds.maxX),
+            y: clamp(drag.start.y + (event.clientY - drag.startY), 0, dragBounds.maxY)
+          };
+        };
+        const applyDragFrame = () => {
+          dragFrame = 0;
+          if (!drag.active || !dragElement || !dragPosition) return;
+          const offsetX = dragPosition.x - drag.start.x;
+          const offsetY = dragPosition.y - drag.start.y;
+          dragElement.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+        };
         const startDrag = (event, id) => {
           const win = wm.find(id);
           if (!win) return;
@@ -216,37 +243,53 @@ if (!Vue) {
             bus.emit('window.feedback', { id, kind: 'shake' });
             return;
           }
+          dragElement = event.currentTarget.closest('.window');
+          if (!dragElement) return;
           drag.active = true;
           drag.id = id;
           drag.startX = event.clientX;
           drag.startY = event.clientY;
           drag.start = { x: win.x, y: win.y };
-          drag.ghost = true;
-          drag.ghostStyle = `left:${win.x}px;top:${win.y}px;width:${win.w}px;height:${win.h}px;`;
+          dragPosition = { x: win.x, y: win.y };
+          dragBounds = getDragBounds(win);
+          dragElement.classList.add('is-dragging');
           window.addEventListener('mousemove', onDrag);
           window.addEventListener('mouseup', endDrag);
         };
         const onDrag = event => {
           if (!drag.active) return;
-          const win = wm.find(drag.id);
-          if (!win) return;
-          const x = drag.start.x + (event.clientX - drag.startX);
-          const y = drag.start.y + (event.clientY - drag.startY);
-          drag.ghostStyle = `left:${x}px;top:${y}px;width:${win.w}px;height:${win.h}px;`;
+          const position = getDragPosition(event);
+          if (!position) return;
+          dragPosition = position;
+          if (!dragFrame) dragFrame = requestAnimationFrame(applyDragFrame);
         };
         const endDrag = event => {
           if (!drag.active) return;
           const win = wm.find(drag.id);
           if (!win) return;
-          const maxX = innerWidth - win.w;
-          const maxY = innerHeight - win.h;
-          const x = Math.max(Math.min(4, maxX), Math.min(drag.start.x + (event.clientX - drag.startX), maxX));
-          const y = Math.max(Math.min(4, maxY), Math.min(drag.start.y + (event.clientY - drag.startY), maxY));
-          wm.move(drag.id, x, y);
+          dragPosition = getDragPosition(event) || dragPosition;
+          if (dragFrame) {
+            cancelAnimationFrame(dragFrame);
+            dragFrame = 0;
+          }
+          const finalPosition = dragPosition || { x: win.x, y: win.y };
+          const finishedElement = dragElement;
+          const finishedId = drag.id;
+          if (finishedElement) {
+            finishedElement.style.left = `${finalPosition.x}px`;
+            finishedElement.style.top = `${finalPosition.y}px`;
+            finishedElement.style.transform = '';
+            requestAnimationFrame(() => {
+              if (dragElement === finishedElement && drag.id === finishedId && drag.active) return;
+              finishedElement.classList.remove('is-dragging');
+            });
+          }
+          wm.move(drag.id, finalPosition.x, finalPosition.y);
           drag.active = false;
           drag.id = null;
-          drag.ghost = false;
-          drag.ghostStyle = '';
+          dragPosition = null;
+          dragBounds = null;
+          dragElement = null;
           window.removeEventListener('mousemove', onDrag);
           window.removeEventListener('mouseup', endDrag);
         };

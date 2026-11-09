@@ -135,6 +135,9 @@ a, .link { color: var(--accent); text-decoration: none; }
   transition: transform .24s ease, opacity .24s ease, box-shadow .18s ease, backdrop-filter .24s ease, background .24s ease;
   will-change: transform, opacity, box-shadow;
 }
+.window.is-dragging {
+  transition: none !important;
+}
 
 .desktop.parallax {
   transition: background-position .06s linear;

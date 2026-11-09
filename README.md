@@ -42,7 +42,7 @@ Los efectos registrados cubren transiciones de apertura y cierre, un minimizar c
 
 La aplicación Vue crea instancias de `WindowManager`, `EventBus`, `StateManager`, `EffectManager` y `Compositor`. Declara `windows` y `tasks` como arreglos reactivos que el template itera para renderizar ventanas y botones de la barra. La función `makeWin` es el único punto legítimo de creación: verifica existencia por `id`, restaura si ya estaba abierta y, si no existe, registra ventana y tarea, aplica foco y emite `window.opened` en un `requestAnimationFrame` para asegurar que el DOM de la ventana está materializado cuando el compositor intente animarla. Las operaciones `focus`, `minimize`, `restore`, `toggleMaximize` y `closeWindow` son envoltorios que combinan invocaciones del `WindowManager`, mantenimiento de `tasks` activo/inactivo y emisión ordenada de eventos del ciclo de vida.
 
-El arrastre y el redimensionado no alteran directamente estilos de la ventana. El sistema crea un “ghost” durante la interacción y, al finalizar, actualiza las coordenadas y dimensiones en el modelo del `WindowManager`, tras lo cual un getter reactivo de estilo vuelve a serializar el CSS inline. Esta separación garantiza que el render de Vue permanece consistente y evita jitter por reasignaciones durante `mousemove`.
+Durante el arrastre, la ventana visible sigue al puntero mediante una transformación visual coalescida y conserva la relación con el punto inicial. Al finalizar, las coordenadas se consolidan en `WindowManager` sin salto; el redimensionado mantiene su preview independiente mediante el “ghost”. Esto evita que el flujo de movimiento dependa de reflows por cada `mousemove`.
 
 ## Telemetría
 
