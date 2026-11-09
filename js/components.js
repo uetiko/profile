@@ -91,7 +91,7 @@ const DocumentViewer = {
   props: ['src', 'type', 'title', 'telemetry', 't'],
   template: `
     <section class="doc-viewer">
-      <header class="doc-header"><h3 class="doc-title">{{ title }}</h3><div class="doc-actions"><a class="btn-doc" :href="src" download @click="telemetry.download({file_name: src.split('/').pop(), element:'download_link'})">⬇ {{ t('common.download') }}</a></div></header>
+      <header class="doc-header"><h3 class="doc-title">{{ title }}</h3><div class="doc-actions"><a class="btn-doc" :href="src" download @click="telemetry.download({ element:'download_link' })">⬇ {{ t('common.download') }}</a></div></header>
       <div class="doc-frame"><component :is="componentType" :src="src" class="doc-content" /></div>
     </section>
   `,
@@ -104,8 +104,8 @@ const DocumentViewer = {
       }
     }
   },
-  mounted() { this.telemetry.openWindow('document_viewer', { file: this.src, type: this.type }); },
-  unmounted() { this.telemetry.closeWindow('document_viewer', { file: this.src }); }
+  mounted() { this.telemetry.openWindow('document_viewer', { type: this.type }); },
+  unmounted() { this.telemetry.closeWindow('document_viewer'); }
 };
 
 export { About, Contact, DocumentViewer, Download, Education, Experience, Skills };

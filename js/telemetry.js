@@ -6,6 +6,46 @@ const uuidv4 = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c =
 
 const nowISO = () => new Date().toISOString();
 const TELEMETRY_UNAVAILABLE_GRACE_MS = 4000;
+const EVENT_FIELDS = Object.freeze({
+  page_view: [],
+  click: ['scope'],
+  cta: ['name', 'variant'],
+  open_window: ['name', 'type'],
+  close_window: ['name'],
+  form_submit: ['form_name'],
+  download: ['element'],
+  video_play: ['video_id'],
+  error: ['scope', 'lineno', 'colno'],
+  portfolio_language_change: ['language', 'previous_language'],
+  portfolio_window_open: ['app_name', 'language'],
+  portfolio_window_focus: ['app_name', 'language'],
+  portfolio_window_minimize: ['app_name', 'language'],
+  portfolio_window_restore: ['app_name', 'language'],
+  portfolio_window_close: ['app_name', 'language'],
+  portfolio_window_duration: ['app_name', 'duration_ms', 'engagement_ms', 'language'],
+  portfolio_cv_download: ['document_type', 'document_language', 'source_window'],
+  portfolio_contact_click: ['interaction_type', 'link_url_category'],
+  portfolio_external_link_click: ['link_url_category', 'source_window'],
+  screen_view: ['screen_name', 'language']
+});
+
+const pickAllowed = (payload, fields) => Object.fromEntries(
+  fields
+    .filter(field => payload[field] !== undefined && payload[field] !== null)
+    .map(field => [field, payload[field]])
+);
+
+const eventPayload = (name, payload) => pickAllowed(payload, EVENT_FIELDS[name] || []);
+
+const sanitizeBase = payload => pickAllowed(payload, [
+  'event_id', 'ts', 'page_path', 'env', 'app', 'session_id', 'client_id', 'transport_type'
+]);
+
+const buildPayload = (name, base, extra) => ({
+  ...sanitizeBase(base),
+  ...eventPayload(name, extra)
+});
+
 
 class Telemetry {
   constructor({ env = 'dev', app = 'desktop' } = {}) {
@@ -27,8 +67,6 @@ class Telemetry {
       event_id: uuidv4(),
       ts: nowISO(),
       page_path: location.pathname,
-      page_location: location.href,
-      page_title: document.title,
       env: this.env,
       app: this.app,
       session_id: this.session_id,
@@ -46,7 +84,7 @@ class Telemetry {
   }
 
   send(name, extra = {}) {
-    const payload = { ...this.base(), ...extra };
+    const payload = buildPayload(name, this.base(), extra);
     if (typeof window.gtag === 'function') window.gtag('event', name, payload);
     else {
       console.debug('[telemetry:fallback]', name, payload);
@@ -55,6 +93,7 @@ class Telemetry {
   }
 
   pageView(extra = {}) { this.send('page_view', extra); }
+  screenView(screenName, extra = {}) { this.send('screen_view', { screen_name: screenName, ...extra }); }
   click(scope, extra = {}) { this.send('click', { scope, ...extra }); }
   cta(name, extra = {}) { this.send('cta', { name, ...extra }); }
   openWindow(name, extra = {}) { this.send('open_window', { name, ...extra }); }

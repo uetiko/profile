@@ -93,7 +93,7 @@ const Journal = {
       this.telemetry?.openWindow?.('journal', { count: this.items.length });
     } catch (error) {
       this.error = String(error?.message || error);
-      this.telemetry?.error?.('journal', { message: this.error });
+      this.telemetry?.error?.('journal');
     } finally {
       this.loading = false;
     }
@@ -101,7 +101,7 @@ const Journal = {
   beforeUnmount() { this.telemetry?.closeWindow?.('journal', {}); },
   methods: {
     openPost(item) {
-      this.telemetry?.cta?.('journal_open_post', { id: item.id, url: item.url, title: item.title });
+      this.telemetry?.cta?.('journal_open_post');
       window.open(item.url, '_blank', 'noopener');
     },
     fmtDate(iso) {
