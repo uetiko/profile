@@ -50,8 +50,8 @@ if (!Vue) {
         const telemetry = new Telemetry({ env, app: appName });
         telemetry.pageView();
 
-        window.addEventListener('error', event => telemetry.error('global_js', { message: event.message, filename: event.filename, lineno: event.lineno, colno: event.colno }));
-        window.addEventListener('unhandledrejection', event => telemetry.error('unhandled_promise', { reason: String(event.reason) }));
+        window.addEventListener('error', event => telemetry.error('global_js', { lineno: event.lineno, colno: event.colno }));
+        window.addEventListener('unhandledrejection', () => telemetry.error('unhandled_promise'));
 
         const wm = new WindowManager();
         const bus = new EventBus();
@@ -73,7 +73,10 @@ if (!Vue) {
             const wasMinimized = !!view?.minimized;
             wm.restore(id);
             if (view) view.minimized = false;
-            if (wasMinimized) telemetry.windowRestore(appNameFor(id), { language: lang.value });
+            if (wasMinimized) {
+              telemetry.windowRestore(appNameFor(id), { language: lang.value });
+              telemetry.screenView(appNameFor(id), { language: lang.value });
+            }
             focus(id);
             return;
           }
@@ -81,7 +84,9 @@ if (!Vue) {
           const managerWindow = wm.find(id);
           windows.push({ id, title, titleKey, icon, component, props, minimized: false, maximized: false, get style() { return wm.style(managerWindow); } });
           tasks.push({ id, title, titleKey, active: false });
-          telemetry.windowOpen(component === 'DocumentViewer' ? 'document_viewer' : id, { window_title: title, language: lang.value });
+          const appName = component === 'DocumentViewer' ? 'document_viewer' : id;
+          telemetry.windowOpen(appName, { language: lang.value });
+          telemetry.screenView(appName, { language: lang.value });
           focus(id);
           requestAnimationFrame(() => bus.emit('window.opened', { id }));
         };
@@ -103,7 +108,7 @@ if (!Vue) {
         const openViewer = ({ src, type, title }) => {
           const id = `viewer-${uuidv4()}`;
           makeWin(id, title, '🗎', 'DocumentViewer', { src, type, title, titleKey: 'download.viewer_title', telemetry }, 'download.viewer_title');
-          telemetry.openWindow('document_viewer', { file: src, type });
+          telemetry.openWindow('document_viewer', { type });
         };
 
         const focusStartedAt = new Map();
@@ -155,6 +160,7 @@ if (!Vue) {
           bus.emit('window.restored', { id });
           bus.emit('window.focus', { id });
           telemetry.windowRestore(appNameFor(id), { language: lang.value });
+          telemetry.screenView(appNameFor(id), { language: lang.value });
         };
 
         const isNarrowViewport = () => window.innerWidth <= 768;
