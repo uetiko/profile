@@ -41,7 +41,7 @@ if (!Vue) {
     const app = createApp({
       components: { About, Experience, Skills, Education, Download, Contact, DocumentViewer, ProjectsBadges, Projects, Journal },
       setup() {
-        const env = new URLSearchParams(location.search).get('env') || 'live';
+        const env = 'live';
         const appName = 'desktop';
         const lang = ref(langAtStart);
         document.documentElement.lang = lang.value;
